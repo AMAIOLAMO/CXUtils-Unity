@@ -8,6 +8,7 @@ public class RotateAroundOBJ : MonoBehaviour
     private void Update() =>
         PerfromCircularRotation();
 
+
     private void PerfromCircularRotation() =>
         transform.RotateAround(RotateAroundTrans.position, RotateAroundTrans.forward, RotateSpeedPerAngle);
 }
