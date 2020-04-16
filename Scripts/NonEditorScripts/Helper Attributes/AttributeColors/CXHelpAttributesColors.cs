@@ -11,6 +11,7 @@ namespace CXUtils.HelperAttributes
         orange, aqua, silver,
         gold, magenta
     }
+
     public static class EnumAttributeColorReciever
     {
         private static Color silver =
