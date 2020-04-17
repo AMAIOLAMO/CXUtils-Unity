@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System;
 using UnityEditor;
-using CXUtils.DebugHelper;
-
+/*
+ * Made by CXRedix
+ * Free tool for unity.
+ */
 namespace CXUtils.HelperAttributes
 {
     /// <summary> A multi property float Range Attribute </summary>
@@ -19,17 +21,14 @@ namespace CXUtils.HelperAttributes
         {
             //in Range
             if ((property.propertyType == SerializedPropertyType.Float ||
-                property.propertyType == SerializedPropertyType.Integer) && isLast)
-
+                property.propertyType == SerializedPropertyType.Integer))
+            {
                 EditorGUI.Slider(position, property, _min, _max, label);
-
+                StopNextDraw();
+            }
             else
             {
-                if (!isLast)
-                    CanLetNextDraw = false;
-
-                else
-                    HelpBoxError(position, "Use can only assign on INT , FLOAT or DOUBLE", false);
+                HelpBoxError(position, "Use can only assign on INT , FLOAT or DOUBLE", false);
             }
         }
         #endregion

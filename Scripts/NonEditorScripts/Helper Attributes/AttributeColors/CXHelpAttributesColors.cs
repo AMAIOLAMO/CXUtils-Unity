@@ -1,18 +1,24 @@
 ﻿using UnityEngine;
 using CXUtils.CXMath;
-
+/*
+ * Made by CXRedix
+ * Free tool for unity.
+ */
 namespace CXUtils.HelperAttributes
 {
+    /// <summary> Pre defined colors </summary>
     public enum EnumAttributeColor
     {
         white, black, gray,
         blue, red, green,
         cyan, yellow, purple,
         orange, aqua, silver,
-        gold, magenta
+        gold, magenta, brown,
+        fuchsia, lime, clear
     }
 
-    public static class EnumAttributeColorReciever
+    /// <summary> Recieves the color that the EnumAttributeColor will get </summary>
+    public static class CXEColorReciever
     {
         private static Color silver =
             new Color(MathFunc.Map(192, 0, 255, 0, 1),
@@ -25,14 +31,25 @@ namespace CXUtils.HelperAttributes
 
         private static Color orange =
             new Color(1,
-                    MathFunc.Map(127, 0, 255, 0, 1), 0);
+                    MathFunc.Map(165, 0, 255, 0, 1), 0);
 
         private static Color gold =
             new Color(1,
-                MathFunc.Map(215, 0, 255, 0, 1), 0);
+                    MathFunc.Map(215, 0, 255, 0, 1), 0);
 
         private static Color aqua =
             new Color(0, 1, 1);
+
+        private static Color brown =
+            new Color(MathFunc.Map(150, 0, 255, 0, 1),
+                    MathFunc.Map(75, 0, 255, 0, 1), 0);
+
+        private static Color fuchsia =
+            new Color(1, 0, 1);
+
+        private static Color lime =
+            new Color(0, 1, 0);
+
 
         public static Color GetColor(this EnumAttributeColor enumColor)
         {
@@ -66,6 +83,14 @@ namespace CXUtils.HelperAttributes
                 return gold;
                 case EnumAttributeColor.aqua:
                 return aqua;
+                case EnumAttributeColor.brown:
+                return brown;
+                case EnumAttributeColor.fuchsia:
+                return fuchsia;
+                case EnumAttributeColor.lime:
+                return lime;
+                case EnumAttributeColor.clear:
+                return Color.clear;
             }
             Debug.LogError($"This \"{enumColor}\" Color is not implemented!");
             return default;

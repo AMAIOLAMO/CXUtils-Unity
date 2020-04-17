@@ -2,7 +2,10 @@
 using UnityEditor;
 using System.Linq;
 using System.Collections.Generic;
-
+/*
+ * Made by CXRedix
+ * Free tool for unity.
+ */
 #if UNITY_EDITOR
 namespace CXUtils.HelperAttributes
 {
@@ -49,7 +52,8 @@ namespace CXUtils.HelperAttributes
         private bool LoopAndGetHeight(List<object> storedAttributes, SerializedProperty property,
         GUIContent label, out float result)
         {
-            result = default;
+            bool resulted = false;
+            result = 0;
             foreach (object atr in storedAttributes)
             {
                 if ((atr as MultiPropertyAttribute) != null)
@@ -58,11 +62,14 @@ namespace CXUtils.HelperAttributes
 
                     if (currentHeight.HasValue)
                     {
-                        result = currentHeight.Value;
-                        return true;
+                        result += currentHeight.Value;
+                        resulted = true;
                     }
                 }
             }
+            if(resulted)
+                return true;
+
             return false;
         }
 

@@ -1,7 +1,10 @@
 ﻿using System;
 using UnityEditor;
 using UnityEngine;
-
+/*
+ * Made by CXRedix
+ * Free tool for unity.
+ */
 namespace CXUtils.HelperAttributes
 {
     /// <summary> A multi property float Range Attribute </summary>

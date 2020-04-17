@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System;
-
+/*
+ * Made by CXRedix
+ * Free tool for unity.
+ */
 namespace CXUtils.HelperAttributes
 {
     /// <summary> Gives the field to say that this is a prefab </summary>
@@ -19,6 +22,5 @@ namespace CXUtils.HelperAttributes
             prefabIcon.text = label.text;
             return prefabIcon;
         }
-        
     }
 }

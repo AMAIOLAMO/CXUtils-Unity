@@ -57,7 +57,7 @@ namespace CXUtils.HelperAttributes
             {
                 ChangeRectToPosition(ref rect, position);
 
-                EditorGUI.DrawRect(rect, EnumAttributeColorReciever.GetColor(rectColor));
+                EditorGUI.DrawRect(rect, CXEColorReciever.GetColor(rectColor));
                 base.Multi_OnGUI(position, property, label, isLast);
             }
             else
@@ -74,7 +74,7 @@ namespace CXUtils.HelperAttributes
 
                         Srect.rectValue = TempR;
 
-                        EditorGUI.DrawRect(TempR, EnumAttributeColorReciever.GetColor(rectColor));
+                        EditorGUI.DrawRect(TempR, CXEColorReciever.GetColor(rectColor));
                         base.Multi_OnGUI(position, property, label, isLast);
                     }
                     else
