@@ -12,8 +12,12 @@ namespace CXUtils.CXCamera
         public enum PortOptions
         { LeftUp, LeftDown, RightUp, RightDown, LeftMiddle, RightMiddle, UpMiddle, DownMiddle }
         #region MousePosition
+
         ///<summary> This method will get the mouse position on the scene position on the camera </summary>
-        public static Vector3 GetMouseOnScenePos(Camera camera) => camera.ScreenToWorldPoint(Input.mousePosition);
+        public static Vector3 GetMouseOnWorldPos() => GetMouseOnWorldPos(Camera.main);
+
+        ///<summary> This method will get the mouse position on the scene position on the camera </summary>
+        public static Vector3 GetMouseOnWorldPos(Camera camera) => camera.ScreenToWorldPoint(Input.mousePosition);
 
         ///<summary> This method will get the mouse position on the viewport pos on the camera </summary>
         public static Vector3 GetMouseOnViewPortPos(Camera camera) => camera.ScreenToViewportPoint(Input.mousePosition);
