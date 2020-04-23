@@ -1,18 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using CXUtils.GridSystem;
-using System;
 
 namespace CXUtils.GridSystem.PathFinding
 {
-    public class CXPathNode
+    #region Enum declaration
+    /// <summary> Options for finding Paths </summary>
+    public enum PathFindingOptions
+    {
+        /// <summary> The path will not jump diagonally
+        /// <para>0: walkable, *: path, (): non walkable, %: end</para>
+        /// <para>| % | * | 0 |</para>
+        /// <para>| 0 |( )| * |</para>
+        /// <para>|( )| * | 0 |</para> </summary>
+        Normal,
+        /// <summary> The path will ignore side and jump diagonally
+        /// <para>*: path, (): non walkable, %: end</para>
+        /// <para>| % | ( ) |</para>
+        /// <para>| ( ) | * |</para> </summary>
+        JumpDiagonal
+    }
+    #endregion
+
+    /// <summary> A single path node from pathfinding algorithm </summary>
+    public class PathNode
     {
         #region Fields
-        private CXGrid<CXPathNode> grid;
+        public CXGrid<PathNode> Grid { get; }
 
-        public int x { get; }
-        public int y { get; }
+        #region XY
+        public readonly int x;
+        public readonly int y;
+        #endregion
+
         #region Cost fields
         /// <summary> Distance from starting node </summary>
         public int GCost { get; set; }
@@ -24,46 +43,63 @@ namespace CXUtils.GridSystem.PathFinding
         public int FCost { get; set; }
         #endregion
 
+        public bool isWalkable = true;
+
         /// <summary> The node that this came from (Also called: Parent node) </summary>
-        public CXPathNode CameFromNode { get; set; }
+        public PathNode CameFromNode { get; set; }
         #endregion
 
-        public CXPathNode(CXGrid<CXPathNode> grid, int x, int y)
+        public PathNode(CXGrid<PathNode> grid, int x, int y, bool isWalkable = true)
         {
-            this.grid = grid;
-            (this.x, this.y) = (x, y);
+            (Grid, this.x, this.y) = (grid, x, y);
+            this.isWalkable = isWalkable;
         }
 
+        #region Script Methods
         public void CalculateFCost() =>
             FCost = GCost + FCost;
 
         public override string ToString() =>
             $"({x}, {y})";
+        #endregion
     }
 
     /// <summary> A library that implements A* path finding </summary>
     public struct CXPathFinding
     {
         #region Constants
-        private const int STRAIGHT_COST = 10; // 1 * 10 = 10
-        private const int DIAGONAL_COST = 14; // sqrt(1 * 10^2 + 1 * 10^2) = sqrt(200) = 14
+
+        // using int for less memory consumption
+        private const int STRAIGHT_COST = 10; // 1 * 10 = 10 (straight calculation)
+        private const int DIAGONAL_COST = 14; // sqrt(1 * 10^2 + 1 * 10^2) = sqrt(200) = 14 (Diagonal calculation)
+
         #endregion
 
-        public CXGrid<CXPathNode> Grid { get; private set; }
+        #region Fields
+
+        public CXGrid<PathNode> Grid { get; private set; }
+
+        #endregion
 
         #region Constructors
+
         public CXPathFinding(int width, int height, float cellSize, Vector2 originPosition) =>
-            Grid = new CXGrid<CXPathNode>(width, height, cellSize, originPosition,
-                (g, x, y) => new CXPathNode(g, x, y));
+            Grid = new CXGrid<PathNode>(width, height, cellSize, originPosition,
+                (g, x, y) => new PathNode(g, x, y));
+
         #endregion
 
         #region Find Path A* Algorithm
-        public List<Vector2> FindPath(Vector2 startPosition, Vector2 endPosition)
+
+        #region Find Vector Paths
+
+        private List<Vector2> FindVectorPath(Vector2 startPosition, Vector2 endPosition,
+            PathFindingOptions pathFindingOptions = PathFindingOptions.Normal, bool couldDiagonal = true)
         {
             if (Grid.TryGetGridPosition(startPosition, out Vector2Int startGridPos) &&
                Grid.TryGetGridPosition(endPosition, out Vector2Int endGridPos))
             {
-                List<CXPathNode> path = FindPath(startGridPos, endGridPos);
+                List<PathNode> path = FindPath(startGridPos, endGridPos, pathFindingOptions, couldDiagonal);
                 //found path
                 if (path != null)
                 {
@@ -77,61 +113,62 @@ namespace CXUtils.GridSystem.PathFinding
             return null;
         }
 
-        public List<CXPathNode> FindPath(Vector2Int startPosition, Vector2Int endPosition)
+        #endregion
+
+        #region Find Paths
+
+        /// <summary> Finds a path </summary>
+        private List<PathNode> FindPath(Vector2Int startPosition, Vector2Int endPosition,
+            PathFindingOptions pathFindingOptions = PathFindingOptions.Normal, bool couldDiagonal = true)
         {
-            CXPathNode startNode = Grid.GetValue(startPosition.x, startPosition.y);
-            CXPathNode endNode = Grid.GetValue(endPosition.x, endPosition.y);
-
-            List<CXPathNode> openList = new List<CXPathNode>() { startNode };
-            List<CXPathNode> closeList = new List<CXPathNode>();
-
-            for (int x = 0; x < Grid.Width; x++)
+            if (Grid.TryGetValue(startPosition, out PathNode startNode) &&
+                Grid.TryGetValue(endPosition, out PathNode endNode))
             {
-                for (int y = 0; y < Grid.Height; y++)
+                List<PathNode> openList = new List<PathNode>() { startNode };
+                List<PathNode> closeList = new List<PathNode>();
+
+                InitPathNodes();
+
+                //Initialize start Node
+                startNode.GCost = 0;
+                startNode.HCost = CalculateDistance(startNode, endNode);
+                startNode.CalculateFCost();
+
+
+                while (openList.Count > 0)
                 {
-                    CXPathNode pathNode = Grid.GetValue(x, y);
-                    pathNode.GCost = int.MaxValue;
-                    pathNode.CalculateFCost();
-                    pathNode.CameFromNode = null;
-                }
-            }
+                    PathNode currentNode = GetLowestPathNode(openList);
 
-            startNode.GCost = 0;
-            startNode.HCost = CalculateDistance(startNode, endNode);
-            startNode.CalculateFCost();
+                    //if get to the target path
+                    if (currentNode == endNode)
+                        return CalculatePath(endNode);
 
+                    //else
+                    openList.Remove(currentNode);
+                    closeList.Add(currentNode);
 
-            while (openList.Count > 0)
-            {
-                CXPathNode currentNode = GetLowestPathNode(openList);
-
-                if (currentNode == endNode)
-                    return CalculatePath(endNode);
-
-                //else
-                openList.Remove(currentNode);
-                closeList.Add(currentNode);
-
-                //looping through the neighbours and find the lowest FCost
-                foreach (var neighbourNode in GetNeighborNodes(currentNode))
-                {
-                    //That means it is no longer needed to be searched
-                    if (closeList.Contains(neighbourNode))
-                        continue;
-
-                    int tentativeGCost =
-                        currentNode.GCost + CalculateDistance(currentNode, neighbourNode);
-
-                    if (tentativeGCost < neighbourNode.GCost)
+                    //looping through the neighbours and find the lowest FCost
+                    foreach (var neighbourNode in GetNeighborNodes(currentNode, pathFindingOptions, couldDiagonal))
                     {
-                        neighbourNode.CameFromNode = currentNode;
-                        neighbourNode.GCost = tentativeGCost;
-                        neighbourNode.HCost = CalculateDistance(neighbourNode, endNode);
-                        neighbourNode.CalculateFCost();
+                        //That means it is no longer needed to be searched
+                        if (closeList.Contains(neighbourNode))
+                            continue;
 
-                        if (!openList.Contains(neighbourNode))
-                            openList.Add(neighbourNode);
+                        int tentativeGCost =
+                            currentNode.GCost + CalculateDistance(currentNode, neighbourNode);
 
+                        if (tentativeGCost < neighbourNode.GCost)
+                        {
+                            //Initialize neighbour Nodes
+                            neighbourNode.CameFromNode = currentNode;
+                            neighbourNode.GCost = tentativeGCost;
+                            neighbourNode.HCost = CalculateDistance(neighbourNode, endNode);
+                            neighbourNode.CalculateFCost();
+
+                            if (!openList.Contains(neighbourNode))
+                                openList.Add(neighbourNode);
+
+                        }
                     }
                 }
             }
@@ -139,24 +176,28 @@ namespace CXUtils.GridSystem.PathFinding
             //out of nodes of the open list
             return null;
         }
+
+        /// <summary> Finds a path with diagonal moves </summary>
+        public List<PathNode> FindPath_Diagonal(Vector2Int startPosition, Vector2Int endPosition,
+            PathFindingOptions pathFindingOptions = PathFindingOptions.Normal) =>
+            FindPath(startPosition, endPosition, pathFindingOptions);
+
+        /// <summary> Fins a path with no diagonal moves </summary>
+        public List<PathNode> FindPath_Straight(Vector2Int startPosition, Vector2Int endPosition) =>
+            FindPath(startPosition, endPosition, PathFindingOptions.Normal, false);
+
+        #endregion
+
         #endregion
 
         #region Script Methods
 
-        private int CalculateDistance(CXPathNode a, CXPathNode b)
-        {
-            int xDis = Mathf.Abs(a.x - b.x);
-            int yDis = Mathf.Abs(a.y - b.y);
+        #region PathNode Caluclations
 
-            int rem = Mathf.Abs(xDis - yDis);
-
-            return DIAGONAL_COST * Mathf.Min(xDis, yDis) + STRAIGHT_COST * rem;
-        }
-
-        private CXPathNode GetLowestPathNode(List<CXPathNode> pathNodeList)
+        private PathNode GetLowestPathNode(List<PathNode> pathNodeList)
         {
             //Initially is the start node
-            CXPathNode lowestPathNode = pathNodeList[0];
+            PathNode lowestPathNode = pathNodeList[0];
 
             //Bubble find the lowest path node
             for (int i = 1; i < pathNodeList.Count; i++)
@@ -166,11 +207,179 @@ namespace CXUtils.GridSystem.PathFinding
             return lowestPathNode;
         }
 
-        private List<CXPathNode> CalculatePath(CXPathNode endNode)
+        private List<PathNode> GetNeighborNodes(PathNode currentNode,
+            PathFindingOptions pathFindingOptions, bool couldDiagonal)
         {
-            List<CXPathNode> path = new List<CXPathNode>();
-            path.Add(endNode);
-            CXPathNode currentNode = endNode;
+            List<PathNode> neighbourList = new List<PathNode>();
+
+            #region Indexes
+            int leftIndex = currentNode.x - 1;
+            int rightIndex = currentNode.x + 1;
+
+            int downIndex = currentNode.y - 1;
+            int upIndex = currentNode.y + 1;
+            #endregion
+
+            if (pathFindingOptions == PathFindingOptions.Normal)
+            {
+                bool? left = null;
+                bool? right = null;
+                bool? down = null;
+                bool? up = null;
+
+                #region Sides
+
+                #region Horizontal
+                //Left
+                if (currentNode.x - 1 >= 0)
+                    left = AssignIfWalkable(leftIndex, currentNode.y, neighbourList);
+
+                //Right
+                if (currentNode.x + 1 < Grid.Width)
+                    right = AssignIfWalkable(rightIndex, currentNode.y, neighbourList);
+                #endregion
+
+                #region Vertical
+                //Down
+                if (currentNode.y - 1 >= 0)
+                    down = AssignIfWalkable(currentNode.x, downIndex, neighbourList);
+
+                //Up
+                if (currentNode.y + 1 < Grid.Height)
+                    up = AssignIfWalkable(currentNode.x, upIndex, neighbourList);
+                #endregion
+
+                #endregion
+
+                #region Corners
+
+                if (couldDiagonal)
+                {
+                    //left up
+                    if ((left.HasValue && up.HasValue) && (up.Value || left.Value))
+                        AssignIfWalkable(leftIndex, upIndex, neighbourList);
+
+                    //left down
+                    if ((left.HasValue && down.HasValue) && (down.Value || left.Value))
+                        AssignIfWalkable(leftIndex, downIndex, neighbourList);
+
+                    //right up
+                    if ((right.HasValue && up.HasValue) && (up.Value || right.Value))
+                        AssignIfWalkable(rightIndex, upIndex, neighbourList);
+
+                    //right down
+                    if ((right.HasValue && down.HasValue) && (down.Value || right.Value))
+                        AssignIfWalkable(rightIndex, downIndex, neighbourList);
+                }
+
+                #endregion
+            }
+
+            else if (pathFindingOptions == PathFindingOptions.JumpDiagonal)
+            {
+
+                #region Sides
+
+                #region Horizontal
+                //Left
+                if (currentNode.x - 1 >= 0)
+                    AssignIfWalkable(leftIndex, currentNode.y, neighbourList);
+
+                //Right
+                if (currentNode.x + 1 < Grid.Width)
+                    AssignIfWalkable(rightIndex, currentNode.y, neighbourList);
+                #endregion
+
+                #region Vertical
+                //Down
+                if (currentNode.y - 1 >= 0)
+                    AssignIfWalkable(currentNode.x, downIndex, neighbourList);
+                //Up
+                if (currentNode.y + 1 < Grid.Height)
+                    AssignIfWalkable(currentNode.x, upIndex, neighbourList);
+                #endregion
+
+                #endregion
+
+                #region Corners
+                if (couldDiagonal)
+                {
+                    //Left
+                    if (currentNode.x - 1 >= 0)
+                    {
+                        //Left Up
+                        if (currentNode.y + 1 < Grid.Height)
+                            AssignIfWalkable(leftIndex, upIndex, neighbourList);
+
+                        //Left Down
+                        if (currentNode.y - 1 >= 0)
+                            AssignIfWalkable(leftIndex, downIndex, neighbourList);
+                    }
+
+                    //Right
+                    if (currentNode.x + 1 < Grid.Width)
+                    {
+                        //Right Up
+                        if (currentNode.y + 1 < Grid.Height)
+                            AssignIfWalkable(rightIndex, upIndex, neighbourList);
+
+                        //Right Down
+                        if (currentNode.y - 1 >= 0)
+                            AssignIfWalkable(rightIndex, downIndex, neighbourList);
+                    }
+                }
+                #endregion
+
+            }
+
+            return neighbourList;
+        }
+
+        #endregion
+
+        #region Script Simplifiers
+
+        private void InitPathNodes()
+        {
+            for (int x = 0; x < Grid.Width; x++)
+            {
+                for (int y = 0; y < Grid.Height; y++)
+                {
+                    PathNode pathNode = Grid.GetValue(x, y);
+                    pathNode.GCost = int.MaxValue;
+                    pathNode.CalculateFCost();
+                    pathNode.CameFromNode = null;
+                }
+            }
+        }
+
+        private bool AssignIfWalkable(int x, int y, List<PathNode> neightbourList)
+        {
+            PathNode pathNode = pathNode = Grid.GetValue(x, y);
+            if (pathNode.isWalkable)
+                neightbourList.Add(pathNode);
+
+            return pathNode.isWalkable;
+        }
+
+        #endregion
+
+        #region Calculations
+
+        private int CalculateDistance(PathNode a, PathNode b)
+        {
+            int xDis = Mathf.Abs(a.x - b.x);
+            int yDis = Mathf.Abs(a.y - b.y);
+
+            int rem = Mathf.Abs(xDis - yDis);
+
+            return DIAGONAL_COST * Mathf.Min(xDis, yDis) + STRAIGHT_COST * rem;
+        }
+
+        private List<PathNode> CalculatePath(PathNode endNode)
+        {
+            List<PathNode> path = new List<PathNode> { endNode };
+            PathNode currentNode = endNode;
 
             //while not the start node
             while (currentNode.CameFromNode != null)
@@ -184,42 +393,8 @@ namespace CXUtils.GridSystem.PathFinding
             return path;
         }
 
-        private List<CXPathNode> GetNeighborNodes(CXPathNode currentNode)
-        {
-            List<CXPathNode> neightbourNodes = new List<CXPathNode>();
+        #endregion
 
-            if (currentNode.x - 1 >= 0)
-            {
-                //Left
-                neightbourNodes.Add(Grid.GetValue(currentNode.x - 1, currentNode.y));
-                //Left Down
-                if (currentNode.y - 1 >= 0)
-                    neightbourNodes.Add(Grid.GetValue(currentNode.x - 1, currentNode.y - 1));
-                //Left Up
-                if (currentNode.y + 1 < Grid.Height)
-                    neightbourNodes.Add(Grid.GetValue(currentNode.x - 1, currentNode.y + 1));
-            }
-
-            if (currentNode.x + 1 >= 0)
-            {
-                //Right
-                neightbourNodes.Add(Grid.GetValue(currentNode.x + 1, currentNode.y));
-                //Right Down
-                if (currentNode.y - 1 >= 0)
-                    neightbourNodes.Add(Grid.GetValue(currentNode.x + 1, currentNode.y - 1));
-                //Right Up
-                if (currentNode.y + 1 < Grid.Height)
-                    neightbourNodes.Add(Grid.GetValue(currentNode.x + 1, currentNode.y + 1));
-            }
-            //Down
-            if (currentNode.y - 1 >= 0)
-                neightbourNodes.Add(Grid.GetValue(currentNode.x, currentNode.y - 1));
-            //Up
-            if (currentNode.y + 1 < Grid.Height)
-                neightbourNodes.Add(Grid.GetValue(currentNode.x, currentNode.y + 1));
-
-            return neightbourNodes;
-        }
         #endregion
     }
 }

@@ -14,6 +14,7 @@ namespace CXUtils.GridSystem
     [System.Serializable]
     public class CXGrid<T>
     {
+        #region Fields
         public int Width { get; private set; }
         public int Height { get; private set; }
 
@@ -21,10 +22,10 @@ namespace CXUtils.GridSystem
         public float CellSize { get; private set; }
         public Vector2 Origin { get; private set; }
 
-        //public bool ShowDebug { get; set; }
+        public bool DebugOn { get; set; }
+        #endregion
 
-        private bool DebugOn { get; set; }
-
+        #region Constructors
         public CXGrid(int width, int height, float cellSize,
             Vector2 origin = default, T initialValue = default,
             bool DebugOn = false)
@@ -57,6 +58,7 @@ namespace CXUtils.GridSystem
 
             this.DebugOn = DebugOn;
         }
+        #endregion
 
         #region GetPositions
 
@@ -117,6 +119,7 @@ namespace CXUtils.GridSystem
         #endregion
 
         #region Values
+
         #region SetValues
         /// <summary> Tries to set a value using grid position 
         /// <para>Returns if sets correctly</para> </summary>
@@ -216,12 +219,12 @@ namespace CXUtils.GridSystem
             Vector2Int gridPos = GetGridPosition(worldPosition);
             return GetValue(gridPos.x, gridPos.y);
         }
-
-
         #endregion
+
         #endregion
 
         #region Script Methods
+
         private bool CheckXYValid(int x, int y)
         {
             if (x < 0 || y < 0 || x >= Width || y >= Height)
@@ -240,32 +243,40 @@ namespace CXUtils.GridSystem
 
         #region Debug
         /// <summary> draws a debug gizmos for the grid </summary>
-        public void DrawDebug(Color color, GridDebugDrawOptions gridDebugDrawOptions) =>
-            DrawDebug(color, color, gridDebugDrawOptions);
+        public void DrawDebug(Color color,
+            GridDebugDrawOptions gridDebugDrawOptions, float originRadius = .08f) =>
+            Ddebug(color, color, gridDebugDrawOptions, originRadius);
 
         /// <summary> draws a debug gizmos for the grid </summary>
-        public void DrawDebug(Color originColor, Color lineColor, GridDebugDrawOptions gridDebugDrawOptions)
-        {
+        public void DrawDebug(GridDebugDrawOptions gridDebugDrawOptions = GridDebugDrawOptions.All,
+            float originRadius = .08f) =>
+            DrawDebug(Color.white, gridDebugDrawOptions, originRadius);
 
-            if (gridDebugDrawOptions == GridDebugDrawOptions.All || gridDebugDrawOptions == GridDebugDrawOptions.Origins)
-            {
-                Gizmos.color = originColor;
-                DrawDebugPoints();
-            }
+        /// <summary> draws a debug gizmos for the grid </summary>
+        public void DrawDebug(Color originColor, Color lineColor, float originRadius = .08f) =>
+            Ddebug(originColor, lineColor, GridDebugDrawOptions.All, originRadius);
+
+        /// <summary> draws a debug gizmos for the grid </summary>
+        private void Ddebug(Color originColor, Color lineColor,
+            GridDebugDrawOptions gridDebugDrawOptions, float originRadius = .08f)
+        {
 
             if (gridDebugDrawOptions == GridDebugDrawOptions.All || gridDebugDrawOptions == GridDebugDrawOptions.Lines)
             {
                 Gizmos.color = lineColor;
                 DrawDebugLines();
             }
+
+            if (gridDebugDrawOptions == GridDebugDrawOptions.All || gridDebugDrawOptions == GridDebugDrawOptions.Origins)
+            {
+                Gizmos.color = originColor;
+                DrawDebugPoints(originRadius);
+            }
+
         }
 
-        /// <summary> draws a debug gizmos for the grid </summary>
-        public void DrawDebug(GridDebugDrawOptions gridDebugDrawOptions = GridDebugDrawOptions.All) =>
-            DrawDebug(Color.white, gridDebugDrawOptions);
-
         #region HelperDraw
-        private void DrawDebugPoints()
+        private void DrawDebugPoints(float originRadius = .08f)
         {
             for (int x = 0; x < Width + 1; x++)
             {
@@ -275,7 +286,7 @@ namespace CXUtils.GridSystem
                     Vector2 LDPosition;
                     LDPosition = GetWorldPosition(x, y);
 
-                    Gizmos.DrawSphere(LDPosition, .08f);
+                    Gizmos.DrawSphere(LDPosition, originRadius);
                 }
             }
         }
