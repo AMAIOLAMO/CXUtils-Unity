@@ -1,7 +1,7 @@
-﻿using CXUtils.Infos;
+﻿using CXUtils.DataUtils.Infos;
 using UnityEngine;
 
-namespace CXUtils.Manager
+namespace CXUtils.Managers
 {
     /// <summary> Manages all the input </summary>
     public class InputManager : MonoBehaviour
@@ -20,7 +20,7 @@ namespace CXUtils.Manager
         }
         #endregion
 
-        #region ScriptMethods
+        #region Finding Inputs
         /// <summary> Finds an input info by name </summary>
         public InputInfo? FindInputInfoByName(string name)
         {

@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
-using CXUtils.DebugHelper;
+using CXUtils.CodeUtils;
 
-namespace CXUtils.Infos
+namespace CXUtils.DataUtils.Infos
 {
     /// <summary> A single input info that stores an input </summary>
     [Serializable]

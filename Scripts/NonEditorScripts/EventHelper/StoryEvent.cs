@@ -1,9 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace CXUtils.Events
+namespace CXUtils.EventUtils
 {
     /// <summary> A simple story event </summary>
     [Serializable]

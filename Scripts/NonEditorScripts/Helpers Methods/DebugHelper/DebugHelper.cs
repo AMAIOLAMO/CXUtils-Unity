@@ -1,28 +1,27 @@
 ﻿using System.Text;
 using System;
+using UnityEngine;
 
-
-namespace CXUtils.DebugHelper
+namespace CXUtils.CodeUtils
 {
+    #region Enums
+    /// <summary> Option flags for logging lists </summary>
+    public enum LogListOptions
+    { oneLine, Multiline }
+    #endregion
+
+    #region interfaces
     /// <summary> An interface that implements the debug describable for the debug helper </summary>
     public interface IDebugDescribable
     {
         /// <summary> Describes an object </summary>
         string DebugDescribe();
-
     }
+    #endregion
 
     /// <summary> A class full of helper function for debugging </summary>
-    public struct DebugFunc
+    public struct DebugUtils
     {
-        #region Vars Defines
-
-        /// <summary> Option flags for logging lists </summary>
-        public enum LogListOptions
-        { oneLine, Multiline }
-
-        #endregion
-
         #region Logs
         /// <summary> Logs a single message </summary>
         public static void Log(object sender, object msg) =>
@@ -33,7 +32,7 @@ namespace CXUtils.DebugHelper
         {
             if (listT.Length == 0)
                 return;
-            
+
             StringBuilder sb = new StringBuilder();
             int i;
             int listIndexMax = listT.Length - 1;
@@ -75,7 +74,7 @@ namespace CXUtils.DebugHelper
 
         #region ScriptMethods
         static void Dlog(object sender, object msg) =>
-            UnityEngine.Debug.Log($"[{sender}] {msg.ToString()}");
+            Debug.Log($"[{sender}] {msg.ToString()}");
 
 
         static void DlogError<T>(object sender, string msg) where T : Exception, new()

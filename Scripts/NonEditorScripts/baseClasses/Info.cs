@@ -1,9 +1,8 @@
-﻿using CXUtils.DebugHelper;
+﻿using CXUtils.CodeUtils;
 using System;
 
-namespace CXUtils.Infos
+namespace CXUtils.DataUtils.Infos
 {
-
     /// <summary> The ultimate base class of all the infos 
     ///(Not in use)</summary>
     [Serializable]

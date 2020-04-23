@@ -1,18 +1,19 @@
 using UnityEngine;
 using System;
 using System.Collections;
-using CXUtils.DebugHelper;
 
-namespace CXUtils.CXCamera
+namespace CXUtils.CodeUtils
 {
     ///<summary> Cx's Camera Class </summary>
-    class CXCamera
+    class CameraUtils
     {
-        ///<summary> This determines camera's borders </summary>
+        ///<summary> Options for camera ports </summary>
         public enum PortOptions
-        { LeftUp, LeftDown, RightUp, RightDown, LeftMiddle, RightMiddle, UpMiddle, DownMiddle }
-        #region MousePosition
+        {
+            LeftUp, LeftDown, RightUp, RightDown, LeftMiddle, RightMiddle, UpMiddle, DownMiddle
+        }
 
+        #region MousePosition
         ///<summary> This method will get the mouse position on the scene position on the camera </summary>
         public static Vector3 GetMouseOnWorldPos() => GetMouseOnWorldPos(Camera.main);
 
@@ -26,7 +27,7 @@ namespace CXUtils.CXCamera
 
         #region CameraOtherHelperMethods
         ///<summary> This method will get the edges of the camera and return the edge camera pos </summary>
-        public static Vector3 GetCameraEdgePosOnWorldPos(Camera camera, PortOptions port)
+        public static Vector3 GetCameraPortPosOnWorldPos(Camera camera, PortOptions port)
         {
             #region postions
             //positions
@@ -71,18 +72,17 @@ namespace CXUtils.CXCamera
                 throw new Exception($"{camera.transform.name} is not orthographic! please turn on orthographic in order to use this method!");
 
             //getting the border of the real world space
-            Vector2 BorderPositive = new Vector2(GetCameraEdgePosOnWorldPos(camera, PortOptions.RightMiddle).x, GetCameraEdgePosOnWorldPos(camera, PortOptions.UpMiddle).y);
+            Vector2 BorderPositive = new Vector2(GetCameraPortPosOnWorldPos(camera, PortOptions.RightMiddle).x, GetCameraPortPosOnWorldPos(camera, PortOptions.UpMiddle).y);
             return BorderPositive - (Vector2)camera.transform.position;
         }
 
         ///<summary> Get's the border in world space </summary>
         public static Bounds GetCameraBorders_Ortho(Camera camera) =>
             new Bounds(camera.transform.position, GetCameraBounds_Vec2_Ortho(camera) * 2);
-
         #endregion
     }
 
-    /// <summary> A simple class for handleing camera shake </summary>
+    /// <summary> A helper library for handling camera shake </summary>
     [Serializable]
     struct CameraShake : IDebugDescribable
     {
@@ -101,11 +101,13 @@ namespace CXUtils.CXCamera
 
         #endregion
 
-        public CameraShake(Transform shakeTransform, float shakeRadius, EventHandler<Vector3> startShakeEvent = null, EventHandler<Vector3> whileShakeEvent = null)
+        #region Constructors
+        public CameraShake(Transform shakeTransform, float shakeRadius,
+            EventHandler<Vector3> startShakeEvent = null, EventHandler<Vector3> whileShakeEvent = null)
         {
             this.shakeTransform = shakeTransform;
             if (shakeRadius < 0)
-                DebugHelper.DebugFunc.LogError<Exception>(shakeTransform, "Value Invalid!");
+                CodeUtils.DebugUtils.LogError<Exception>(shakeTransform, "Value Invalid!");
             shakeMin = -shakeRadius;
             shakeMax = shakeRadius;
             //events
@@ -113,7 +115,8 @@ namespace CXUtils.CXCamera
             Trigger_WhileShake = whileShakeEvent;
         }
 
-        public CameraShake(Transform shakeTransform, float shakeMin, float shakeMax, EventHandler<Vector3> startShakeEvent = null, EventHandler<Vector3> whileShakeEvent = null)
+        public CameraShake(Transform shakeTransform, float shakeMin, float shakeMax,
+            EventHandler<Vector3> startShakeEvent = null, EventHandler<Vector3> whileShakeEvent = null)
         {
             this.shakeTransform = shakeTransform;
             this.shakeMin = shakeMin;
@@ -122,17 +125,20 @@ namespace CXUtils.CXCamera
             Trigger_StartShake = startShakeEvent;
             Trigger_WhileShake = whileShakeEvent;
         }
+        #endregion
 
         #region MainScript methods
+        /// <summary> Starts to shake the given transform </summary>
         public void StartShake(MonoBehaviour monBhav, Vector3 origin, float time) =>
             monBhav.StartCoroutine(Shake(origin, time));
 
+        /// <summary> Starts to shake the given transform </summary>
         public void StartShake(MonoBehaviour monBhav, float time) =>
             StartShake(monBhav, monBhav.transform.position, time);
 
+        /// <summary> Stop the shake of the given transform </summary>
         public void StopShake(MonoBehaviour monBhav) =>
             monBhav.StopCoroutine("Shake");
-
         #endregion
 
         #region Struct Methods

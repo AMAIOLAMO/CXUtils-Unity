@@ -1,9 +1,17 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace CXUtils.GridSystem
 {
+    /// <summary> The Options for grid debugging </summary>
+    public enum GridDebugDrawOptions
+    {
+        Origins, Lines, All, None
+    }
+
     /// <summary> A 2D Grid system </summary>
     /// <typeparam name="T">The type of the things to store inside each grid</typeparam>
+    [System.Serializable]
     public class CXGrid<T>
     {
         public int Width { get; private set; }
@@ -15,8 +23,11 @@ namespace CXUtils.GridSystem
 
         //public bool ShowDebug { get; set; }
 
+        private bool DebugOn { get; set; }
+
         public CXGrid(int width, int height, float cellSize,
-            Vector2 origin = default, T initialValue = default)
+            Vector2 origin = default, T initialValue = default,
+            bool DebugOn = false)
         {
             Width = width;
             Height = height;
@@ -26,6 +37,25 @@ namespace CXUtils.GridSystem
             GridArray = new T[Width, Height];
 
             SetAllValues(initialValue);
+            this.DebugOn = DebugOn;
+        }
+
+        public CXGrid(int width, int height, float cellSize,
+            Vector2 origin = default, Func<CXGrid<T>, int, int, T> createGridOBJ = null,
+            bool DebugOn = false)
+        {
+            Width = width;
+            Height = height;
+            CellSize = cellSize;
+            Origin = origin;
+
+            GridArray = new T[Width, Height];
+
+            for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
+                    GridArray[x, y] = createGridOBJ.Invoke(this, x, y);
+
+            this.DebugOn = DebugOn;
         }
 
         #region GetPositions
@@ -86,8 +116,11 @@ namespace CXUtils.GridSystem
 
         #endregion
 
+        #region Values
         #region SetValues
-        public bool SetValue(int x, int y, T value)
+        /// <summary> Tries to set a value using grid position 
+        /// <para>Returns if sets correctly</para> </summary>
+        public bool TrySetValue(int x, int y, T value)
         {
             if (CheckXYValid(x, y))
             {
@@ -97,10 +130,14 @@ namespace CXUtils.GridSystem
             return false;
         }
 
-        public bool SetValue(Vector2Int gridPosition, T value) =>
-            SetValue(gridPosition.x, gridPosition.y, value);
+        /// <summary> Tries to set a value using grid position 
+        /// <para>Returns if sets correctly</para> </summary>
+        public bool TrySetValue(Vector2Int gridPosition, T value) =>
+            TrySetValue(gridPosition.x, gridPosition.y, value);
 
-        public bool SetValue(Vector2 worldPosition, T value)
+        /// <summary> Tries to set a value using world position
+        /// <para>Returns if sets correctly</para> </summary>
+        public bool TrySetValue(Vector2 worldPosition, T value)
         {
             if (TryGetGridPosition(worldPosition, out Vector2Int gridPos))
             {
@@ -110,12 +147,28 @@ namespace CXUtils.GridSystem
 
             return false;
         }
+
+
+        /// <summary> Tries to set a value using grid position 
+        /// <para>Not safe</para> </summary>
+        public void SetValue(int x, int y, T value) =>
+            GridArray[x, y] = value;
+
+        /// <summary> Tries to set a value using grid position 
+        /// <para>Not safe</para> </summary>
+        public void SetValue(Vector2Int gridPosition, T value) =>
+            SetValue(gridPosition.x, gridPosition.y, value);
+
+        /// <summary> Tries to set a value using world position 
+        /// <para>Not safe</para> </summary>
+        public void SetValue(Vector2 worldPosition, T value) =>
+            SetValue(GetGridPosition(worldPosition), value);
         #endregion
 
         #region GetValues
         /// <summary> Gets the value using grid position 
         /// <para> Returns if the grid position is valid</para> </summary>
-        public bool GetValue(int x, int y, out T value)
+        public bool TryGetValue(int x, int y, out T value)
         {
             if (CheckXYValid(x, y))
             {
@@ -128,12 +181,12 @@ namespace CXUtils.GridSystem
 
         /// <summary> Gets the value using grid position
         /// <para> Returns if the grid position is valid</para> </summary>
-        public bool GetValue(Vector2Int gridPosition, out T value) =>
-            GetValue(gridPosition.x, gridPosition.y, out value);
+        public bool TryGetValue(Vector2Int gridPosition, out T value) =>
+            TryGetValue(gridPosition.x, gridPosition.y, out value);
 
         /// <summary> Gets the value using the world position 
         /// <para>Returns if the world position is valid</para> </summary> 
-        public bool GetValue(Vector2 worldPosition, out T value)
+        public bool TryGetValue(Vector2 worldPosition, out T value)
         {
             if (TryGetGridPosition(worldPosition, out Vector2Int gridPos))
             {
@@ -145,6 +198,27 @@ namespace CXUtils.GridSystem
             value = default;
             return false;
         }
+
+        /// <summary> Gets the value using the grid position 
+        /// <para>Not safe</para></summary>
+        public T GetValue(int x, int y) =>
+            GridArray[x, y];
+
+        /// <summary> Gets the value using the grid position 
+        /// <para>Not safe</para></summary>
+        public T GetValue(Vector2Int gridPosition) =>
+            GetValue(gridPosition.x, gridPosition.y);
+
+        /// <summary> Gets the value using the world position
+        /// <para>Not safe</para></summary>
+        public T GetValue(Vector2 worldPosition)
+        {
+            Vector2Int gridPos = GetGridPosition(worldPosition);
+            return GetValue(gridPos.x, gridPos.y);
+        }
+
+
+        #endregion
         #endregion
 
         #region Script Methods
@@ -164,16 +238,31 @@ namespace CXUtils.GridSystem
                     GridArray[i, j] = value;
         }
 
-        public void DrawDebug(Color color)
-        {
-            Gizmos.color = color;
+        #region Debug
+        /// <summary> draws a debug gizmos for the grid </summary>
+        public void DrawDebug(Color color, GridDebugDrawOptions gridDebugDrawOptions) =>
+            DrawDebug(color, color, gridDebugDrawOptions);
 
-            DrawDebugPoints();
-            DrawDebugLines();
+        /// <summary> draws a debug gizmos for the grid </summary>
+        public void DrawDebug(Color originColor, Color lineColor, GridDebugDrawOptions gridDebugDrawOptions)
+        {
+
+            if (gridDebugDrawOptions == GridDebugDrawOptions.All || gridDebugDrawOptions == GridDebugDrawOptions.Origins)
+            {
+                Gizmos.color = originColor;
+                DrawDebugPoints();
+            }
+
+            if (gridDebugDrawOptions == GridDebugDrawOptions.All || gridDebugDrawOptions == GridDebugDrawOptions.Lines)
+            {
+                Gizmos.color = lineColor;
+                DrawDebugLines();
+            }
         }
 
-        public void DrawDebug() =>
-            DrawDebug(Color.white);
+        /// <summary> draws a debug gizmos for the grid </summary>
+        public void DrawDebug(GridDebugDrawOptions gridDebugDrawOptions = GridDebugDrawOptions.All) =>
+            DrawDebug(Color.white, gridDebugDrawOptions);
 
         #region HelperDraw
         private void DrawDebugPoints()
@@ -220,6 +309,8 @@ namespace CXUtils.GridSystem
                 Gizmos.DrawLine(RDPosition, RUPosition);
             }
         }
+        #endregion
+
         #endregion
 
         #endregion

@@ -1,28 +1,35 @@
-﻿using CXUtils.CXCamera;
+﻿using CXUtils.CodeUtils;
 using UnityEngine;
 
-/// <summary> A simple camera shaker </summary>
-public class CameraShaker : MonoBehaviour
+namespace CXUtils.HelperComponents
 {
-    [SerializeField] private CameraShake cameraShake;
-
-    private void Awake()
+    /// <summary> A simple camera shaker </summary>
+    public class CameraShaker : MonoBehaviour
     {
-        if (cameraShake.ShakeTransform == null)
-            cameraShake = new CameraShake(transform, cameraShake.ShakeMax);
-    }
+        [SerializeField] private CameraShake cameraShake;
 
-    /// <summary> Starts to shake to a position </summary> 
-    public void StartShake(float time)
-    {
-        cameraShake.StopShake(this);
-        cameraShake.StartShake(this, time);
-    }
+        #region Main Thread
+        private void Awake()
+        {
+            if (cameraShake.ShakeTransform == null)
+                cameraShake = new CameraShake(transform, cameraShake.ShakeMax);
+        }
+        #endregion
 
-    /// <summary> Starts to shake to a position </summary>
-    public void StartShake(Vector3 origin, float time)
-    {
-        cameraShake.StopShake(this);
-        cameraShake.StartShake(this, origin, time);
+        #region Script Methods
+        /// <summary> Starts to shake to a position </summary> 
+        public void StartShake(float time)
+        {
+            cameraShake.StopShake(this);
+            cameraShake.StartShake(this, time);
+        }
+
+        /// <summary> Starts to shake to a position </summary>
+        public void StartShake(Vector3 origin, float time)
+        {
+            cameraShake.StopShake(this);
+            cameraShake.StartShake(this, origin, time);
+        }
+        #endregion
     }
 }
