@@ -65,7 +65,7 @@ namespace CXUtils.GridSystem.PathFinding
     }
 
     /// <summary> A library that implements A* path finding </summary>
-    public struct CXPathFinding
+    public class CXPathFinding
     {
         #region Constants
 
@@ -76,16 +76,25 @@ namespace CXUtils.GridSystem.PathFinding
         #endregion
 
         #region Fields
-
         public CXGrid<PathNode> Grid { get; private set; }
 
+        public readonly int Width;
+        public readonly int Height;
+        public readonly float CellSize;
+        public readonly Vector2 OriginPosition;
         #endregion
 
         #region Constructors
 
-        public CXPathFinding(int width, int height, float cellSize, Vector2 originPosition) =>
-            Grid = new CXGrid<PathNode>(width, height, cellSize, originPosition,
-                (g, x, y) => new PathNode(g, x, y));
+        public CXPathFinding(int width, int height, float cellSize, Vector2 originPosition)
+        {
+            Width = width;
+            Height = height;
+            CellSize = cellSize;
+            OriginPosition = originPosition;
+
+            InitGrid();
+        }
 
         #endregion
 
@@ -121,11 +130,17 @@ namespace CXUtils.GridSystem.PathFinding
         private List<PathNode> FindPath(Vector2Int startPosition, Vector2Int endPosition,
             PathFindingOptions pathFindingOptions = PathFindingOptions.Normal, bool couldDiagonal = true)
         {
+            ResetGrid();
+            //if there is a value on that position
             if (Grid.TryGetValue(startPosition, out PathNode startNode) &&
                 Grid.TryGetValue(endPosition, out PathNode endNode))
             {
+                //clear the last things
                 List<PathNode> openList = new List<PathNode>() { startNode };
                 List<PathNode> closeList = new List<PathNode>();
+
+                //add the starting node
+                openList.Add(startNode);
 
                 InitPathNodes();
 
@@ -167,7 +182,6 @@ namespace CXUtils.GridSystem.PathFinding
 
                             if (!openList.Contains(neighbourNode))
                                 openList.Add(neighbourNode);
-
                         }
                     }
                 }
@@ -362,15 +376,26 @@ namespace CXUtils.GridSystem.PathFinding
             return pathNode.isWalkable;
         }
 
+        private void InitGrid() =>
+            Grid = new CXGrid<PathNode>(Width, Height, CellSize, OriginPosition,
+                (g, x, y) => new PathNode(g, x, y));
+
+        private void ResetGrid()
+        {
+            Grid = new CXGrid<PathNode>(Width, Height, CellSize, OriginPosition,
+                (g, x, y) => new PathNode(g, x, y, Grid.GridArray[x, y].isWalkable));
+        }
         #endregion
 
         #region Calculations
 
         private int CalculateDistance(PathNode a, PathNode b)
         {
+            //get the distance between two positions
             int xDis = Mathf.Abs(a.x - b.x);
             int yDis = Mathf.Abs(a.y - b.y);
 
+            //get the distance between two distances
             int rem = Mathf.Abs(xDis - yDis);
 
             return DIAGONAL_COST * Mathf.Min(xDis, yDis) + STRAIGHT_COST * rem;
@@ -387,6 +412,7 @@ namespace CXUtils.GridSystem.PathFinding
                 path.Add(currentNode.CameFromNode);
                 currentNode = currentNode.CameFromNode;
             }
+
             // Reverse the path to the correct direction
             // because this is traced backwards
             path.Reverse();

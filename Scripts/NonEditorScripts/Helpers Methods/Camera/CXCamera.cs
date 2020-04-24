@@ -132,6 +132,10 @@ namespace CXUtils.CodeUtils
         public void StartShake(MonoBehaviour monBhav, Vector3 origin, float time) =>
             monBhav.StartCoroutine(Shake(origin, time));
 
+        /// <summary> Starts to shake the given transform </summary> 
+        public void StartShake(MonoBehaviour monBhav, Transform origin, float time) =>
+            monBhav.StartCoroutine(Shake(origin, time));
+
         /// <summary> Starts to shake the given transform </summary>
         public void StartShake(MonoBehaviour monBhav, float time) =>
             StartShake(monBhav, monBhav.transform.position, time);
@@ -142,6 +146,28 @@ namespace CXUtils.CodeUtils
         #endregion
 
         #region Struct Methods
+        //Transform origin
+        private IEnumerator Shake(Transform origin, float time)
+        {
+            float currentTime = time;
+            Vector3 newOffset;
+
+            Trigger_StartShake?.Invoke(this, origin.position);
+
+            while (currentTime > 0)
+            {
+                newOffset = GenerateShakeVec();
+                ShakeTransform.position = origin.position + newOffset;
+                Trigger_WhileShake?.Invoke(this, newOffset);
+
+                currentTime -= Time.deltaTime;
+                yield return null;
+            }
+
+            ShakeTransform.position = origin.position;
+        }
+
+        //Vector origin
         private IEnumerator Shake(Vector3 origin, float time)
         {
             float currentTime = time;
