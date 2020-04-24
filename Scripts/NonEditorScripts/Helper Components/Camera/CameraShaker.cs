@@ -16,7 +16,7 @@ namespace CXUtils.HelperComponents
         }
         #endregion
 
-        #region Script Methods
+        #region Script Utils
         /// <summary> Starts to shake to a position </summary> 
         public void StartShake(float time)
         {

@@ -26,7 +26,6 @@ namespace CXUtils.GridSystem.PathFinding
     public class PathNode
     {
         #region Fields
-        public CXGrid<PathNode> Grid { get; }
 
         #region XY
         public readonly int x;
@@ -50,16 +49,16 @@ namespace CXUtils.GridSystem.PathFinding
         public PathNode CameFromNode { get; set; }
         #endregion
 
-        public PathNode(CXGrid<PathNode> grid, int x, int y, bool isWalkable = true)
+        public PathNode(int x, int y, bool isWalkable = true)
         {
-            (Grid, this.x, this.y) = (grid, x, y);
+            (this.x, this.y) = (x, y);
             this.isWalkable = isWalkable;
         }
 
-        #region Script Methods
+        #region Script Utils
         public void CalculateFCost() =>
             FCost = GCost + FCost;
-        
+
         /// <summary> Converts a path node to get the string position </summary>
         public override string ToString() =>
             $"({x}, {y})";
@@ -92,6 +91,16 @@ namespace CXUtils.GridSystem.PathFinding
         {
             Width = width;
             Height = height;
+            CellSize = cellSize;
+            OriginPosition = originPosition;
+
+            InitGrid();
+        }
+
+        public CXPathFinding(Vector2Int Size, float cellSize, Vector2 originPosition)
+        {
+            Width = Size.x;
+            Height = Size.y;
             CellSize = cellSize;
             OriginPosition = originPosition;
 
@@ -217,7 +226,7 @@ namespace CXUtils.GridSystem.PathFinding
 
         #endregion
 
-        #region Script Methods
+        #region Script Utils
 
         #region PathNode Caluclations
 
@@ -389,21 +398,20 @@ namespace CXUtils.GridSystem.PathFinding
 
             return pathNode.isWalkable;
         }
-        //Initializes the grid
+
         private void InitGrid() =>
             Grid = new CXGrid<PathNode>(Width, Height, CellSize, OriginPosition,
-                (g, x, y) => new PathNode(g, x, y));
+                (x, y) => new PathNode(x, y));
 
         private void ResetGrid()
         {
             Grid = new CXGrid<PathNode>(Width, Height, CellSize, OriginPosition,
-                (g, x, y) => new PathNode(g, x, y, Grid.GridArray[x, y].isWalkable));
+                (x, y) => new PathNode(x, y, Grid.GridArray[x, y].isWalkable));
         }
 
         #endregion
 
         #region Calculations
-
         private int CalculateDistance(PathNode a, PathNode b)
         {
             //get the distance between two positions
@@ -434,6 +442,52 @@ namespace CXUtils.GridSystem.PathFinding
             return path;
         }
 
+        #endregion
+
+        #region Debug
+        /// <summary> Draws a debug line on gizmos </summary>
+        public void DrawLineDebug(List<PathNode> path)
+        {
+            Vector2 halfGrid = Vector2.one * Grid.CellSize * .5f;
+
+            for (int i = 0; i < path.Count - 1; i++)
+            {
+                Vector2 From = new Vector2(path[i].x, path[i].y) * Grid.CellSize + halfGrid;
+                Vector2 To = new Vector2(path[i + 1].x, path[i + 1].y) * Grid.CellSize + halfGrid;
+
+                Gizmos.DrawLine(From, To);
+            }
+
+        }
+
+        /// <summary> Draws a debug line on gizmos </summary>
+        public void DrawLineDebug(List<PathNode> path, Color color)
+        {
+            Color originColor = Gizmos.color;
+            Gizmos.color = color;
+
+            DrawLineDebug(path);
+
+            Gizmos.color = originColor;
+        }
+
+        /// <summary> Draws a debug line on gizmos with a certain duration </summary>
+        public void DrawLineDebug(List<PathNode> path, float time) =>
+            DrawLineDebug(path, time, Color.white);
+
+        /// <summary> Draws a debug line on gizmos with a certain duration </summary>
+        public void DrawLineDebug(List<PathNode> path, float time, Color color)
+        {
+            Vector2 halfGrid = Vector2.one * Grid.CellSize * .5f;
+
+            for (int i = 0; i < path.Count - 1; i++)
+            {
+                Vector2 From = new Vector2(path[i].x, path[i].y) * Grid.CellSize + halfGrid;
+                Vector2 To = new Vector2(path[i + 1].x, path[i + 1].y) * Grid.CellSize + halfGrid;
+
+                Debug.DrawLine(From, To, color, time);
+            }
+        }
         #endregion
 
         #endregion

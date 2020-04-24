@@ -103,6 +103,32 @@ namespace CXUtils.CodeUtils
         }
         #endregion
 
+        #region Perlin noise
+        /// <summary> Procedural noise generation, Perlin noise </summary>
+        public static float PerlinNoise(float x, float y, float scale, float? seed = null)
+        {
+            float currentSeed = seed ?? UnityEngine.Random.Range(0f, 1f);
+            return Mathf.PerlinNoise(x * scale * currentSeed, y * scale * currentSeed);
+        }
+
+        /// <summary> Generates a boolean value that the threshHold gives.
+        /// <para>(clamps threshHold value between 0 ~ 1)</para> </summary>
+        public static bool PerlinNoise(float x, float y, float scale, float threshHold = .5f, float? seed = null)
+        {
+            threshHold = Mathf.Clamp01(threshHold);
+            return PerlinNoise(x, y, scale, seed) > threshHold;
+        }
+
+        /// <summary> Procedural noise generation, Perlin noise </summary>
+        public static float PerlinNoise(Vector2 position, float scale, float? seed = null) =>
+            PerlinNoise(position.x, position.y, scale, seed);
+
+        /// <summary> Generates a boolean value that the threshHold gives.
+        /// <para>(clamps threshHold value between 0 ~ 1)</para> </summary>
+        public static bool PerlinNoise(Vector2 position, float scale, float threshHold = .5f, float? seed = null) =>
+            PerlinNoise(position.x, position.y, scale, threshHold, seed);
+        #endregion
+
         #region Other useful methods
         /// <summary> The summification function Zigma </summary>
         public float Zigma(int start_i, int end_i, Func<float, float> function)

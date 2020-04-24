@@ -10,6 +10,22 @@ namespace CXUtils.GridSystem
     }
 
     /// <summary> A 2D Grid system </summary>
+    [Serializable]
+    public class CXGrid : CXGrid<object>
+    {
+        public CXGrid(int width, int height, float cellSize, Vector2 origin = default, object initialValue = null) :
+            base(width, height, cellSize, origin, initialValue)
+        {
+        }
+
+        public CXGrid(int width, int height, float cellSize, Vector2 origin = default, Func<CXGrid<object>, int, int, object> createGridOBJ = null) :
+            base(width, height, cellSize, origin, createGridOBJ)
+        {
+        }
+        /// <summary> A 2D Grid system </summary>
+    }
+
+    /// <summary> A 2D Grid system </summary>
     /// <typeparam name="T">The type of the things to store inside each grid</typeparam>
     [Serializable]
     public class CXGrid<T>
@@ -21,6 +37,12 @@ namespace CXUtils.GridSystem
         public T[,] GridArray { get; private set; }
         public float CellSize { get; private set; }
         public Vector2 Origin { get; private set; }
+
+        /// <summary> A half length of the cell size </summary>
+        public float HalfCellSize => CellSize * .5f;
+
+        /// <summary> Gets the offset to the cell center from the left down bottom </summary>
+        public Vector2 CellCenterOffset => Vector2.one * HalfCellSize;
         #endregion
 
         #region Constructors
@@ -34,14 +56,14 @@ namespace CXUtils.GridSystem
         }
 
         public CXGrid(int width, int height, float cellSize,
-            Vector2 origin = default, Func<CXGrid<T>, int, int, T> createGridOBJ = null)
+            Vector2 origin = default, Func<int, int, T> createGridOBJ = null)
         {
             InitGrid(width, height, cellSize, origin);
 
             //sets all the grid value using the given function above
             for (int x = 0; x < Width; x++)
                 for (int y = 0; y < Height; y++)
-                    GridArray[x, y] = createGridOBJ.Invoke(this, x, y);
+                    GridArray[x, y] = createGridOBJ.Invoke(x, y);
         }
         #endregion
 
@@ -208,7 +230,7 @@ namespace CXUtils.GridSystem
 
         #endregion
 
-        #region Script Methods
+        #region Script Utils
 
         #region Simplifying Script
         private bool CheckXYValid(int x, int y)
@@ -255,6 +277,26 @@ namespace CXUtils.GridSystem
             for (int x = 0; x < Width; x++)
                 for (int y = 0; y < Height; y++)
                     GridArray[x, y] = mapFunc.Invoke(x, y);
+        }
+        #endregion
+
+        #region Bounds
+        /// <summary> Get grid's bounds on world position </summary>
+        public Bounds GetWorldBounds()
+        {
+            Vector2 boundCenter = Origin + new Vector2(Width, Height) * .5f;
+            Vector2 boundSize = new Vector2(Width, Height);
+
+            return new Bounds(boundCenter, boundSize);
+        }
+
+        /// <summary> Get grid's bounds on grid position </summary>
+        public Bounds GetGridBounds()
+        {
+            Vector2 boundCenter = new Vector2(Width, Height) * .5f;
+            Vector2 boundSize = new Vector2(Width, Height);
+
+            return new Bounds(boundCenter, boundSize);
         }
         #endregion
 
