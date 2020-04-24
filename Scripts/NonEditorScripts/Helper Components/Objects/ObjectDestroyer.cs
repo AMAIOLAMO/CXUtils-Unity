@@ -8,6 +8,7 @@ namespace CXUtils.HelperComponents
         NoTime_OnStart, Time_OnStart
     }
 
+#pragma warning disable IDE0044
     /// <summary> A simple helper component for destroying an object </summary>
     public class ObjectDestroyer : MonoBehaviour
     {
@@ -20,6 +21,7 @@ namespace CXUtils.HelperComponents
         public GameObject Target { get => target; set => target = value; }
 
         [SerializeField] private ObjectDestroyOptions objectDestroyOption = default;
+
         public ObjectDestroyOptions ObjectDestroyOption => objectDestroyOption;
 
         //show if object destroy option

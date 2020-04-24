@@ -11,7 +11,7 @@ namespace CXUtils.GridSystem
 
     /// <summary> A 2D Grid system </summary>
     /// <typeparam name="T">The type of the things to store inside each grid</typeparam>
-    [System.Serializable]
+    [Serializable]
     public class CXGrid<T>
     {
         #region Fields
@@ -21,42 +21,27 @@ namespace CXUtils.GridSystem
         public T[,] GridArray { get; private set; }
         public float CellSize { get; private set; }
         public Vector2 Origin { get; private set; }
-
-        public bool DebugOn { get; set; }
         #endregion
 
         #region Constructors
         public CXGrid(int width, int height, float cellSize,
-            Vector2 origin = default, T initialValue = default,
-            bool DebugOn = false)
+            Vector2 origin = default, T initialValue = default)
         {
-            Width = width;
-            Height = height;
-            CellSize = cellSize;
-            Origin = origin;
+            InitGrid(width, height, cellSize, origin);
 
-            GridArray = new T[Width, Height];
-
+            //sets all the value using the given initial Value
             SetAllValues(initialValue);
-            this.DebugOn = DebugOn;
         }
 
         public CXGrid(int width, int height, float cellSize,
-            Vector2 origin = default, Func<CXGrid<T>, int, int, T> createGridOBJ = null,
-            bool DebugOn = false)
+            Vector2 origin = default, Func<CXGrid<T>, int, int, T> createGridOBJ = null)
         {
-            Width = width;
-            Height = height;
-            CellSize = cellSize;
-            Origin = origin;
+            InitGrid(width, height, cellSize, origin);
 
-            GridArray = new T[Width, Height];
-
+            //sets all the grid value using the given function above
             for (int x = 0; x < Width; x++)
                 for (int y = 0; y < Height; y++)
                     GridArray[x, y] = createGridOBJ.Invoke(this, x, y);
-
-            this.DebugOn = DebugOn;
         }
         #endregion
 
@@ -225,6 +210,7 @@ namespace CXUtils.GridSystem
 
         #region Script Methods
 
+        #region Simplifying Script
         private bool CheckXYValid(int x, int y)
         {
             if (x < 0 || y < 0 || x >= Width || y >= Height)
@@ -233,13 +219,54 @@ namespace CXUtils.GridSystem
             return true;
         }
 
+        private void InitGrid(int width, int height, float cellSize, Vector2 origin)
+        {
+            (Width, Height) = (width, height);
+            (CellSize, Origin) = (cellSize, origin);
+
+            GridArray = new T[Width, Height];
+        }
+        #endregion
+
+        #region Value manipulation
         /// <summary> Sets all the value in the grid to the given value </summary>
-        public void SetAllValues(T value)
+        public void SetAllValues(T value = default)
         {
             for (int i = 0; i < GridArray.GetLength(0); i++)
                 for (int j = 0; j < GridArray.GetLength(1); j++)
                     GridArray[i, j] = value;
         }
+
+        /// <summary> Resets all the values </summary>
+        public void ResetAllValues() =>
+            SetAllValues();
+
+        /// <summary> Uses this function onto all the values on the grid </summary>
+        public void MapValues(Func<CXGrid<T>, int, int, T> mapFunc)
+        {
+            for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
+                    GridArray[x, y] = mapFunc.Invoke(this, x, y);
+        }
+
+        /// <summary> Uses this function onto all the values on the grid </summary>
+        public void MapValues(Func<int, int, T> mapFunc)
+        {
+            for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
+                    GridArray[x, y] = mapFunc.Invoke(x, y);
+        }
+        #endregion
+
+        #region Other Utils
+        /// <summary> Gets the grid value on the given Grid Position and converting it to a string </summary>
+        public string ToString(int x, int y) =>
+            GridArray[x, y].ToString();
+
+        /// <summary> Gets the grid value on the given Grid Position and converting it to a string </summary>
+        public string ToString(Vector2Int gridPosition) =>
+            ToString(gridPosition.x, gridPosition.y);
+        #endregion
 
         #region Debug
         /// <summary> draws a debug gizmos for the grid </summary>

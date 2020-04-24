@@ -13,6 +13,7 @@ namespace CXUtils.GridSystem.PathFinding
         /// <para>| 0 |( )| * |</para>
         /// <para>|( )| * | 0 |</para> </summary>
         Normal,
+
         /// <summary> The path will ignore side and jump diagonally
         /// <para>*: path, (): non walkable, %: end</para>
         /// <para>| % | ( ) |</para>
@@ -58,7 +59,8 @@ namespace CXUtils.GridSystem.PathFinding
         #region Script Methods
         public void CalculateFCost() =>
             FCost = GCost + FCost;
-
+        
+        /// <summary> Converts a path node to get the string position </summary>
         public override string ToString() =>
             $"({x}, {y})";
         #endregion
@@ -101,7 +103,7 @@ namespace CXUtils.GridSystem.PathFinding
         #region Find Path A* Algorithm
 
         #region Find Vector Paths
-
+        /// <summary> Finds a path and returns a list of world vectors </summary>
         private List<Vector2> FindVectorPath(Vector2 startPosition, Vector2 endPosition,
             PathFindingOptions pathFindingOptions = PathFindingOptions.Normal, bool couldDiagonal = true)
         {
@@ -122,6 +124,15 @@ namespace CXUtils.GridSystem.PathFinding
             return null;
         }
 
+        /// <summary> Finds a path with diagonal moves and returns a list of world vectors </summary>
+        public List<Vector2> FindVectorPath_Diagonal(Vector2Int startPosition, Vector2Int endPosition,
+            PathFindingOptions pathFindingOptions = PathFindingOptions.Normal) =>
+            FindVectorPath(startPosition, endPosition, pathFindingOptions);
+
+        /// <summary> Finds a path with straight moves and returns a list of world vectors </summary>
+        public List<Vector2> FindVectorPath_Straight(Vector2Int startPosition, Vector2Int endPosition) =>
+            FindVectorPath(startPosition, endPosition, PathFindingOptions.Normal, false);
+
         #endregion
 
         #region Find Paths
@@ -130,7 +141,9 @@ namespace CXUtils.GridSystem.PathFinding
         private List<PathNode> FindPath(Vector2Int startPosition, Vector2Int endPosition,
             PathFindingOptions pathFindingOptions = PathFindingOptions.Normal, bool couldDiagonal = true)
         {
+            //Resetting the grid but puts the is walkable there
             ResetGrid();
+
             //if there is a value on that position
             if (Grid.TryGetValue(startPosition, out PathNode startNode) &&
                 Grid.TryGetValue(endPosition, out PathNode endNode))
@@ -369,13 +382,14 @@ namespace CXUtils.GridSystem.PathFinding
 
         private bool AssignIfWalkable(int x, int y, List<PathNode> neightbourList)
         {
-            PathNode pathNode = pathNode = Grid.GetValue(x, y);
+            PathNode pathNode = Grid.GetValue(x, y);
+
             if (pathNode.isWalkable)
                 neightbourList.Add(pathNode);
 
             return pathNode.isWalkable;
         }
-
+        //Initializes the grid
         private void InitGrid() =>
             Grid = new CXGrid<PathNode>(Width, Height, CellSize, OriginPosition,
                 (g, x, y) => new PathNode(g, x, y));
@@ -385,6 +399,7 @@ namespace CXUtils.GridSystem.PathFinding
             Grid = new CXGrid<PathNode>(Width, Height, CellSize, OriginPosition,
                 (g, x, y) => new PathNode(g, x, y, Grid.GridArray[x, y].isWalkable));
         }
+
         #endregion
 
         #region Calculations
