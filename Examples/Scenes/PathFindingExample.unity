@@ -252,7 +252,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 11.07
+  orthographic size: 11
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -328,6 +328,7 @@ MonoBehaviour:
   debugText: {fileID: 1360860400}
   spawningEffect: {fileID: 161919415982428676, guid: 54b125c062ce1b3409d397e80671c7f0,
     type: 3}
+  startGridPosition: {x: 0, y: 0}
   scale: 0.4
   threshHold: 0.5
 --- !u!1 &1140033855

@@ -41,6 +41,9 @@ namespace CXUtils.GridSystem
         /// <summary> A half length of the cell size </summary>
         public float HalfCellSize => CellSize * .5f;
 
+        /// <summary> The total cell count </summary>
+        public int CellCount => Width * Height;
+
         /// <summary> Gets the offset to the cell center from the left down bottom </summary>
         public Vector2 CellCenterOffset => Vector2.one * HalfCellSize;
         #endregion

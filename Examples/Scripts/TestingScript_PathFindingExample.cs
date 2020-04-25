@@ -6,15 +6,18 @@ using CXUtils.GridSystem.PathFinding;
 
 namespace CXUtils.Test
 {
-    //disabling IDE0044 warning (because this is monobehav)
+    //disabling IDE0044 warning (because this is monobehaviour)
 #pragma warning disable IDE0044
     public class TestingScript_PathFindingExample : MonoBehaviour
     {
-        CXPathFinding pathFinder = new CXPathFinding(20, 20, 1, Vector2.zero);
+        #region Fields
+        PathFinding pathFinder = new PathFinding(20, 20, 1, Vector2.zero);
         List<Vector2> debugVisuals = new List<Vector2>();
 
         [SerializeField] Text debugText = default;
         [SerializeField] GameObject spawningEffect = default;
+
+        [SerializeField] Vector2Int startGridPosition = default;
 
         [Range(0f, 1f)]
         [SerializeField] float scale = .4f;
@@ -25,7 +28,9 @@ namespace CXUtils.Test
 
         CameraShake camShake;
         Camera mainCam;
+        #endregion
 
+        #region Main Threads
         private void Start()
         {
             mainCam = Camera.main;
@@ -33,17 +38,31 @@ namespace CXUtils.Test
 
             debugVisuals.Clear();
 
+            startGridPosition = Vector2Int.zero;
+
             //clear text
             WriteText($"UsingDiagonal: {usingDiagonal}");
         }
 
         void Update()
         {
+            CheckInputs();
+        }
+
+        private void OnDrawGizmos()
+        {
+            DrawDebugVisuals();
+            DrawStartingPositionDebug();
+            pathFinder.Grid.DrawDebug(Color.black, Color.white, 0.1f);
+        }
+        #endregion
+
+        #region Script Utils
+
+        private void CheckInputs()
+        {
             if (Input.GetMouseButtonDown(0))
                 DrawPathFinderDebug();
-
-            if (Input.GetMouseButtonDown(1))
-                IsWalkable_Add_Remove();
 
             if (Input.GetKeyDown(KeyCode.T))
             {
@@ -57,15 +76,14 @@ namespace CXUtils.Test
             if (Input.GetKeyDown(KeyCode.Y))
                 ProceduralGenerateWalls(scale, threshHold);
 
-        }
+            if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(1))
+            {
+                SetStartingPosition();
+            }
 
-        private void OnDrawGizmos()
-        {
-            DrawDebugVisuals();
-            pathFinder.Grid.DrawDebug(Color.black, Color.white, 0.1f);
+            else if (Input.GetMouseButtonDown(1))
+                IsWalkable_Add_Remove();
         }
-
-        #region Script Utils
 
         private void DrawPathFinderDebug()
         {
@@ -76,10 +94,10 @@ namespace CXUtils.Test
                 List<PathNode> path;
 
                 if (usingDiagonal)
-                    path = pathFinder.FindPath_Diagonal(new Vector2Int(0, 0), gridPos);
+                    path = pathFinder.FindPath_Diagonal(startGridPosition, gridPos);
 
                 else
-                    path = pathFinder.FindPath_Straight(new Vector2Int(0, 0), gridPos);
+                    path = pathFinder.FindPath_Straight(startGridPosition, gridPos);
 
                 //have path
                 if (path != null)
@@ -100,7 +118,7 @@ namespace CXUtils.Test
                     //and reverse it
                     pathNode.isWalkable = !pathNode.isWalkable;
 
-                    Vector2 currentPos = pathFinder.Grid.GetWorldPosition(gridPos) + Vector2.one * pathFinder.Grid.CellSize * .5f;
+                    Vector2 currentPos = pathFinder.Grid.GetWorldPosition(gridPos) + pathFinder.Grid.CellCenterOffset;
 
                     if (!pathNode.isWalkable)
                         debugVisuals.Add(currentPos);
@@ -120,6 +138,18 @@ namespace CXUtils.Test
             {
                 Gizmos.color = Color.green;
                 Gizmos.DrawCube(vector, Vector2.one * pathFinder.Grid.CellSize);
+            }
+        }
+
+        private void DrawStartingPositionDebug()
+        {
+            if (startGridPosition != null)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawCube(
+                    pathFinder.Grid.GetWorldPosition(startGridPosition) + pathFinder.Grid.CellCenterOffset,
+                    Vector3.one * pathFinder.Grid.CellSize
+                    );
             }
         }
 
@@ -152,12 +182,23 @@ namespace CXUtils.Test
 
                     Vector2 currentPosition = pathFinder.Grid.GetWorldPosition(x, y) + pathFinder.Grid.CellCenterOffset;
 
-                    if (!isWalkable)
+                    if (!isWalkable && !(new Vector2Int(x, y).Equals(startGridPosition)))
                         debugVisuals.Add(currentPosition);
 
                     return new PathNode(x, y, isWalkable);
                 }
             );
+        }
+
+        private void SetStartingPosition()
+        {
+            Vector2 mousePosition = CameraUtils.GetMouseOnWorldPos();
+            if (pathFinder.Grid.TryGetGridPosition(mousePosition, out Vector2Int gridPosition))
+            {
+                //check if is walkable, then set
+                if (pathFinder.GetIsWalkable(gridPosition))
+                    startGridPosition = gridPosition;
+            }
         }
 
         private void WriteText(string text = null) =>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CXUtils.CodeUtils
@@ -130,8 +131,12 @@ namespace CXUtils.CodeUtils
         #endregion
 
         #region Other useful methods
+        /// <summary> Swaps two objects </summary>
+        public static void Swap<T>(ref T T1, ref T T2) =>
+            (T1, T2) = (T2, T1);
+
         /// <summary> The summification function Zigma </summary>
-        public float Zigma(int start_i, int end_i, Func<float, float> function)
+        public static float Zigma(int start_i, int end_i, Func<float, float> function)
         {
             float ans = 0;
             for (int i = start_i; i <= end_i; i++)
