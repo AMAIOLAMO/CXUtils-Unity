@@ -190,7 +190,8 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1.5
   m_Text: "Grid:\n\tLeftClick: Find Path\n\tRightClick: Add/Remove Block\n\tT: change
-    diagonal move mode\n\tR: clear all blocks\n\tY: Generate Procedural blocks"
+    diagonal move mode\n\tC: change cutting corner mode\n\tR: clear all blocks\n\tY:
+    Generate Procedural blocks"
 --- !u!222 &295602522
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -198,6 +199,83 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 295602519}
+  m_CullTransparentMesh: 0
+--- !u!1 &381377864
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 381377865}
+  - component: {fileID: 381377867}
+  - component: {fileID: 381377866}
+  m_Layer: 5
+  m_Name: CutCorners
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &381377865
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381377864}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1760483596}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.7687501, y: 0.7977846}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &381377866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381377864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 0.7397324, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 20
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 2
+    m_MaxSize: 40
+    m_Alignment: 5
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 'UsingCutCorner: xxx'
+--- !u!222 &381377867
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381377864}
   m_CullTransparentMesh: 0
 --- !u!1 &519420028
 GameObject:
@@ -275,13 +353,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 10, z: -10}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 2.5, y: 10, z: 2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1032328651
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,7 +371,7 @@ GameObject:
   - component: {fileID: 1032328652}
   - component: {fileID: 1032328653}
   m_Layer: 0
-  m_Name: Testing
+  m_Name: TestingpathFinding
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -325,7 +403,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00ed249e05a52f04888b3b0cf2ff072b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  width: 10
+  height: 10
+  GridBGColor: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
   debugText: {fileID: 1360860400}
+  cutCornerText: {fileID: 381377866}
   spawningEffect: {fileID: 161919415982428676, guid: 54b125c062ce1b3409d397e80671c7f0,
     type: 3}
   startGridPosition: {x: 0, y: 0}
@@ -610,6 +692,7 @@ RectTransform:
   m_Children:
   - {fileID: 1360860399}
   - {fileID: 1140033856}
+  - {fileID: 381377865}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

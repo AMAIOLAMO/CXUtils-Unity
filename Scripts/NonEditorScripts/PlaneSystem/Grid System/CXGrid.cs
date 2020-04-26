@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using CXUtils.CodeUtils;
+using System.Collections.Generic;
 
 namespace CXUtils.GridSystem
 {
@@ -9,20 +11,35 @@ namespace CXUtils.GridSystem
         Origins, Lines, All, None
     }
 
+    /// <summary> The Options for grid positioning </summary>
+    public enum GridDimentionOptions
+    {
+        XY, XZ, YZ
+    }
+
     /// <summary> A 2D Grid system </summary>
     [Serializable]
     public class CXGrid : CXGrid<object>
     {
-        public CXGrid(int width, int height, float cellSize, Vector2 origin = default, object initialValue = null) :
-            base(width, height, cellSize, origin, initialValue)
-        {
-        }
+        public CXGrid(Vector2Int gridSize, float cellSize, Vector3 origin = default,
+            object initialValue = null, GridDimentionOptions gridDimention = GridDimentionOptions.XY) :
+            base(gridSize, cellSize, origin, initialValue, gridDimention)
+        { }
 
-        public CXGrid(int width, int height, float cellSize, Vector2 origin = default, Func<CXGrid<object>, int, int, object> createGridOBJ = null) :
-            base(width, height, cellSize, origin, createGridOBJ)
-        {
-        }
-        /// <summary> A 2D Grid system </summary>
+        public CXGrid(Vector2Int gridSize, float cellSize, Vector3 origin = default, Func<int, int, object> createGridOBJ = null,
+            GridDimentionOptions gridDimention = GridDimentionOptions.XY) :
+            base(gridSize, cellSize, origin, createGridOBJ, gridDimention)
+        { }
+
+        public CXGrid(int width, int height, float cellSize, Vector3 origin = default, object initialValue = null,
+            GridDimentionOptions gridDimention = GridDimentionOptions.XY) :
+            base(width, height, cellSize, origin, initialValue, gridDimention)
+        { }
+
+        public CXGrid(int width, int height, float cellSize, Vector3 origin = default, Func<int, int, object> createGridOBJ = null,
+            GridDimentionOptions gridDimention = GridDimentionOptions.XY) :
+            base(width, height, cellSize, origin, createGridOBJ, gridDimention)
+        { }
     }
 
     /// <summary> A 2D Grid system </summary>
@@ -36,7 +53,15 @@ namespace CXUtils.GridSystem
 
         public T[,] GridArray { get; private set; }
         public float CellSize { get; private set; }
-        public Vector2 Origin { get; private set; }
+        public Vector3 Origin { get; private set; }
+
+        public T this[int x, int y]
+        {
+            get => GridArray[x, y];
+            set => GridArray[x, y] = value;
+        }
+
+        public GridDimentionOptions GridDimention { get; private set; }
 
         /// <summary> A half length of the cell size </summary>
         public float HalfCellSize => CellSize * .5f;
@@ -45,28 +70,50 @@ namespace CXUtils.GridSystem
         public int CellCount => Width * Height;
 
         /// <summary> Gets the offset to the cell center from the left down bottom </summary>
-        public Vector2 CellCenterOffset => Vector2.one * HalfCellSize;
+        public Vector3 CellCenterOffset => Vector3.one * HalfCellSize;
+
+        /// <summary> the whole Grid size </summary>
+        public Vector2Int GridSize => new Vector2Int(Width, Height);
         #endregion
 
         #region Constructors
         public CXGrid(int width, int height, float cellSize,
-            Vector2 origin = default, T initialValue = default)
+            Vector3 origin = default, T initialValue = default,
+            GridDimentionOptions gridDimention = GridDimentionOptions.XY)
         {
-            InitGrid(width, height, cellSize, origin);
+            InitGrid(width, height, cellSize, origin, gridDimention);
 
             //sets all the value using the given initial Value
             SetAllValues(initialValue);
         }
 
         public CXGrid(int width, int height, float cellSize,
-            Vector2 origin = default, Func<int, int, T> createGridOBJ = null)
+            Vector3 origin = default, Func<int, int, T> createGridOBJ = null,
+            GridDimentionOptions gridDimention = GridDimentionOptions.XY)
         {
-            InitGrid(width, height, cellSize, origin);
+            InitGrid(width, height, cellSize, origin, gridDimention);
 
             //sets all the grid value using the given function above
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                    GridArray[x, y] = createGridOBJ.Invoke(x, y);
+            MapValues(createGridOBJ);
+        }
+
+        public CXGrid(Vector2Int gridSize, float cellSize,
+            Vector3 origin = default, T initialValue = default,
+            GridDimentionOptions gridDimention = GridDimentionOptions.XY)
+        {
+            InitGrid(gridSize, cellSize, origin, gridDimention);
+
+            //sets all the value using the given initial Value
+            SetAllValues(initialValue);
+        }
+
+        public CXGrid(Vector2Int gridSize, float cellSize,
+            Vector3 origin = default, Func<int, int, T> createGridOBJ = null,
+            GridDimentionOptions gridDimention = GridDimentionOptions.XY)
+        {
+            InitGrid(gridSize, cellSize, origin, gridDimention);
+
+            MapValues(createGridOBJ);
         }
         #endregion
 
@@ -74,11 +121,11 @@ namespace CXUtils.GridSystem
 
         #region WorldPosition
         /// <summary>Tries to converts the grid position into world position </summary>
-        public bool TryGetWorldPosition(int x, int y, out Vector2 worldPosition)
+        public bool TryGetWorldPosition(int x, int y, out Vector3 worldPosition)
         {
             if (CheckXYValid(x, y))
             {
-                worldPosition = new Vector2(x, y) * CellSize + Origin;
+                worldPosition = XYToXYZPlanePos(x, y) * CellSize + Origin;
                 return true;
             }
 
@@ -87,25 +134,27 @@ namespace CXUtils.GridSystem
         }
 
         /// <summary>Tries to converts the grid position into world position </summary>
-        public bool TryGetWorldPosition(Vector2Int gridPosition, out Vector2 worldPosition) =>
+        public bool TryGetWorldPosition(Vector2Int gridPosition, out Vector3 worldPosition) =>
             TryGetWorldPosition(gridPosition.x, gridPosition.y, out worldPosition);
 
         /// <summary> Converts the grid position into world position </summary> 
-        public Vector2 GetWorldPosition(int x, int y) =>
-            new Vector2(x, y) * CellSize + Origin;
+        public Vector3 GetWorldPosition(int x, int y) =>
+            XYToXYZPlanePos(x, y) * CellSize + Origin;
 
         /// <summary> Converts the grid position into world position </summary> 
-        public Vector2 GetWorldPosition(Vector2Int gridPosition) =>
+        public Vector3 GetWorldPosition(Vector2Int gridPosition) =>
             GetWorldPosition(gridPosition.x, gridPosition.y);
         #endregion
 
         #region GridPosition
         /// <summary> Converts the world position into grid position </summary>
-        public bool TryGetGridPosition(Vector2 worldPosition, out Vector2Int gridPosition)
+        public bool TryGetGridPosition(Vector3 worldPosition, out Vector2Int gridPosition)
         {
+            Vector2 newWorldPos = PlanePosToXY(worldPosition);
+
             Vector2Int Temp = new Vector2Int(
-                Mathf.FloorToInt((worldPosition - Origin).x / CellSize),
-                Mathf.FloorToInt((worldPosition - Origin).y / CellSize)
+                Mathf.FloorToInt((newWorldPos - (Vector2)Origin).x / CellSize),
+                Mathf.FloorToInt((newWorldPos - (Vector2)Origin).y / CellSize)
                 );
 
             if (CheckXYValid(Temp.x, Temp.y))
@@ -118,11 +167,15 @@ namespace CXUtils.GridSystem
             return false;
         }
 
-        public Vector2Int GetGridPosition(Vector2 worldPosition) =>
-            new Vector2Int(
-                Mathf.FloorToInt((worldPosition - Origin).x / CellSize),
-                Mathf.FloorToInt((worldPosition - Origin).y / CellSize)
-                );
+        public Vector2Int GetGridPosition(Vector3 worldPosition)
+        {
+            Vector2 newWorldPos = PlanePosToXY(worldPosition);
+
+            return new Vector2Int(
+                        Mathf.FloorToInt((newWorldPos - (Vector2)Origin).x / CellSize),
+                        Mathf.FloorToInt((newWorldPos - (Vector2)Origin).y / CellSize)
+                        );
+        }
 
         #endregion
 
@@ -150,7 +203,7 @@ namespace CXUtils.GridSystem
 
         /// <summary> Tries to set a value using world position
         /// <para>Returns if sets correctly</para> </summary>
-        public bool TrySetValue(Vector2 worldPosition, T value)
+        public bool TrySetValue(Vector3 worldPosition, T value)
         {
             if (TryGetGridPosition(worldPosition, out Vector2Int gridPos))
             {
@@ -174,7 +227,7 @@ namespace CXUtils.GridSystem
 
         /// <summary> Tries to set a value using world position 
         /// <para>Not safe</para> </summary>
-        public void SetValue(Vector2 worldPosition, T value) =>
+        public void SetValue(Vector3 worldPosition, T value) =>
             SetValue(GetGridPosition(worldPosition), value);
         #endregion
 
@@ -199,7 +252,7 @@ namespace CXUtils.GridSystem
 
         /// <summary> Gets the value using the world position 
         /// <para>Returns if the world position is valid</para> </summary> 
-        public bool TryGetValue(Vector2 worldPosition, out T value)
+        public bool TryGetValue(Vector3 worldPosition, out T value)
         {
             if (TryGetGridPosition(worldPosition, out Vector2Int gridPos))
             {
@@ -224,7 +277,7 @@ namespace CXUtils.GridSystem
 
         /// <summary> Gets the value using the world position
         /// <para>Not safe</para></summary>
-        public T GetValue(Vector2 worldPosition)
+        public T GetValue(Vector3 worldPosition)
         {
             Vector2Int gridPos = GetGridPosition(worldPosition);
             return GetValue(gridPos.x, gridPos.y);
@@ -236,6 +289,7 @@ namespace CXUtils.GridSystem
         #region Script Utils
 
         #region Simplifying Script
+
         private bool CheckXYValid(int x, int y)
         {
             if (x < 0 || y < 0 || x >= Width || y >= Height)
@@ -244,13 +298,50 @@ namespace CXUtils.GridSystem
             return true;
         }
 
-        private void InitGrid(int width, int height, float cellSize, Vector2 origin)
+        private Vector3 XYToXYZPlanePos(int x, int y)
+        {
+            switch (GridDimention)
+            {
+                case GridDimentionOptions.XY:
+                return new Vector3(x, y, 0);
+
+                case GridDimentionOptions.XZ:
+                return new Vector3(x, 0, y);
+
+                // YZ
+                default:
+                return new Vector3(0, x, y);
+            }
+        }
+
+        private Vector2 PlanePosToXY(Vector3 PlaneCoords)
+        {
+            switch (GridDimention)
+            {
+                case GridDimentionOptions.XY:
+                return PlaneCoords;
+
+                case GridDimentionOptions.XZ:
+                return new Vector2(PlaneCoords.x, PlaneCoords.z);
+
+                // YZ
+                default:
+                return new Vector2(PlaneCoords.y, PlaneCoords.z);
+            }
+        }
+
+        private void InitGrid(int width, int height, float cellSize, Vector3 origin, GridDimentionOptions gridDimentionOptions)
         {
             (Width, Height) = (width, height);
             (CellSize, Origin) = (cellSize, origin);
 
+            GridDimention = gridDimentionOptions;
             GridArray = new T[Width, Height];
         }
+
+        private void InitGrid(Vector2Int gridSize, float cellSize, Vector3 origin, GridDimentionOptions gridDimentionOptions) =>
+            InitGrid(gridSize.x, gridSize.y, cellSize, origin, gridDimentionOptions);
+
         #endregion
 
         #region Value manipulation
@@ -287,8 +378,8 @@ namespace CXUtils.GridSystem
         /// <summary> Get grid's bounds on world position </summary>
         public Bounds GetWorldBounds()
         {
-            Vector2 boundCenter = Origin + new Vector2(Width, Height) * .5f;
-            Vector2 boundSize = new Vector2(Width, Height);
+            Vector3 boundCenter = Origin + XYToXYZPlanePos(Width, Height) * .5f;
+            Vector3 boundSize = XYToXYZPlanePos(Width, Height);
 
             return new Bounds(boundCenter, boundSize);
         }
@@ -303,7 +394,31 @@ namespace CXUtils.GridSystem
         }
         #endregion
 
+        #region Iterators
+
+        /// <summary> Iterates through the whole grid </summary>
+        public void Iterate(Action<T, int, int> y_action)
+        {
+            for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
+                    y_action(GridArray[x, y], x, y);
+        }
+
+        /// <summary> Iterates through the whole grid </summary>
+        public void Iterate(Action<T, int, int> y_action, Action<int> x_action)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                    y_action(GridArray[x, y], x, y);
+
+                x_action(x);
+            }
+        }
+        #endregion
+
         #region Other Utils
+
         /// <summary> Gets the grid value on the given Grid Position and converting it to a string </summary>
         public string ToString(int x, int y) =>
             GridArray[x, y].ToString();
@@ -311,9 +426,13 @@ namespace CXUtils.GridSystem
         /// <summary> Gets the grid value on the given Grid Position and converting it to a string </summary>
         public string ToString(Vector2Int gridPosition) =>
             ToString(gridPosition.x, gridPosition.y);
+
         #endregion
 
         #region Debug
+
+        #region Drawing Grid
+
         /// <summary> draws a debug gizmos for the grid </summary>
         public void DrawDebug(Color color,
             GridDebugDrawOptions gridDebugDrawOptions, float originRadius = .08f) =>
@@ -347,6 +466,55 @@ namespace CXUtils.GridSystem
 
         }
 
+        #endregion
+
+        #region Draw Text
+
+        /// <summary> Draws a text on world position </summary>
+        public TextMesh[,] DrawText(Transform parent, int fontSize) =>
+            DrawText(parent, fontSize, Color.white);
+
+        /// <summary> Draws a text on world position </summary>
+        public TextMesh[,] DrawText(Transform parent, int fontSize, Color color)
+        {
+            TextMesh[,] textMeshes = new TextMesh[Width, Height];
+
+            for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
+                {
+                    Vector3 newPosition = GetWorldPosition(x, y) + CellCenterOffset;
+                    T value = GetValue(x, y);
+
+                    textMeshes[x, y] = TextUtils.SpawnTextOnWorld(
+                        parent, newPosition, value.ToString(),
+                        fontSize, color, TextAnchor.MiddleCenter, TextAlignment.Center, 0
+                        );
+                }
+
+            return textMeshes;
+        }
+
+        /// <summary> Updates the debug texts </summary>
+        public void UpdateTexts(TextMesh[,] textMeshes) =>
+            Iterate((value, x, y) => textMeshes[x, y].text = value.ToString());
+
+        /// <summary> Updates the debug texts </summary>
+        public void UpdateTexts(TextMesh[,] textMeshes, int fontSize, Color color)
+        {
+            TextMesh thisTextMesh;
+
+            Iterate((value, x, y) =>
+            {
+                thisTextMesh = textMeshes[x, y];
+
+                thisTextMesh.text = value.ToString();
+                thisTextMesh.fontSize = fontSize;
+                thisTextMesh.color = color;
+            });
+        }
+
+        #endregion
+
         #region HelperDraw
         private void DrawDebugPoints(float originRadius = .08f)
         {
@@ -355,7 +523,7 @@ namespace CXUtils.GridSystem
                 for (int y = 0; y < Height + 1; y++)
                 {
                     //Single cell draw
-                    Vector2 LDPosition;
+                    Vector3 LDPosition;
                     LDPosition = GetWorldPosition(x, y);
 
                     Gizmos.DrawSphere(LDPosition, originRadius);
@@ -370,22 +538,24 @@ namespace CXUtils.GridSystem
                 for (int y = 0; y < Height; y++)
                 {
                     //Single cell draw
-                    Vector2 LDPosition;
+                    Vector3 LDPosition;
                     LDPosition = GetWorldPosition(x, y);
 
                     //left down
                     {
                         //vertical
                         Gizmos.DrawLine(LDPosition, GetWorldPosition(x, y + 1));
+
                         //horizontal
                         Gizmos.DrawLine(LDPosition, GetWorldPosition(x + 1, y));
                     }
                 }
             }
 
-            Vector2 LUPosition = GetWorldPosition(0, Height);
-            Vector2 RDPosition = GetWorldPosition(Width, 0);
-            Vector2 RUPosition = GetWorldPosition(Width, Height);
+            Vector3 LUPosition = GetWorldPosition(0, Height);
+            Vector3 RDPosition = GetWorldPosition(Width, 0);
+            Vector3 RUPosition = GetWorldPosition(Width, Height);
+
             //right up
             {
                 Gizmos.DrawLine(LUPosition, RUPosition);
