@@ -1,18 +1,30 @@
 ﻿using System;
-using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
 using CXUtils.CodeUtils;
 
 using Random = UnityEngine.Random;
 
-namespace CXUtils.NeuralNetworks
+namespace CXUtils.Evolutions.NeuralNetworks
 {
     /// <summary> A neural network from Cx Utils (using Math Dot Net) </summary>
     public struct CXNeuralNetwork
     {
         #region Fields
+
+        #region Counts
+
+        public int InputCount { get; private set; }
+
+        public int HiddenLayerCount { get; private set; }
+
+        public int HiddenNeuronCount { get; private set; }
+
+        public int OutputCount { get; private set; }
+
+        #endregion
+
+        #region NNet Main
 
         public Matrix<float> inputLayer;
 
@@ -28,72 +40,65 @@ namespace CXUtils.NeuralNetworks
 
         #endregion
 
-        public CXNeuralNetwork(int inputsCount, int hiddenLayerCount, int hiddenNeuronCount, int outputsCount)
+        #endregion
+
+        public CXNeuralNetwork(int inputCount, int hiddenLayerCount, int hiddenNeuronCount, int outputCount)
         {
-            inputLayer = Matrix<float>.Build.Dense(1, inputsCount);
+            InputCount = inputCount;
+            HiddenLayerCount = hiddenLayerCount;
+            HiddenNeuronCount = hiddenNeuronCount;
+            OutputCount = outputCount;
+
+            inputLayer = Matrix<float>.Build.Dense(1, InputCount);
 
             hiddenLayers = new List<Matrix<float>>();
 
-            outputLayer = Matrix<float>.Build.Dense(1, outputsCount);
+            outputLayer = Matrix<float>.Build.Dense(1, OutputCount);
 
             weights = new List<Matrix<float>>();
 
             biases = new List<float>();
 
             fitness = 0;
-
-            for (int i = 0; i < hiddenLayerCount; i++)
-            {
-                Matrix<float> f = Matrix<float>.Build.Dense(1, hiddenNeuronCount);
-
-                hiddenLayers.Add(f);
-
-                biases.Add(Random.Range(-1f, 1f));
-
-                //WEIGHTS
-
-                if (i == 0)
-                {
-                    Matrix<float> inputToH1 = Matrix<float>.Build.Dense(inputsCount, hiddenNeuronCount);
-                    weights.Add(inputToH1);
-                }
-
-                Matrix<float> HiddenToHidden = Matrix<float>.Build.Dense(hiddenNeuronCount, hiddenNeuronCount);
-                weights.Add(HiddenToHidden);
-            }
-
-            Matrix<float> outputWeight = Matrix<float>.Build.Dense(hiddenNeuronCount, outputsCount);
-
-            weights.Add(outputWeight);
-            biases.Add(Random.Range(-1f, 1f));
         }
 
-        public void ClearAllData()
+        #region Setting NNet
+
+        //Resets all the fields
+        private void ResetFields()
         {
-            inputLayer.Clear();
-            hiddenLayers.Clear();
-            outputLayer.Clear();
-            weights.Clear();
-            biases.Clear();
+            inputLayer = Matrix<float>.Build.Dense(1, InputCount);
+
+            hiddenLayers = new List<Matrix<float>>();
+
+            outputLayer = Matrix<float>.Build.Dense(1, OutputCount);
+
+            weights = new List<Matrix<float>>();
+
+            biases = new List<float>();
+
             fitness = 0;
         }
 
-        /// <summary> Randomized weights </summary>
-        public void RandomizeWeights()
+        /// <summary> Overrides the current Neural network to a new neural network </summary>
+        public void SetNeuralNetwork(int inputCount, int hiddenLayerCount, int hiddenNeuronCount, int outputCount)
         {
-            for (int i = 0; i < weights.Count; i++)
-                for (int x = 0; x < weights[i].RowCount; x++)
-                    for (int y = 0; y < weights[i].ColumnCount; y++)
-                        weights[i][x, y] = Random.Range(-1f, 1f);
+            InputCount = inputCount;
+            HiddenLayerCount = hiddenLayerCount;
+            HiddenNeuronCount = hiddenNeuronCount;
+            OutputCount = outputCount;
+
+            ResetFields();
         }
+        #endregion
+
+        #region Running Network
 
         /// <summary> Runs this network </summary>
         public float[] RunNetwork(Func<Matrix<float>, Matrix<float>> ActivationFunction = null, params float[] inputs)
         {
             if (inputs.Length != inputLayer.ColumnCount)
                 return null;
-
-            ClearAllData();
 
             //recieving input
             for (int i = 0; i < inputLayer.ColumnCount; i++)
@@ -132,6 +137,136 @@ namespace CXUtils.NeuralNetworks
             },
             inputs);
         }
+
+        #endregion
+
+        #region Script Utils
+
+        /// <summary> Initializes the Neural network </summary>
+        public void Initialize()
+        {
+            ClearAllData();
+
+            for (int i = 0; i < HiddenLayerCount + 1; i++)
+            {
+                Matrix<float> f = Matrix<float>.Build.Dense(1, HiddenNeuronCount);
+
+                hiddenLayers.Add(f);
+
+                biases.Add(Random.Range(-1f, 1f));
+
+                //WEIGHTS
+                if (i == 0)
+                {
+                    Matrix<float> inputToH1 = Matrix<float>.Build.Dense(InputCount, HiddenNeuronCount);
+                    weights.Add(inputToH1);
+                }
+
+                Matrix<float> HiddenToHidden = Matrix<float>.Build.Dense(HiddenNeuronCount, HiddenNeuronCount);
+                weights.Add(HiddenToHidden);
+            }
+
+            Matrix<float> outputWeight = Matrix<float>.Build.Dense(HiddenNeuronCount, OutputCount);
+
+            weights.Add(outputWeight);
+
+            biases.Add(Random.Range(-1f, 1f));
+        }
+
+        /// <summary> Clears all the data </summary>
+        public void ClearAllData()
+        {
+            inputLayer.Clear();
+            hiddenLayers.Clear();
+            outputLayer.Clear();
+            weights.Clear();
+            biases.Clear();
+            fitness = 0;
+        }
+
+        /// <summary> Randomized weights </summary>
+        public void RandomizeWeights() =>
+            MapWeights(() => Random.Range(-1f, 1f));
+
+        #region Map manipulation
+        /// <summary> Iterates through all the weights and map them </summary>
+        public void MapWeights(Func<CXNeuralNetwork, int, int, int, float> IteratingFunc)
+        {
+            for (int i = 0; i < weights.Count; i++)
+                for (int x = 0; x < weights[i].RowCount; x++)
+                    for (int y = 0; y < weights[i].ColumnCount; y++)
+                        weights[i][x, y] = IteratingFunc(this, i, x, y);
+        }
+
+        /// <summary> Iterates through all the weights and map them </summary>
+        public void MapWeights(Func<int, int, int, float> IteratingFunc)
+        {
+            for (int i = 0; i < weights.Count; i++)
+                for (int x = 0; x < weights[i].RowCount; x++)
+                    for (int y = 0; y < weights[i].ColumnCount; y++)
+                        weights[i][x, y] = IteratingFunc(i, x, y);
+        }
+
+        /// <summary> Iterates through all the weights and map them </summary>
+        public void MapWeights(Func<float> IteratingFunc)
+        {
+            for (int i = 0; i < weights.Count; i++)
+                for (int x = 0; x < weights[i].RowCount; x++)
+                    for (int y = 0; y < weights[i].ColumnCount; y++)
+                        weights[i][x, y] = IteratingFunc();
+        }
+
+        /// <summary> Iterates through all the weights </summary>
+        public void IterateWeights(Action<float, int, int, int> IterateAction)
+        {
+            for (int i = 0; i < weights.Count; i++)
+                for (int x = 0; x < weights[i].RowCount; x++)
+                    for (int y = 0; y < weights[i].ColumnCount; y++)
+                        IterateAction(weights[i][x, y], i, x, y);
+        }
+
+        /// <summary> Randomize mutates the Neural Network </summary>
+        /// <param name="mutateRate"> 0 ~ 1 mutating rate </param>
+        public void Mutate(float mutateRate = .2f) =>
+            MapWeights((origin, i, x, y) => MathUtils.FlipCoin(Random.Range(-1f, 1f), origin.weights[i][x, y], mutateRate));
+
+        /// <summary> Crosses any two matching Neural networks </summary>
+        public bool TryCrossOver(CXNeuralNetwork other, out CXNeuralNetwork OUT, float rate = .5f)
+        {
+            if (AllowedCrossOver(other))
+            {
+                OUT = new CXNeuralNetwork(InputCount, HiddenLayerCount, HiddenNeuronCount, OutputCount);
+
+                CXNeuralNetwork This = this;
+
+                OUT.MapWeights((NNet, i, x, y) =>
+                    MathUtils.FlipCoin(rate) ? This.weights[i][x, y] : other.weights[i][x, y]);
+
+                return true;
+            }
+
+            OUT = new CXNeuralNetwork();
+            return false;
+        }
+
+        /// <summary> Crosses any two matching Neural networks </summary>
+        public CXNeuralNetwork CrossOver(CXNeuralNetwork other, float rate = .5f)
+        {
+            CXNeuralNetwork This = this;
+            This.TryCrossOver(other, out CXNeuralNetwork child, rate);
+            return child;
+        }
+
+        #region Other helper utils
+        /// <summary> Check's if this Neural network with other neural network matches and could cross over </summary>
+        public bool AllowedCrossOver(CXNeuralNetwork other) =>
+            InputCount.Equals(other.InputCount) && HiddenLayerCount.Equals(other.HiddenLayerCount) &&
+            HiddenNeuronCount.Equals(other.HiddenNeuronCount) && OutputCount.Equals(other.OutputCount);
+        #endregion
+
+        #endregion
+
+        #endregion
     }
 }
 

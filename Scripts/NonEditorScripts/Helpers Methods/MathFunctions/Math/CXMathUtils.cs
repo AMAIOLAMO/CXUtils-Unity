@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace CXUtils.CodeUtils
 {
@@ -128,6 +128,21 @@ namespace CXUtils.CodeUtils
         /// <para>(clamps threshHold value between 0 ~ 1)</para> </summary>
         public static bool PerlinNoise(Vector2 position, float scale, float threshHold = .5f, float? seed = null) =>
             PerlinNoise(position.x, position.y, scale, threshHold, seed);
+        #endregion
+
+        #region Randoms
+        /// <summary> Randomly decides </summary>
+        public static bool FlipCoin(float threshHold = .5f) =>
+            Random.Range(0f, 1f) > Mathf.Clamp01(threshHold);
+
+        /// <summary> Randomly decides between two items </summary>
+        public static T FlipCoin<T>(T t1, T t2, float threshHold = .5f) =>
+            FlipCoin(threshHold) ? t1 : t2;
+
+        /// <summary> Randomly returns a float between 0 ~ 1 </summary>
+        public static float RandomFloat() =>
+            Random.Range(0f, 1f);
+
         #endregion
 
         #region Other useful methods
