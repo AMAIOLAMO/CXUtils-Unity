@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using CXUtils.CodeUtils;
-using System.Collections.Generic;
 
 namespace CXUtils.GridSystem
 {
@@ -48,6 +47,7 @@ namespace CXUtils.GridSystem
     public class CXGrid<T>
     {
         #region Fields
+
         public int Width { get; private set; }
         public int Height { get; private set; }
 
@@ -74,9 +74,11 @@ namespace CXUtils.GridSystem
 
         /// <summary> the whole Grid size </summary>
         public Vector2Int GridSize => new Vector2Int(Width, Height);
+
         #endregion
 
         #region Constructors
+
         public CXGrid(int width, int height, float cellSize,
             Vector3 origin = default, T initialValue = default,
             GridDimentionOptions gridDimention = GridDimentionOptions.XY)
@@ -115,6 +117,7 @@ namespace CXUtils.GridSystem
 
             MapValues(createGridOBJ);
         }
+
         #endregion
 
         #region GetPositions
@@ -180,7 +183,7 @@ namespace CXUtils.GridSystem
         #endregion
 
         #endregion
-
+        
         #region Values
 
         #region SetValues
@@ -345,6 +348,7 @@ namespace CXUtils.GridSystem
         #endregion
 
         #region Value manipulation
+
         /// <summary> Sets all the value in the grid to the given value </summary>
         public void SetAllValues(T value = default)
         {
@@ -372,6 +376,7 @@ namespace CXUtils.GridSystem
                 for (int y = 0; y < Height; y++)
                     GridArray[x, y] = mapFunc.Invoke(x, y);
         }
+
         #endregion
 
         #region Bounds
@@ -415,6 +420,7 @@ namespace CXUtils.GridSystem
                 x_action(x);
             }
         }
+
         #endregion
 
         #region Other Utils
