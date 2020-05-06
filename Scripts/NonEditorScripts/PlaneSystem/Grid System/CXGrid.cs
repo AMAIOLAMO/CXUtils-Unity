@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using CXUtils.CodeUtils;
+using System.Collections.Generic;
 
 namespace CXUtils.GridSystem
 {
@@ -20,11 +21,6 @@ namespace CXUtils.GridSystem
     [Serializable]
     public class CXGrid : CXGrid<object>
     {
-        public CXGrid(Vector2Int gridSize, float cellSize, Vector3 origin = default,
-            object initialValue = null, GridDimentionOptions gridDimention = GridDimentionOptions.XY) :
-            base(gridSize, cellSize, origin, initialValue, gridDimention)
-        { }
-
         public CXGrid(Vector2Int gridSize, float cellSize, Vector3 origin = default, Func<int, int, object> createGridOBJ = null,
             GridDimentionOptions gridDimention = GridDimentionOptions.XY) :
             base(gridSize, cellSize, origin, createGridOBJ, gridDimention)
@@ -59,6 +55,12 @@ namespace CXUtils.GridSystem
         {
             get => GridArray[x, y];
             set => GridArray[x, y] = value;
+        }
+
+        public T this[Vector2Int gridPosition]
+        {
+            get => GridArray[gridPosition.x, gridPosition.y];
+            set => GridArray[gridPosition.x, gridPosition.y] = value;
         }
 
         public GridDimentionOptions GridDimention { get; private set; }
@@ -97,16 +99,6 @@ namespace CXUtils.GridSystem
 
             //sets all the grid value using the given function above
             MapValues(createGridOBJ);
-        }
-
-        public CXGrid(Vector2Int gridSize, float cellSize,
-            Vector3 origin = default, T initialValue = default,
-            GridDimentionOptions gridDimention = GridDimentionOptions.XY)
-        {
-            InitGrid(gridSize, cellSize, origin, gridDimention);
-
-            //sets all the value using the given initial Value
-            SetAllValues(initialValue);
         }
 
         public CXGrid(Vector2Int gridSize, float cellSize,
@@ -183,7 +175,7 @@ namespace CXUtils.GridSystem
         #endregion
 
         #endregion
-        
+
         #region Values
 
         #region SetValues
@@ -364,6 +356,9 @@ namespace CXUtils.GridSystem
         /// <summary> Uses this function onto all the values on the grid </summary>
         public void MapValues(Func<CXGrid<T>, int, int, T> mapFunc)
         {
+            if (mapFunc == null)
+                return;
+
             for (int x = 0; x < Width; x++)
                 for (int y = 0; y < Height; y++)
                     GridArray[x, y] = mapFunc.Invoke(this, x, y);
@@ -372,6 +367,9 @@ namespace CXUtils.GridSystem
         /// <summary> Uses this function onto all the values on the grid </summary>
         public void MapValues(Func<int, int, T> mapFunc)
         {
+            if (mapFunc == null)
+                return;
+
             for (int x = 0; x < Width; x++)
                 for (int y = 0; y < Height; y++)
                     GridArray[x, y] = mapFunc.Invoke(x, y);
@@ -574,4 +572,63 @@ namespace CXUtils.GridSystem
 
         #endregion
     }
+
+    /// <summary> A Utils class for CXGrid </summary>
+    public class CXGridUtils
+    {
+        /// <summary>
+        /// Get's the Grid's line positions for line renderer
+        /// </summary>
+        public static List<Vector3> GetGridLinePositions<T>(CXGrid<T> grid)
+        {
+            List<Vector3> Positions = new List<Vector3>();
+
+            for (int y = 0; y < grid.Height; y++)
+            {
+                //draws the left down origin of a cell on a grid when starting a row
+                Positions.Add(grid.GetWorldPosition(0, y));
+
+                for (int x = 0; x < grid.Width; x++)
+                {
+                    Vector3 CRLOrigin = grid.GetWorldPosition(0, y);
+
+                    Vector3 origin = grid.GetWorldPosition(x, y);
+                    Vector3 rightDown = grid.GetWorldPosition(x + 1, y);
+                    Vector3 leftUp = grid.GetWorldPosition(x, y + 1);
+
+                    //draw lines
+                    Positions.Add(rightDown);
+                    Positions.Add(origin);
+                    Positions.Add(leftUp);
+                    Positions.Add(origin);
+
+                    if (x.Equals(grid.Width - 1))
+                        Positions.Add(CRLOrigin);
+                }
+            }
+
+            Vector3 LUPosition = grid.GetWorldPosition(0, grid.Height);
+            Vector3 RDPosition = grid.GetWorldPosition(grid.Width, 0);
+            Vector3 RUPosition = grid.GetWorldPosition(grid.Width, grid.Height);
+
+            //right & up
+            Positions.Add(LUPosition);
+            Positions.Add(RUPosition);
+            Positions.Add(RDPosition);
+
+            return Positions;
+        }
+
+        /// <summary>
+        /// Draws the grid using the line renderer
+        /// </summary>
+        public static void DrawGridByLineRenderer<T>(CXGrid<T> grid, LineRenderer lineRenderer)
+        {
+            List<Vector3> Positions = GetGridLinePositions(grid);
+
+            lineRenderer.positionCount = Positions.Count;
+            lineRenderer.SetPositions(Positions.ToArray());
+        }
+    }
+
 }
