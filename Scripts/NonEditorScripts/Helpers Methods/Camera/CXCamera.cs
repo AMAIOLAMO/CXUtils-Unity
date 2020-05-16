@@ -5,7 +5,7 @@ using System.Collections;
 namespace CXUtils.CodeUtils
 {
     ///<summary> Cx's Camera Class </summary>
-    class CameraUtils
+    public class CameraUtils
     {
         ///<summary> Options for camera ports </summary>
         public enum PortOptions

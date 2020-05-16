@@ -20,12 +20,8 @@ public class CharacterController2DInspectorWindow : Editor
                 (CharacterGroundCheck2D)
                 EditorGUILayout.ObjectField("Ground Check 2D", charControl2D.CharacterGroundCheck, typeof(CharacterGroundCheck2D), true);
 
-            charControl2D.IsMovementNormalized =
-                EditorGUILayout.Toggle("Mov Normalized", charControl2D.IsMovementNormalized);
-
             charControl2D.PlayerCurrentJumpStrength =
                 EditorGUILayout.FloatField("Jump Strength", charControl2D.PlayerCurrentJumpStrength);
         }
-
     }
 }

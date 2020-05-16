@@ -9,11 +9,6 @@ namespace CXUtils.CodeUtils
 
         /// <summary> Instantiates a text on the world </summary>
         public static TextMesh SpawnTextOnWorld(Vector3 position, string text, int fontSize,
-            Color color, bool usingLocalPosition = false) =>
-            SpawnTextOnWorld(position, text, fontSize, color, TextAnchor.MiddleCenter, TextAlignment.Center, usingLocalPosition);
-
-        /// <summary> Instantiates a text on the world </summary>
-        public static TextMesh SpawnTextOnWorld(Vector3 position, string text, int fontSize,
             Color color, TextAnchor textAnchor = TextAnchor.MiddleCenter, TextAlignment textAlignment = TextAlignment.Center,
             bool usingLocalPosition = false) =>
             SpawnTextOnWorld(null, position, text, fontSize, color, textAnchor, textAlignment, 0, usingLocalPosition);

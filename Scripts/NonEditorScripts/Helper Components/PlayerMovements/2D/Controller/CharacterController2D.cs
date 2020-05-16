@@ -50,7 +50,6 @@ namespace CXUtils.HelperComponents
         [HideInInspector]
         [SerializeField] private float playerCurrentJumpStrength = 5f;
 
-        [HideInInspector]
         [SerializeField] private bool isMovementNormalized = false;
         #endregion
 
