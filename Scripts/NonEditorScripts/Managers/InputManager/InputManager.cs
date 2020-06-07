@@ -7,17 +7,21 @@ namespace CXUtils.Managers
     public class InputManager : MonoBehaviour
     {
         #region Vars and Fields
+
         [SerializeField] private InputInfo[] inputInfos;
         
         public static InputManager Instance { get; private set; }
         public InputInfo[] InputInfos { get => inputInfos; set => inputInfos = value; }
+
         #endregion
 
         #region MainThread
+
         private void Awake()
         {
             Instance = this;
         }
+
         #endregion
 
         #region Finding Inputs
