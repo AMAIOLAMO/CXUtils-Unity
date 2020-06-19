@@ -23,7 +23,7 @@ namespace CXUtils.PlaneSystem
                 case PlaneDimentionOptions.XZ:
                 return Vector3.up;
 
-                default:
+                default: //NOTE: Using YZ
                 return Vector3.right;
             }
         }

@@ -13,13 +13,17 @@ namespace CXUtils.CodeUtils
         public static int PreviousSceneIndex => SceneManager.GetActiveScene().buildIndex - 1;
 
         #region SceneCheck
+        
         /// <summary> Returns if the scene exists </summary>
         public static bool SceneExists(int sceneIndex) =>
             sceneIndex > 0 && sceneIndex < SceneManager.sceneCount;
+            
         #endregion
 
         #region LoadSceneMethods
+        
         #region Non-async
+        
         ///<summary> Load The Next Scene and Return if the next scene is valid if default then use single </summary>
         public static bool LoadNextScene() =>
             LoadNextScene(LoadSceneMode.Single);
@@ -33,9 +37,11 @@ namespace CXUtils.CodeUtils
             SceneManager.LoadScene(NextSceneIndex, loadSceneMode);
             return true;
         }
+        
         #endregion
 
         #region Async
+        
         /// <summary> Loads the next scene asyncly </summary>
         public static bool LoadNextSceneAsync(out AsyncOperation asyncOperation) =>
             LoadNextSceneAsync(LoadSceneMode.Single, out asyncOperation);
@@ -52,11 +58,13 @@ namespace CXUtils.CodeUtils
             asyncOperation = SceneManager.LoadSceneAsync(NextSceneIndex, loadSceneMode);
             return true;
         }
+        
         #endregion
 
         /// <summary> Load's the current scene </summary> 
         public static void ReloadActiveScene(LoadSceneMode loadSceneMode = default) =>
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, loadSceneMode);
+
         #endregion
 
     }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CXUtils.HelperComponents
 {
-    /// <remarks> A helper component to help for event handeling </remarks>
+    /// <summary> A helper component to help for event handeling </summary>
     public class CXEventSystem : MonoBehaviour
     {
         public static CXEventSystem Current { get; private set; }

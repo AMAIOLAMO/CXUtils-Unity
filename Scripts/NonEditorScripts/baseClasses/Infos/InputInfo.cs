@@ -16,20 +16,19 @@ namespace CXUtils.DataUtils.Infos
         public KeyCode Key { get => key; set => key = value; }
         #endregion
 
-        #region Constructor
+        //Constructor
         public InputInfo(string name = "__None__", KeyCode key = KeyCode.None) =>
             (this.name, this.key) = (name, key);
-        #endregion
 
-        #region IDebugDescribe
+        //IDebug Describbable    
         public string DebugDescribe() =>
             $"InputInfo: Name: {Name}, KeyCode: {Key}";
-        #endregion
 
-        #region ScriptMethods
+
+        //Script Methods
+
         public bool Equals(InputInfo inputInfo) =>
             (name.Equals(inputInfo.Name) && key == inputInfo.Key);
-        #endregion
     }
 }
 

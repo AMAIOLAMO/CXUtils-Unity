@@ -341,92 +341,94 @@ namespace CXUtils.GridSystem.PathFinding
             {
                 case PathFindingOptions.Normal:
 
-                #region Corners
+                    #region Corners
 
-                if (couldDiagonal)
-                {
-                    //check if that exists and check for any of the neighbours
-                    //check if both are clear (else only check for straight neighbours)
-
-                    //left up
-                    if ((left.HasValue && up.HasValue) && (up.Value && left.Value))
-                        AssignIfWalkable(leftIndex, upIndex, neighbourList);
-
-                    //left down
-                    if ((left.HasValue && down.HasValue) && (down.Value && left.Value))
-                        AssignIfWalkable(leftIndex, downIndex, neighbourList);
-
-                    //right up
-                    if ((right.HasValue && up.HasValue) && (up.Value && right.Value))
-                        AssignIfWalkable(rightIndex, upIndex, neighbourList);
-
-                    //right down
-                    if ((right.HasValue && down.HasValue) && (down.Value && right.Value))
-                        AssignIfWalkable(rightIndex, downIndex, neighbourList);
-                }
-
-                #endregion
-
-                break;
-                case PathFindingOptions.Normal_CutCorners:
-
-                #region Corners
-
-                if (couldDiagonal)
-                {
-                    //checking if that neighbour exist and if that neighbour is allowed to walk through
-                    //left up
-                    if ((left.HasValue && up.HasValue) && (up.Value || left.Value))
-                        AssignIfWalkable(leftIndex, upIndex, neighbourList);
-
-                    //left down
-                    if ((left.HasValue && down.HasValue) && (down.Value || left.Value))
-                        AssignIfWalkable(leftIndex, downIndex, neighbourList);
-
-                    //right up
-                    if ((right.HasValue && up.HasValue) && (up.Value || right.Value))
-                        AssignIfWalkable(rightIndex, upIndex, neighbourList);
-
-                    //right down
-                    if ((right.HasValue && down.HasValue) && (down.Value || right.Value))
-                        AssignIfWalkable(rightIndex, downIndex, neighbourList);
-                }
-
-                #endregion
-
-                break;
-                case PathFindingOptions.JumpDiagonal:
-
-                #region Corners
-                if (couldDiagonal)
-                {
-                    //Left
-                    if (currentNode.x - 1 >= 0)
+                    if (couldDiagonal)
                     {
-                        //Left Up
-                        if (currentNode.y + 1 < Grid.Height)
+                        //check if that exists and check for any of the neighbours
+                        //check if both are clear (else only check for straight neighbours)
+
+                        //left up
+                        if ((left.HasValue && up.HasValue) && (up.Value && left.Value))
                             AssignIfWalkable(leftIndex, upIndex, neighbourList);
 
-                        //Left Down
-                        if (currentNode.y - 1 >= 0)
+                        //left down
+                        if ((left.HasValue && down.HasValue) && (down.Value && left.Value))
                             AssignIfWalkable(leftIndex, downIndex, neighbourList);
-                    }
 
-                    //Right
-                    if (currentNode.x + 1 < Grid.Width)
-                    {
-                        //Right Up
-                        if (currentNode.y + 1 < Grid.Height)
+                        //right up
+                        if ((right.HasValue && up.HasValue) && (up.Value && right.Value))
                             AssignIfWalkable(rightIndex, upIndex, neighbourList);
 
-                        //Right Down
-                        if (currentNode.y - 1 >= 0)
+                        //right down
+                        if ((right.HasValue && down.HasValue) && (down.Value && right.Value))
                             AssignIfWalkable(rightIndex, downIndex, neighbourList);
                     }
-                }
-                #endregion
 
-                break;
+                    #endregion
+
+                    break;
+                case PathFindingOptions.Normal_CutCorners:
+
+                    #region Corners
+
+                    if (couldDiagonal)
+                    {
+                        //checking if that neighbour exist and if that neighbour is allowed to walk through
+                        //left up
+                        if ((left.HasValue && up.HasValue) && (up.Value || left.Value))
+                            AssignIfWalkable(leftIndex, upIndex, neighbourList);
+
+                        //left down
+                        if ((left.HasValue && down.HasValue) && (down.Value || left.Value))
+                            AssignIfWalkable(leftIndex, downIndex, neighbourList);
+
+                        //right up
+                        if ((right.HasValue && up.HasValue) && (up.Value || right.Value))
+                            AssignIfWalkable(rightIndex, upIndex, neighbourList);
+
+                        //right down
+                        if ((right.HasValue && down.HasValue) && (down.Value || right.Value))
+                            AssignIfWalkable(rightIndex, downIndex, neighbourList);
+                    }
+
+                    #endregion
+
+                    break;
+                case PathFindingOptions.JumpDiagonal:
+
+                    #region Corners
+
+                    if (couldDiagonal)
+                    {
+                        //Left
+                        if (currentNode.x - 1 >= 0)
+                        {
+                            //Left Up
+                            if (currentNode.y + 1 < Grid.Height)
+                                AssignIfWalkable(leftIndex, upIndex, neighbourList);
+
+                            //Left Down
+                            if (currentNode.y - 1 >= 0)
+                                AssignIfWalkable(leftIndex, downIndex, neighbourList);
+                        }
+
+                        //Right
+                        if (currentNode.x + 1 < Grid.Width)
+                        {
+                            //Right Up
+                            if (currentNode.y + 1 < Grid.Height)
+                                AssignIfWalkable(rightIndex, upIndex, neighbourList);
+
+                            //Right Down
+                            if (currentNode.y - 1 >= 0)
+                                AssignIfWalkable(rightIndex, downIndex, neighbourList);
+                        }
+                    }
+
+                    #endregion
+
+                    break;
             }
 
             #endregion
@@ -446,6 +448,7 @@ namespace CXUtils.GridSystem.PathFinding
                 {
                     PathNode pathNode = Grid.GetValue(x, y);
                     pathNode.GCost = int.MaxValue;
+
                     //f cost calculated already
                     pathNode.CameFromNode = null;
                 }
@@ -569,7 +572,7 @@ namespace CXUtils.GridSystem.PathFinding
             }
 
             SimplifiedPath.Add(path[path.Count - 1]);
-            
+
             return SimplifiedPath;
         }
 

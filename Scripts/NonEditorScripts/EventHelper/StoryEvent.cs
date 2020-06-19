@@ -4,7 +4,7 @@ using System;
 
 namespace CXUtils.EventUtils
 {
-    /// <summary> A simple story event </summary>
+    /// <summary> A simple story event that is just for testing </summary>
     [Serializable]
     public struct StoryEvent<T>
     {
