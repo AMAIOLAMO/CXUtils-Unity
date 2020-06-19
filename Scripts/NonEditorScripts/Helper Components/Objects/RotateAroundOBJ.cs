@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 namespace CXUtils.HelperComponents
 {
+    ///<summary>
+    /// (not in use)
+    ///</summary>
     public class RotateAroundOBJ : MonoBehaviour
     {
         public Transform RotateAroundTrans;
@@ -8,7 +11,6 @@ namespace CXUtils.HelperComponents
 
         private void Update() =>
             PerfromCircularRotation();
-
 
         private void PerfromCircularRotation() =>
             transform.RotateAround(RotateAroundTrans.position, RotateAroundTrans.forward, RotateSpeedPerAngle);

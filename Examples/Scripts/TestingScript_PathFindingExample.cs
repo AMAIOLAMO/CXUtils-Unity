@@ -216,8 +216,8 @@ namespace CXUtils.Test
             (
                 (x, y) =>
                 {
-                    bool isWalkable = !MathUtils.PerlinNoise(new Vector2(x, y), scale, threshHold, seed);
-                    new Matrix(1,2);
+                    bool isWalkable = !MathUtils.PerlinNoise_FlipCoin(new Vector2(x, y), scale, threshHold, seed);
+                    
                     Vector3 currentPosition = pathFinder.Grid.GetWorldPosition(x, y) + pathFinder.Grid.CellCenterOffset;
 
                     if (!isWalkable && !(new Vector2Int(x, y).Equals(startGridPosition)))

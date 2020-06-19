@@ -46,20 +46,28 @@ namespace CXUtils.CodeUtils
             {
                 case PortOptions.LeftUp:
                 return camera.ScreenToWorldPoint(LU);
+                
                 case PortOptions.LeftDown:
                 return camera.ScreenToWorldPoint(LD);
+                
                 case PortOptions.RightUp:
                 return camera.ScreenToWorldPoint(RU);
+                
                 case PortOptions.RightDown:
                 return camera.ScreenToWorldPoint(RD);
+                
                 case PortOptions.UpMiddle:
                 return camera.ScreenToWorldPoint(MU);
+                
                 case PortOptions.DownMiddle:
                 return camera.ScreenToWorldPoint(MD);
+                
                 case PortOptions.LeftMiddle:
                 return camera.ScreenToWorldPoint(ML);
+                
                 case PortOptions.RightMiddle:
                 return camera.ScreenToWorldPoint(MR);
+                
                 default:
                 return default;
             }

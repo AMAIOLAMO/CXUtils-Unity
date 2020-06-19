@@ -1,10 +1,11 @@
 ﻿using System;
 using System.IO;
 using SimpleJSON;
-using CXUtils.CodeUtils;
-using Random = UnityEngine.Random;
-using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
+using CXUtils.CodeUtils;
+using MathNet.Numerics.LinearAlgebra;
+
+using Random = UnityEngine.Random;
 
 namespace CXUtils.NeuroEvolution
 {

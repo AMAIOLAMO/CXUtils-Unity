@@ -1,7 +1,7 @@
 # <span style="color: gold;"><p style="text-align:center">**CXUtilities**</span> For Unity by <span style="color: gold;">***RedixCX***</p></span>
 
 ### This is a **coding helper** for **Unity** that I made for ***simplifying*** the process of making applications / software in Unity.
-#### This coding Helper uses other assets such as: **Math Dot Net**
+#### This coding Helper uses other assets: **Math Dot Net**
 ---
 
 # <p style="text-align:center; color: pink;">***Reminders***:</p>
@@ -10,7 +10,6 @@
 
 ---
 
-# <p style="text-align:center; color: gold;">Wanna **Support me?**</p>
-- Youtube: [Sane Black](https://www.youtube.com/channel/UCeWOIblCJFy5xjJ1OwLsFJQ)
+Made by CXRedix
 
 ---

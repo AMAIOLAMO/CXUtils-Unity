@@ -2,7 +2,7 @@
 
 namespace CXUtils.HelperComponents
 {
-    /// <summary> Not in use </summary>
+    /// <summary> (Not in use) </summary>
     public class ObjectRotater : MonoBehaviour
     {
     }

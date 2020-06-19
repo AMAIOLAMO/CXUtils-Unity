@@ -62,10 +62,10 @@ namespace CXUtils.HelperComponents
         #region Main Methods
         public void FollowObject()
         {
-            FollowMove();
+            FollowPos();
             FollowRotation();
         }
-        public void FollowMove()
+        public void FollowPos()
         {
             Vector3 newPos = transformTo.position;
 
@@ -101,6 +101,7 @@ namespace CXUtils.HelperComponents
             if (newRot != default)
                 transform.rotation = newRot;
         }
+
         #endregion
 
     }

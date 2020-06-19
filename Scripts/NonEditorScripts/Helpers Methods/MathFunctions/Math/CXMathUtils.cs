@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+
 using Random = UnityEngine.Random;
 
 namespace CXUtils.CodeUtils
@@ -13,6 +14,7 @@ namespace CXUtils.CodeUtils
     {
 
         #region Range Manipulation
+
         ///<summary> Returns if the float is in the given range </summary>
         public static bool CheckFloatInRange(float x, float Min, float Max,
         CheckRangeOptions checkRangeMode = CheckRangeOptions.valueBothEq)
@@ -20,24 +22,26 @@ namespace CXUtils.CodeUtils
             switch (checkRangeMode)
             {
                 case CheckRangeOptions.valueLessEq:
-                return (x > Min && x <= Max);
+                    return (x > Min && x <= Max);
 
                 case CheckRangeOptions.valueGreatEq:
-                return (x >= Min && x < Max);
+                    return (x >= Min && x < Max);
 
                 case CheckRangeOptions.valueBothEq:
-                return (x >= Min && x <= Max);
+                    return (x >= Min && x <= Max);
                 default:
-                return (x > Min && x < Max);
+                    return (x > Min && x < Max);
             }
         }
 
-        ///<summary> Maps the given value from the given range to the another given range </summary>
+        ///<summary> Maps the given value from the given range to the another given range (no Safety Checks) </summary>
         public static float Map(float val, float in_min, float in_max, float out_min, float out_max) =>
             ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+
         #endregion
 
         #region Lines
+
         ///<summary> Returns if the two lines will collide with each other </summary>
         public static bool LineIntersection2D(float x1, float x2, float x3, float x4,
         float y1, float y2, float y3, float y4, out float t, out float u)
@@ -61,23 +65,27 @@ namespace CXUtils.CodeUtils
         public static bool LineIntersection2D(float x1, float x2, float x3, float x4,
         float y1, float y2, float y3, float y4) =>
             LineIntersection2D(x1, x2, x3, x4, y1, y2, y3, y4, out _, out _);
+
         #endregion
 
         #region Sigmoid
+
         ///<summary> This will map the whole real Number line into the range of 0 - 1
-        /// <para>using calculation 1f / ((float)Math.Pow(Math.E, -x)); </para> </summary>
+        /// <para>using calculation 1f / (Math.Pow(Math.E, -x)); </para> </summary>
         public static float Sigmoid_1(float x) =>
             1f / ((float)Math.Pow(Math.E, -x));
 
         ///<summary> This will map the whole real Number line into the range of 0 - 1
-        /// <para>using calculation (float)Math.Pow(Math.E, x) / ((float)Math.Pow(Math.E, x) + 1f);</para> </summary>
+        /// <para>using calculation Math.Pow(Math.E, x) / (Math.Pow(Math.E, x) + 1f);</para> </summary>
         public static float Sigmoid_2(float x) =>
             (float)Math.Pow(Math.E, x) / ((float)Math.Pow(Math.E, x) + 1f);
+
         #endregion
 
         #region Angles
 
         #region Angle Conversion
+
         ///<summary> Convert's a given degree angle into radiants </summary>
         ///<param name="deg"> The converting Degrees </param>
         public static float DegreeToRadiants(float deg) =>
@@ -87,37 +95,32 @@ namespace CXUtils.CodeUtils
         ///<param name="rad"> The converting Radiants </param>
         public static float RadiantsToDegree(float rad) =>
             rad * UnityEngine.Mathf.Rad2Deg;
+
         #endregion
 
         ///<summary> Get's the angle between two vectors </summary>
         ///<param name="from"> The vector start with </param>
         ///<param name="to"> The vector end with </param>
-        public static float AngleBetweenTwoVectors2D(Vector2 from, Vector2 to)
+        public static float AngleBetweenVects2D(Vector2 from, Vector2 to)
         {
             float angle = Vector2.Angle(from, to);
-            Vector2 differenceBetweenFromAndTo = to - from;
+            Vector2 diffBetweenFromAndTo = to - from;
 
-            if (differenceBetweenFromAndTo.y < 0)
+            if (diffBetweenFromAndTo.y < 0)
                 angle = -angle;
 
             return angle;
         }
+
         #endregion
 
         #region Perlin noise
+
         /// <summary> Procedural noise generation, Perlin noise </summary>
         public static float PerlinNoise(float x, float y, float scale, float? seed = null)
         {
             float currentSeed = seed ?? UnityEngine.Random.Range(0f, 1f);
             return Mathf.PerlinNoise(x * scale * currentSeed, y * scale * currentSeed);
-        }
-
-        /// <summary> Generates a boolean value that the threshHold gives.
-        /// <para>(clamps threshHold value between 0 ~ 1)</para> </summary>
-        public static bool PerlinNoise(float x, float y, float scale, float threshHold = .5f, float? seed = null)
-        {
-            threshHold = Mathf.Clamp01(threshHold);
-            return PerlinNoise(x, y, scale, seed) > threshHold;
         }
 
         /// <summary> Procedural noise generation, Perlin noise </summary>
@@ -126,14 +129,24 @@ namespace CXUtils.CodeUtils
 
         /// <summary> Generates a boolean value that the threshHold gives.
         /// <para>(clamps threshHold value between 0 ~ 1)</para> </summary>
-        public static bool PerlinNoise(Vector2 position, float scale, float threshHold = .5f, float? seed = null) =>
-            PerlinNoise(position.x, position.y, scale, threshHold, seed);
+        public static bool PerlinNoise_FlipCoin(float x, float y, float scale, float threshHold = .5f, float? seed = null)
+        {
+            threshHold = Mathf.Clamp01(threshHold);
+            return PerlinNoise(x, y, scale, seed) > threshHold;
+        }
+
+        /// <summary> Generates a boolean value that the threshHold gives.
+        /// <para>(clamps threshHold value between 0 ~ 1)</para> </summary>
+        public static bool PerlinNoise_FlipCoin(Vector2 position, float scale, float threshHold = .5f, float? seed = null) =>
+            PerlinNoise_FlipCoin(position.x, position.y, scale, threshHold, seed);
+
         #endregion
 
-        #region Randoms
-        /// <summary> Randomly decides </summary>
+        #region Random
+
+        /// <summary> Randomly decides and returns a boolean </summary>
         public static bool FlipCoin(float threshHold = .5f) =>
-            Random.Range(0f, 1f) > Mathf.Clamp01(threshHold);
+            Random.Range(0f, 1f) > threshHold;
 
         /// <summary> Randomly decides between two items </summary>
         public static T FlipCoin<T>(T t1, T t2, float threshHold = .5f) =>
@@ -146,6 +159,7 @@ namespace CXUtils.CodeUtils
         #endregion
 
         #region Other useful methods
+
         /// <summary> Swaps two objects </summary>
         public static void Swap<T>(ref T T1, ref T T2) =>
             (T1, T2) = (T2, T1);
@@ -158,6 +172,7 @@ namespace CXUtils.CodeUtils
                 ans += function(i);
             return ans;
         }
+
         #endregion
     }
 

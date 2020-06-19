@@ -2,7 +2,7 @@
 using UnityEngine;
 namespace CXUtils.HelperComponents
 {
-    ///<summary> This is the trajectory renderer for the monobehaviour </summary>
+    ///<summary> A Trajectory Renderer for renderering trajectories on x and y position </summary>
     public class TrajectoryRenderer : MonoBehaviour
     {
         #region Variables
@@ -87,6 +87,7 @@ namespace CXUtils.HelperComponents
             float FormulaRight = FormulaRightUp / FormulaRightDown;
             return FormulaLeft - FormulaRight;
         }
+        
         #endregion
     }
 }
