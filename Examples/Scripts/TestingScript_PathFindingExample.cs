@@ -6,7 +6,7 @@ using CXUtils.GridSystem.PathFinding;
 
 namespace CXUtils.Test
 {
-    //disabling IDE0044 warning (because this is monobehaviour)
+    //Note: Disables the annoying warning for the MonoBehaviour
 #pragma warning disable IDE0044
     public class TestingScript_PathFindingExample : MonoBehaviour
     {
@@ -68,6 +68,7 @@ namespace CXUtils.Test
 
             DrawUnWalkableDebugVisuals();
             DrawStartingPositionDebug();
+
             pathFinder.Grid.DrawDebug(Color.red, Color.white, 0.1f);
         }
 
