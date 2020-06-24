@@ -12,6 +12,14 @@ namespace CXUtils.CodeUtils
     ///<summary> Cx's Math Function Class </summary>
     public struct MathUtils
     {
+        // #region Test
+        
+        // private void Test()
+        // {
+            
+        // }
+        
+        // #endregion
 
         #region Range Manipulation
 
@@ -35,9 +43,15 @@ namespace CXUtils.CodeUtils
         }
 
         ///<summary> Maps the given value from the given range to the another given range (no Safety Checks) </summary>
+        /*
+            Process:
+            value - in_Min -- Making the range to map from 0
+            * (out_Max - out_Min) -- multiply by the size of the out Range
+            / (in_Max - in_Min) -- divide the size of the in_range (got the ans from range 0)
+            + out_Min -- and offset the value back to the original range
+        */
         public static float Map(float val, float in_min, float in_max, float out_min, float out_max) =>
             ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
-
         #endregion
 
         #region Lines

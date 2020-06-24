@@ -22,14 +22,17 @@ namespace CXUtils.CodeUtils
 
         ///<summary> This method will get the mouse position on the viewport pos on the camera </summary>
         public static Vector3 GetMouseOnViewPortPos(Camera camera) => camera.ScreenToViewportPoint(Input.mousePosition);
+        
         #endregion
 
 
         #region CameraOtherHelperMethods
+        
         ///<summary> This method will get the edges of the camera and return the edge camera pos </summary>
         public static Vector3 GetCameraPortPosOnWorldPos(Camera camera, PortOptions port)
         {
             #region postions
+
             //positions
             Vector2 LU = new Vector2(0, camera.pixelHeight);
             Vector2 LD = new Vector2(0, 0);
@@ -40,6 +43,7 @@ namespace CXUtils.CodeUtils
             Vector2 MD = new Vector2(camera.pixelWidth / 2, 0);
             Vector2 ML = new Vector2(0, camera.pixelHeight / 2);
             Vector2 MR = new Vector2(camera.pixelWidth, camera.pixelHeight / 2);
+            
             #endregion
 
             switch (port)
@@ -65,11 +69,8 @@ namespace CXUtils.CodeUtils
                 case PortOptions.LeftMiddle:
                 return camera.ScreenToWorldPoint(ML);
                 
-                case PortOptions.RightMiddle:
+                default: // PortOptions.RightMiddle
                 return camera.ScreenToWorldPoint(MR);
-                
-                default:
-                return default;
             }
         }
 
@@ -77,7 +78,7 @@ namespace CXUtils.CodeUtils
         public static Vector2 GetCameraBounds_Vec2_Ortho(Camera camera)
         {
             if (!camera.orthographic)
-                throw new Exception($"{camera.transform.name} is not orthographic! please turn on orthographic in order to use this method!");
+                throw new Exception($"{camera.name} is not orthographic! please turn on orthographic in order to use this method!");
 
             //getting the border of the real world space
             Vector2 BorderPositive = new Vector2(GetCameraPortPosOnWorldPos(camera, PortOptions.RightMiddle).x, GetCameraPortPosOnWorldPos(camera, PortOptions.UpMiddle).y);
@@ -87,6 +88,7 @@ namespace CXUtils.CodeUtils
         ///<summary> Get's the border in world space </summary>
         public static Bounds GetCameraBorders_Ortho(Camera camera) =>
             new Bounds(camera.transform.position, GetCameraBounds_Vec2_Ortho(camera) * 2);
+
         #endregion
     }
 
@@ -110,14 +112,18 @@ namespace CXUtils.CodeUtils
         #endregion
 
         #region Constructors
+        
         public CameraShake(Transform shakeTransform, float shakeRadius,
             EventHandler<Vector3> startShakeEvent = null, EventHandler<Vector3> whileShakeEvent = null)
         {
             this.shakeTransform = shakeTransform;
+
             if (shakeRadius < 0)
-                CodeUtils.DebugUtils.LogError<Exception>(shakeTransform, "Value Invalid!");
+                DebugUtils.LogError<Exception>(shakeTransform, "Value Invalid!");
+            
             shakeMin = -shakeRadius;
             shakeMax = shakeRadius;
+            
             //events
             Trigger_StartShake = startShakeEvent;
             Trigger_WhileShake = whileShakeEvent;
@@ -133,9 +139,11 @@ namespace CXUtils.CodeUtils
             Trigger_StartShake = startShakeEvent;
             Trigger_WhileShake = whileShakeEvent;
         }
+        
         #endregion
 
         #region MainScript methods
+        
         /// <summary> Starts to shake the given transform </summary>
         public void StartShake(MonoBehaviour monBhav, Vector3 origin, float time) =>
             monBhav.StartCoroutine(Shake(origin, time));
@@ -151,6 +159,7 @@ namespace CXUtils.CodeUtils
         /// <summary> Stop the shake of the given transform </summary>
         public void StopShake(MonoBehaviour monBhav) =>
             monBhav.StopCoroutine("Shake");
+            
         #endregion
 
         #region Struct Methods
@@ -202,7 +211,7 @@ namespace CXUtils.CodeUtils
                 UnityEngine.Random.Range(ShakeMin, ShakeMax));
 
         public string DebugDescribe() =>
-            $"";
+            $"Camera Shake: shaking: {shakeTransform.ToString() }\nShake Range: {shakeMin} ~ {shakeMax}";
         #endregion
 
     }

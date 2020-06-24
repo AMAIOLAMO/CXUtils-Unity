@@ -6,7 +6,7 @@ namespace CXUtils.CodeUtils
     ///<summary> CX's Vector class </summary>
     public struct VectorUtils
     {
-        #region Floor & Ceiling
+        #region Floor & Ceil
 
         public static Vector2 FloorVec2(Vector2 vec2) =>
             Map_Vec2(vec2, (val) => Mathf.Floor(val));
@@ -92,6 +92,18 @@ namespace CXUtils.CodeUtils
             return new Vector4((int)vec4.x, (int)vec4.y, (int)vec4.z, (int)vec4.w);
         }
 
+        #endregion
+
+        #region Math
+        
+        ///<summary> Get's the dot product of the given two vectors </summary>
+        public static float Dot(Vector3 vect1, Vector3 vect2) =>
+            vect1.x * vect2.x + vect1.y * vect2.y + vect1.z * vect2.z;
+        
+        ///<summary> Get's the dot product of the given two vectors </summary>
+        public static float Dot(Vector2 vect1, Vector2 vect2) =>
+            vect1.x * vect2.x + vect1.y * vect2.y;
+        
         #endregion
     }
 }
