@@ -162,7 +162,7 @@ namespace CXUtils.CodeUtils
             
         #endregion
 
-        #region Struct Methods
+        #region Private Methods
         //Transform origin
         private IEnumerator Shake(Transform origin, float time)
         {

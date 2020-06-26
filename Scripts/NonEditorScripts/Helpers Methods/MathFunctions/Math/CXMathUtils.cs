@@ -37,6 +37,7 @@ namespace CXUtils.CodeUtils
 
                 case CheckRangeOptions.valueBothEq:
                     return (x >= Min && x <= Max);
+                    
                 default:
                     return (x > Min && x < Max);
             }

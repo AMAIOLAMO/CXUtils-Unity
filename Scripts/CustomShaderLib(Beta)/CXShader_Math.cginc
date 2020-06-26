@@ -25,6 +25,12 @@ float Map(float value, float In_Min, float In_Max, float Out_Min, float Out_Max)
     return ((value - In_Min) * (Out_Max - Out_Min)) / (In_Max - In_Min) + Out_Min;
 }
 
+float2 RotateVector2(float2 vec, float Rad_Angle)
+{
+    float2 output = float2(vec.x * cos(Rad_Angle) - vec.y * sin(Rad_Angle),
+                           vec.x * sin(Rad_Angle) + vec.y * cos(Rad_Angle));
+}
+
 //clamps the value between 0 and 1
 float Clamp01(float value)
 {
