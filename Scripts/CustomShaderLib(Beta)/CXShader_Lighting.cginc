@@ -2,7 +2,7 @@
     Made by CXRedix
 */
 
-//Creates a simple diffuse lighting
+///<summary> Creates a simple Diffuse lighting </summary>
 fixed4 DiffuseLighting(fixed3 lightingDirection, fixed3 vertexNormal,
  fixed3 mainColor = fixed3(1, 1, 1), fixed fallOffIntensity = 0, bool doSaturate = false)
 {
@@ -16,9 +16,10 @@ fixed4 DiffuseLighting(fixed3 lightingDirection, fixed3 vertexNormal,
     return lightFallOff * fixed4(mainColor.rgb, 1);
 }
 
+///<summary> Creates a simple Phong lighting </summary>
 fixed4 PhongLighting(float3 camPos,
  float3 currentFragWorldPos, fixed3 currentFragNormal, fixed3 worldLightDir, float glossiness = 1)
- {
+{
     /*
     How does this work:
     Think of a camera, a light source and an object,
@@ -35,19 +36,20 @@ fixed4 PhongLighting(float3 camPos,
 
     //normalize the fragment to camera direction (since we don't want the magnitude to affect the lighting)
     float3 viewDir = normalize(fragToCameraDir);
-    
+
     //get's the reflect of the direction with the view direction from the camera to the current vertex's normal
     float3 reflectedLightDir = reflect(-viewDir, currentFragNormal);
 
     //saturates the dot of reflect with the world light to get the lighting value between 0 ~ 1
     float dotOfReflect = saturate(dot(reflectedLightDir, worldLightDir));
-    
+
     //The last is the result
     float specularFallOff = pow(dotOfReflect, glossiness);
 
     return specularFallOff;
- }
+}
 
+///<summary> Creates a simple Phong lighting </summary>
 fixed4 PhongLighting(fixed4 diffuseLighting, float3 camPos,
  float3 currentFragWorldPos, fixed3 currentFragNormal, fixed3 worldLightDir, float glossiness = 1)
 {
