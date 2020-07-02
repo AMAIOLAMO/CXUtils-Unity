@@ -134,8 +134,8 @@ namespace CXUtils.CodeUtils
         /// <summary> Procedural noise generation, Perlin noise </summary>
         public static float PerlinNoise(float x, float y, float scale, float? seed = null)
         {
-            float currentSeed = seed ?? UnityEngine.Random.Range(0f, 1f);
-            return Mathf.PerlinNoise(x * scale * currentSeed, y * scale * currentSeed);
+            float currentSeed = seed ?? 1;
+            return Mathf.PerlinNoise(x * scale + currentSeed, y * scale + currentSeed);
         }
 
         /// <summary> Procedural noise generation, Perlin noise </summary>
