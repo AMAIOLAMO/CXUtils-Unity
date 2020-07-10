@@ -7,37 +7,38 @@ namespace CXUtils.CodeUtils
 {
     /// <summary> Options flags for checking range </summary>
     public enum CheckRangeOptions
-    { valueLessEq, valueGreatEq, valueBothEq, valueNotBoth }
+    {
+        ///<summary> Include Max, exclude Min </summary>
+        IncMax,
+        ///<summary> Include Min, exclude Max </summary>
+        IncMin,
+        ///<summary> Include both Min and Max </sumary>
+        IncBoth,
+        ///<summary> Exclude Both Min and Max </summary>
+        ExcBoth
+    }
 
     ///<summary> Cx's Math Function Class </summary>
     public struct MathUtils
     {
-        // #region Test
-        
-        // private void Test()
-        // {
-            
-        // }
-        
-        // #endregion
 
         #region Range Manipulation
 
         ///<summary> Returns if the float is in the given range </summary>
-        public static bool CheckFloatInRange(float x, float Min, float Max,
-        CheckRangeOptions checkRangeMode = CheckRangeOptions.valueBothEq)
+        public static bool CheckValueInRange(float x, float Min, float Max,
+        CheckRangeOptions checkRangeMode = CheckRangeOptions.IncBoth)
         {
             switch (checkRangeMode)
             {
-                case CheckRangeOptions.valueLessEq:
+                case CheckRangeOptions.IncMax:
                     return (x > Min && x <= Max);
 
-                case CheckRangeOptions.valueGreatEq:
+                case CheckRangeOptions.IncMin:
                     return (x >= Min && x < Max);
 
-                case CheckRangeOptions.valueBothEq:
+                case CheckRangeOptions.IncBoth:
                     return (x >= Min && x <= Max);
-                    
+
                 default:
                     return (x > Min && x < Max);
             }
@@ -71,7 +72,7 @@ namespace CXUtils.CodeUtils
 
             //make boolean and check
             bool t_Bool, u_Bool;
-            (t_Bool, u_Bool) = (CheckFloatInRange(t, 0f, 1f), CheckFloatInRange(u, 0f, 1f));
+            (t_Bool, u_Bool) = (CheckValueInRange(t, 0f, 1f), CheckValueInRange(u, 0f, 1f));
             //making the bool to the things
             return (t_Bool && u_Bool);
         }

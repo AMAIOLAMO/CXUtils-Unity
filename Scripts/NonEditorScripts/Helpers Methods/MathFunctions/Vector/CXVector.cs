@@ -6,7 +6,6 @@ namespace CXUtils.CodeUtils
     ///<summary> CX's Vector class </summary>
     public struct VectorUtils
     {
-        
         #region Floor & Ceil
 
         public static Vector2 Floor(Vector2 vec2) =>
@@ -17,7 +16,6 @@ namespace CXUtils.CodeUtils
 
         public static Vector4 Floor(Vector4 vec4) =>
             Map(vec4, (val) => Mathf.Floor(val));
-
 
         public static Vector2 Ceil(Vector2 vec2) =>
             Map(vec2, (val) => Mathf.Ceil(val));
@@ -32,9 +30,7 @@ namespace CXUtils.CodeUtils
 
         #region Map
 
-        /// <summary>
-        /// Maps a function to every axis of the vector 2
-        /// </summary>
+        /// <summary> Maps a function to every axis of the vector 2 </summary>
         public static Vector2 Map(Vector2 vec2, Func<float, float> mapFunc)
         {
             vec2.x = mapFunc(vec2.x);
@@ -43,9 +39,7 @@ namespace CXUtils.CodeUtils
             return vec2;
         }
 
-        /// <summary>
-        /// Maps a function to every axis of the vector 3
-        /// </summary>
+        /// <summary> Maps a function to every axis of the vector 3 </summary>
         public static Vector3 Map(Vector3 vec3, Func<float, float> mapFunc)
         {
             vec3.x = mapFunc(vec3.x);
@@ -55,9 +49,7 @@ namespace CXUtils.CodeUtils
             return vec3;
         }
 
-        /// <summary>
-        /// Maps a function to every axis of the vector 4
-        /// </summary>
+        /// <summary> Maps a function to every axis of the vector 4 </summary>
         public static Vector4 Map(Vector4 vec4, Func<float, float> mapFunc)
         {
             vec4.x = mapFunc(vec4.x);
@@ -96,15 +88,45 @@ namespace CXUtils.CodeUtils
         #endregion
 
         #region Math
-        
+
         ///<summary> Get's the dot product of the given two vectors </summary>
         public static float Dot(Vector2 vect1, Vector2 vect2) =>
             vect1.x * vect2.x + vect1.y * vect2.y;
 
         ///<summary> Get's the dot product of the given two vectors </summary>
         public static float Dot(Vector3 vect1, Vector3 vect2) =>
-            vect1.x * vect2.x + vect1.y * vect2.y + vect1.z * vect2.z;
-        
+            Dot((Vector2)vect1, (Vector2)vect2) + vect1.z * vect2.z;
+
+        ///<summary> Get's the dot product of the given two vectors </summary>
+        public static float Dot(Vector4 vect1, Vector4 vect2) =>
+            Dot((Vector3)vect1, (Vector3)vect2) + vect1.w * vect2.w;
+
+        #endregion
+
+        #region Vector Manipulations
+
+        ///<summary> Set's the magnitude / length of the given vector to the given length </summary>
+        public static Vector3 SetLength(Vector3 vect, float len)
+        {
+            vect = vect.normalized;
+            vect *= len;
+            return vect;
+        }
+
+        ///<summary> Clamps the vector by magnitude value </summary>
+        public static Vector3 Clamp(Vector3 vect, float minMagnitude, float maxMagnitude)
+        {
+            if (vect.magnitude > maxMagnitude)
+                return SetLength(vect, maxMagnitude);
+
+            //else
+            if (vect.magnitude < minMagnitude)
+                return SetLength(vect, minMagnitude);
+
+            //else
+            return vect;
+        }
+
         #endregion
     }
 }
