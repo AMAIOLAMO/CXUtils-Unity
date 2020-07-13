@@ -9,11 +9,10 @@ namespace CXUtils.CodeUtils
     {
         ///<summary> Options for camera ports </summary>
         public enum PortOptions
-        {
-            LeftUp, LeftDown, RightUp, RightDown, LeftMiddle, RightMiddle, UpMiddle, DownMiddle
-        }
+        { LeftUp, LeftDown, RightUp, RightDown, LeftMiddle, RightMiddle, UpMiddle, DownMiddle }
 
         #region MousePosition
+
         ///<summary> This method will get the mouse position on the scene position on the camera </summary>
         public static Vector3 GetMouseOnWorldPos() => GetMouseOnWorldPos(Camera.main);
 
@@ -22,53 +21,78 @@ namespace CXUtils.CodeUtils
 
         ///<summary> This method will get the mouse position on the viewport pos on the camera </summary>
         public static Vector3 GetMouseOnViewPortPos(Camera camera) => camera.ScreenToViewportPoint(Input.mousePosition);
-        
+
+        /// <summary> Get's the Ray that shoots out with the current mouse position </summary>
+        public static Ray GetRayWithMousePos(Camera camera) => camera.ScreenPointToRay(Input.mousePosition);
+
+        /// <summary> Recieves the raycasthit info with the mouse position using the given camera </summary>
+        public static bool GetRaycastHitWithMousePos(Camera camera, out RaycastHit raycastHit, float maxDistance = float.MaxValue,
+            int layerMask = default, QueryTriggerInteraction queryTriggerInteraction = default) =>
+            Physics.Raycast(GetRayWithMousePos(camera), out raycastHit, maxDistance, layerMask, queryTriggerInteraction);
+
         #endregion
 
-
         #region CameraOtherHelperMethods
-        
+
+        static Vector2 LU;
+        static Vector2 LD = new Vector2(0, 0);
+        static Vector2 RU;
+        static Vector2 RD;
+        //middles
+        static Vector2 MU;
+        static Vector2 MD;
+        static Vector2 ML;
+        static Vector2 MR;
+
         ///<summary> This method will get the edges of the camera and return the edge camera pos </summary>
         public static Vector3 GetCameraPortPosOnWorldPos(Camera camera, PortOptions port)
         {
+            #region Vars
+
+            float halfWidth = camera.pixelWidth / 2f;
+            float halfHeight = camera.pixelHeight / 2f;
+
+            #endregion
+
             #region postions
 
             //positions
-            Vector2 LU = new Vector2(0, camera.pixelHeight);
-            Vector2 LD = new Vector2(0, 0);
-            Vector2 RU = new Vector2(camera.pixelWidth, camera.pixelHeight);
-            Vector2 RD = new Vector2(camera.pixelWidth, 0);
+            LU = new Vector2(0, camera.pixelHeight);
+            //LD is been initialized already
+            RU = new Vector2(camera.pixelWidth, camera.pixelHeight);
+            RD = new Vector2(camera.pixelWidth, 0);
+
             //middles
-            Vector2 MU = new Vector2(camera.pixelWidth / 2, camera.pixelHeight);
-            Vector2 MD = new Vector2(camera.pixelWidth / 2, 0);
-            Vector2 ML = new Vector2(0, camera.pixelHeight / 2);
-            Vector2 MR = new Vector2(camera.pixelWidth, camera.pixelHeight / 2);
-            
+            MU = new Vector2(halfWidth, camera.pixelHeight);
+            MD = new Vector2(halfWidth, 0);
+            ML = new Vector2(0, halfHeight);
+            MR = new Vector2(camera.pixelWidth, halfHeight);
+
             #endregion
 
             switch (port)
             {
                 case PortOptions.LeftUp:
                 return camera.ScreenToWorldPoint(LU);
-                
+
                 case PortOptions.LeftDown:
                 return camera.ScreenToWorldPoint(LD);
-                
+
                 case PortOptions.RightUp:
                 return camera.ScreenToWorldPoint(RU);
-                
+
                 case PortOptions.RightDown:
                 return camera.ScreenToWorldPoint(RD);
-                
+
                 case PortOptions.UpMiddle:
                 return camera.ScreenToWorldPoint(MU);
-                
+
                 case PortOptions.DownMiddle:
                 return camera.ScreenToWorldPoint(MD);
-                
+
                 case PortOptions.LeftMiddle:
                 return camera.ScreenToWorldPoint(ML);
-                
+
                 default: // PortOptions.RightMiddle
                 return camera.ScreenToWorldPoint(MR);
             }
@@ -112,7 +136,7 @@ namespace CXUtils.CodeUtils
         #endregion
 
         #region Constructors
-        
+
         public CameraShake(Transform shakeTransform, float shakeRadius,
             EventHandler<Vector3> startShakeEvent = null, EventHandler<Vector3> whileShakeEvent = null)
         {
@@ -120,10 +144,10 @@ namespace CXUtils.CodeUtils
 
             if (shakeRadius < 0)
                 DebugUtils.LogError<Exception>(shakeTransform, "Value Invalid!");
-            
+
             shakeMin = -shakeRadius;
             shakeMax = shakeRadius;
-            
+
             //events
             Trigger_StartShake = startShakeEvent;
             Trigger_WhileShake = whileShakeEvent;
@@ -139,11 +163,11 @@ namespace CXUtils.CodeUtils
             Trigger_StartShake = startShakeEvent;
             Trigger_WhileShake = whileShakeEvent;
         }
-        
+
         #endregion
 
         #region MainScript methods
-        
+
         /// <summary> Starts to shake the given transform </summary>
         public void StartShake(MonoBehaviour monBhav, Vector3 origin, float time) =>
             monBhav.StartCoroutine(Shake(origin, time));
@@ -159,7 +183,7 @@ namespace CXUtils.CodeUtils
         /// <summary> Stop the shake of the given transform </summary>
         public void StopShake(MonoBehaviour monBhav) =>
             monBhav.StopCoroutine("Shake");
-            
+
         #endregion
 
         #region Private Methods
@@ -211,7 +235,7 @@ namespace CXUtils.CodeUtils
                 UnityEngine.Random.Range(ShakeMin, ShakeMax));
 
         public string DebugDescribe() =>
-            $"Camera Shake: shaking: {shakeTransform.ToString() }\nShake Range: {shakeMin} ~ {shakeMax}";
+            $"Camera Shake: shaking: {shakeTransform }\nShake Range: {shakeMin} ~ {shakeMax}";
         #endregion
 
     }

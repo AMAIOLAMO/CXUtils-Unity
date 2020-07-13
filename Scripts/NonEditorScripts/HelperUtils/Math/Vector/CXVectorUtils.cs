@@ -4,7 +4,7 @@ using UnityEngine;
 namespace CXUtils.CodeUtils
 {
     ///<summary> CX's Vector class </summary>
-    public struct VectorUtils
+    public class VectorUtils
     {
         #region Floor & Ceil
 
@@ -65,39 +65,60 @@ namespace CXUtils.CodeUtils
         #region Rounding
 
         ///<summary> Round the Given to Int </summary>
-        public static Vector2Int RoundToInt(Vector2 vec2)
+        public static Vector2 Round(Vector2 vec2)
         {
             vec2 = Map(vec2, (val) => Mathf.Round(val));
-            return new Vector2Int((int)vec2.x, (int)vec2.y);
+            return new Vector2(vec2.x, vec2.y);
+        }
+
+        ///<summary> Round the Given to Int </summary>
+        public static Vector3 Round(Vector3 vec3)
+        {
+            vec3 = Map(vec3, (val) => Mathf.Round(val));
+            return new Vector3(vec3.x, vec3.y, vec3.z);
+        }
+
+        ///<summary> Round the Given to Int </summary>
+        public static Vector4 Round(Vector4 vec4)
+        {
+            vec4 = Map(vec4, (val) => Mathf.Round(val));
+            return new Vector4(vec4.x, vec4.y, vec4.z, vec4.w);
+        }
+
+        ///<summary> Round the Given to Int </summary>
+        public static Vector2Int RoundToInt(Vector2 vec2)
+        {
+            Vector2 rounded = Round(vec2);
+            return new Vector2Int((int)rounded.x, (int)rounded.y);
         }
 
         ///<summary> Round the Given to Int </summary>
         public static Vector3Int RoundToInt(Vector3 vec3)
         {
-            vec3 = Map(vec3, (val) => Mathf.Round(val));
-            return new Vector3Int((int)vec3.x, (int)vec3.y, (int)vec3.z);
+            Vector3 rounded = Round(vec3);
+            return new Vector3Int((int)rounded.x, (int)rounded.y, (int)rounded.z);
         }
 
         ///<summary> Round the Given to Int </summary>
         public static Vector4 RoundToInt(Vector4 vec4)
         {
-            vec4 = Map(vec4, (val) => Mathf.Round(val));
-            return new Vector4((int)vec4.x, (int)vec4.y, (int)vec4.z, (int)vec4.w);
+            vec4 = Map(vec4, (val) => Mathf.RoundToInt(val));
+            return new Vector4(vec4.x, vec4.y, vec4.z, vec4.w);
         }
 
         #endregion
 
         #region Math
 
-        ///<summary> Get's the dot product of the given two vectors </summary>
+        ///<summary> Get's the dot product (the similarities) of the given two vectors </summary>
         public static float Dot(Vector2 vect1, Vector2 vect2) =>
             vect1.x * vect2.x + vect1.y * vect2.y;
 
-        ///<summary> Get's the dot product of the given two vectors </summary>
+        ///<summary> Get's the dot product (the similarities) of the given two vectors </summary>
         public static float Dot(Vector3 vect1, Vector3 vect2) =>
             Dot((Vector2)vect1, (Vector2)vect2) + vect1.z * vect2.z;
 
-        ///<summary> Get's the dot product of the given two vectors </summary>
+        ///<summary> Get's the dot product (the similarities) of the given two vectors </summary>
         public static float Dot(Vector4 vect1, Vector4 vect2) =>
             Dot((Vector3)vect1, (Vector3)vect2) + vect1.w * vect2.w;
 

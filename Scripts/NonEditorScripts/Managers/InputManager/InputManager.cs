@@ -25,15 +25,17 @@ namespace CXUtils.Managers
         #endregion
 
         #region Finding Inputs
+
         /// <summary> Finds an input info by name </summary>
-        public InputInfo? FindInputInfoByName(string name)
+        public InputInfo FindInputInfoByName(string name)
         {
             foreach (var i in InputInfos)
-                if (i.Name.Equals(name))
+                if (i.NameKeyPair.Key.Equals(name))
                     return i;
 
             return null;
         }
+
         #endregion
     }
 }

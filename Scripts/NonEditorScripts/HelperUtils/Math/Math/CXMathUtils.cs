@@ -19,7 +19,7 @@ namespace CXUtils.CodeUtils
     }
 
     ///<summary> Cx's Math Function Class </summary>
-    public struct MathUtils
+    public class MathUtils
     {
 
         #region Range Manipulation
@@ -31,16 +31,13 @@ namespace CXUtils.CodeUtils
             switch (checkRangeMode)
             {
                 case CheckRangeOptions.IncMax:
-                    return (x > Min && x <= Max);
-
+                return (x > Min && x <= Max);
                 case CheckRangeOptions.IncMin:
-                    return (x >= Min && x < Max);
-
+                return (x >= Min && x < Max);
                 case CheckRangeOptions.IncBoth:
-                    return (x >= Min && x <= Max);
-
+                return (x >= Min && x <= Max);
                 default:
-                    return (x > Min && x < Max);
+                return (x > Min && x < Max);
             }
         }
 
