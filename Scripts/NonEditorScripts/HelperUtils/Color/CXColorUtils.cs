@@ -16,55 +16,49 @@ namespace CXUtils.CodeUtils
     }
 
     ///<summary> Cx's Color Class </summary>
-    public struct ColorUtils
+    public class ColorUtils
     {
         #region Script Methods
 
         ///<summary> Mapping A Color In A Range To Another Range </summary>
-        public static Color Map(Color startColor, Color RangeColor_Min, Color RangeColor_Max,
-            Color MapToColor_Min, Color MapToColor_Max) =>
+        public static Color Map(Color value, Color In_Min, Color In_Max,
+            Color Out_Min, Color Out_Max) =>
             new Color
             {
-                r = MathUtils.Map(startColor.r, RangeColor_Min.r, RangeColor_Max.r, MapToColor_Min.r, MapToColor_Max.r),
-                g = MathUtils.Map(startColor.g, RangeColor_Min.g, RangeColor_Max.g, MapToColor_Min.g, MapToColor_Max.g),
-                b = MathUtils.Map(startColor.b, RangeColor_Min.b, RangeColor_Max.b, MapToColor_Min.b, MapToColor_Max.b),
-                a = MathUtils.Map(startColor.a, RangeColor_Min.a, RangeColor_Max.a, MapToColor_Min.a, MapToColor_Max.a)
+                r = MathUtils.Map(value.r, In_Min.r, In_Max.r, Out_Min.r, Out_Max.r),
+                g = MathUtils.Map(value.g, In_Min.g, In_Max.g, Out_Min.g, Out_Max.g),
+                b = MathUtils.Map(value.b, In_Min.b, In_Max.b, Out_Min.b, Out_Max.b),
+                a = MathUtils.Map(value.a, In_Min.a, In_Max.a, Out_Min.a, Out_Max.a)
             };
 
-        ///<summary> Blends two color's together with a float (Clamps the blend variable to 0 ~ 1)</summary>
-        public static Color BlendColors(Color color1, Color color2, float blend)
-        {
-            blend = Mathf.Clamp01(blend);
-
-            color1 *= 1 - blend;
-            color2 *= blend;
-
-            return color1 + color2;
-
-            //learned this from shader coding, "Blend SrcAlpha OneMinusSrcAlpha" :D
-        }
+        ///<summary> Blends two color's together with a float (Clamps the blend variable to 0 ~ 1)
+        ///<para>It's simply another way of saying Color.lerp()</para></summary>
+        public static Color BlendColors(Color color1, Color color2, float blend) =>
+            Color.Lerp(color1, color2, blend); //learned this from shader coding, "Blend SrcAlpha OneMinusSrcAlpha" :D
 
         #region GrayScale
-        
+
         ///<summary> Get's the gray scale of the color </summary>
         public static float GetGrayScale(Color color,
          LumaConvertOptions lumaConvertOptions = LumaConvertOptions.Weighted)
         {
-            switch(lumaConvertOptions)
+            switch (lumaConvertOptions)
             {
                 case LumaConvertOptions.Weighted:
-                    return GetGrayScale_Weighted(color);
+                return GetGrayScale_Weighted(color);
 
                 case LumaConvertOptions.Luminosity_STD:
-                    return GetGrayScale_Luma(color);
+                return GetGrayScale_Luma(color);
+
+                //Luminosity_Performance
                 default:
-                    return  GetGrayScale_Luma2(color);
+                return GetGrayScale_Luma2(color);
             }
         }
 
         ///<summary> Get's the gray scale of the color by getting the average of the color </summary>
         public static float GetGrayScale_Weighted(Color color) =>
-            (color.r + color.g + color.b) / 3;
+            (color.r + color.g + color.b) / 3f;
 
         ///<summary> Get's the gray scale of the color using the Luminosity method </summary>
         public static float GetGrayScale_Luma(Color color) =>
@@ -77,7 +71,7 @@ namespace CXUtils.CodeUtils
         ///<summary> Get's the color of the GrayScale value with the given GrayScale value </summary>
         public static Color GetGrayScaleColorByGrayScale(float grayScale, float alpha = 1) =>
             new Color(grayScale, grayScale, grayScale, alpha);
-            
+
         #endregion
 
         #endregion

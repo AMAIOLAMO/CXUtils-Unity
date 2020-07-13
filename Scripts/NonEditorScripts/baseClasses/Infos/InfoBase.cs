@@ -1,18 +1,19 @@
-﻿using CXUtils.CodeUtils;
-using System;
+﻿using System;
+using CXUtils.CodeUtils;
 
 namespace CXUtils.DataUtils.Infos
 {
+    public interface IInfo : IDebugDescribable { }
     /// <summary> The ultimate base class of all the infos 
     ///(Not in use)</summary>
     [Serializable]
-    public struct Info : IDebugDescribable
+    public abstract class InfoBase : IInfo
     {
         public string DebugDescribe() =>
-            "New Info";
+            "base class Info";
 
         public new string ToString() =>
-            "New Info";
+            "base class Info";
     }
 }
 
