@@ -19,7 +19,7 @@ namespace CXUtils.CodeUtils
     }
 
     ///<summary> Cx's Math Function Class </summary>
-    public class MathUtils
+    public class MathUtils : CXBaseUtils
     {
 
         #region Range Manipulation

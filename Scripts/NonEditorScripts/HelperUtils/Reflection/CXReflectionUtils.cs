@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 namespace CXUtils.CodeUtils
 {
     ///<summary> A simple reflection helper </summary>
-    public class ReflectionUtils
+    public class ReflectionUtils : CXBaseUtils
     {
         #region GetInfos
 

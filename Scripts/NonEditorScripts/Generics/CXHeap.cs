@@ -10,15 +10,21 @@ namespace CXUtils.CodeUtils.Generic
     }
 
     /// <summary> A simple heap </summary>
-    public class Heap<T> where T : IHeapItem<T>
+    public class Heap<T> : ICloneable where T : IHeapItem<T>
     {
-        private readonly T[] items;
+        #region Vars
+
+        public T[] items;
 
         /// <summary> Total length of this heap </summary>
         public int Count { get; private set; }
 
+        #endregion
+
         public Heap(int maxHeapSize) =>
             items = new T[maxHeapSize];
+
+        #region Script Methods
 
         /// <summary> Check if this heap contains this item </summary>
         public bool Contains(T item) =>
@@ -43,7 +49,7 @@ namespace CXUtils.CodeUtils.Generic
             SortDown(items[0]);
             return firstItem;
         }
-        
+
         /// <summary> Updates an item if an item needs to be sorted </summary>
         public void UpdateItem(T item)
         {
@@ -108,5 +114,10 @@ namespace CXUtils.CodeUtils.Generic
             itemA.HeapIndex = itemB.HeapIndex;
             itemB.HeapIndex = itemAIndex;
         }
+
+        public object Clone() => 
+            new Heap<T>(items.Length) { items = items.Clone() as T[] }; 
+
+        #endregion
     }
 }

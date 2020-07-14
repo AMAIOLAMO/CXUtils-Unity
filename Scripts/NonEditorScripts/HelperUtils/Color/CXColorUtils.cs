@@ -16,9 +16,52 @@ namespace CXUtils.CodeUtils
     }
 
     ///<summary> Cx's Color Class </summary>
-    public class ColorUtils
+    public class ColorUtils : CXBaseUtils
     {
+        #region Predefine Colors
+
+        /// <summary> Unity doesn't have more colors? Use this! </summary>
+        public class PredefColors
+        {
+            /*
+             * Colors all From Wikipedia: Web_Colors => https://en.wikipedia.org/wiki/Web_colors
+             */
+
+            //Red Colors
+            public static Color mistyRose => new Color(1, .89f, 1);
+            public static Color crimson => new Color(.86f, .07f, .23f);
+
+            //Red Blue Colors
+            public static Color purple => new Color(.5f, 0, .5f);
+            public static Color violet => new Color(.93f, .5f, .93f);
+            public static Color darkViolet => new Color(.49f, 0, 1);
+            public static Color darkOrchid => new Color(.52f, .19f, .8f);
+
+            //Blue Colors
+            public static Color midnightBlue => new Color(.09f, .09f, .43f);
+            public static Color teal => new Color(0, .5f, .5f);
+            public static Color skyBlue => new Color(.52f, .8f, .92f);
+            public static Color deepSkyBlue => new Color(0, .74f, 1);
+
+            //Green Colors
+            public static Color lime => new Color(0, 1, 0);
+
+            //Yellow Colors
+            public static Color gold => new Color(1f, .84f, 0);
+            public static Color greenYellow => new Color(.67f, 1, .18f);
+
+            //White To Black Colors
+            public static Color slateGray => new Color(.43f, .5f, .56f);
+
+            //Other Colors
+            public static Color copper => new Color(.72f, .45f, .2f);
+        }
+
+        #endregion
+
         #region Script Methods
+
+        #region Manipulate Colors
 
         ///<summary> Mapping A Color In A Range To Another Range </summary>
         public static Color Map(Color value, Color In_Min, Color In_Max,
@@ -36,6 +79,8 @@ namespace CXUtils.CodeUtils
         public static Color BlendColors(Color color1, Color color2, float blend) =>
             Color.Lerp(color1, color2, blend); //learned this from shader coding, "Blend SrcAlpha OneMinusSrcAlpha" :D
 
+        #endregion
+
         #region GrayScale
 
         ///<summary> Get's the gray scale of the color </summary>
@@ -45,14 +90,14 @@ namespace CXUtils.CodeUtils
             switch (lumaConvertOptions)
             {
                 case LumaConvertOptions.Weighted:
-                return GetGrayScale_Weighted(color);
+                    return GetGrayScale_Weighted(color);
 
                 case LumaConvertOptions.Luminosity_STD:
-                return GetGrayScale_Luma(color);
+                    return GetGrayScale_Luma(color);
 
                 //Luminosity_Performance
                 default:
-                return GetGrayScale_Luma2(color);
+                    return GetGrayScale_Luma2(color);
             }
         }
 
@@ -71,6 +116,14 @@ namespace CXUtils.CodeUtils
         ///<summary> Get's the color of the GrayScale value with the given GrayScale value </summary>
         public static Color GetGrayScaleColorByGrayScale(float grayScale, float alpha = 1) =>
             new Color(grayScale, grayScale, grayScale, alpha);
+
+        #endregion
+
+        #region Convert
+
+        /// <summary> Converts all 255 based int Colors into unity Colors </summary>
+        public static Color Convert255ToColor(int r, int g, int b, int a) =>
+            new Color(r / 255f, g / 255f, b / 255f, a / 255f);
 
         #endregion
 

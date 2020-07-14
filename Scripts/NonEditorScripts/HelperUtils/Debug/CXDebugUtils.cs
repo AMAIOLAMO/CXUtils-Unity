@@ -29,7 +29,7 @@ namespace CXUtils.CodeUtils
     #endregion
 
     /// <summary> A class full of helper function for debugging </summary>
-    public class DebugUtils
+    public class DebugUtils : CXBaseUtils
     {
         #region Logs
 
@@ -98,9 +98,12 @@ namespace CXUtils.CodeUtils
         static void Dlog(object sender, object msg) =>
             Debug.Log($"[{sender}] {msg}");
 
+        static void DlogError(object sender, object msg) =>
+            Debug.LogError($"[{sender}] {msg}");
+
         static void DlogError<T>(object sender, string msg) where T : Exception, new()
         {
-            Dlog(sender, msg);
+            DlogError(sender, msg);
             throw new T();
         }
 

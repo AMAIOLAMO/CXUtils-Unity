@@ -1,5 +1,6 @@
-﻿using CXUtils.CodeUtils;
+﻿using System;
 using UnityEngine;
+using CXUtils.CodeUtils;
 
 namespace CXUtils.HelperComponents
 {
@@ -9,14 +10,17 @@ namespace CXUtils.HelperComponents
         [SerializeField] private CameraShake cameraShake;
 
         #region Main Thread
+
         private void Awake()
         {
             if (cameraShake.ShakeTransform == null)
                 cameraShake = new CameraShake(transform, cameraShake.ShakeMax);
         }
+
         #endregion
 
         #region Script Utils
+
         /// <summary> Starts to shake to a position </summary> 
         public void StartShake(float time)
         {
@@ -30,6 +34,7 @@ namespace CXUtils.HelperComponents
             cameraShake.StopShake(this);
             cameraShake.StartShake(this, origin, time);
         }
+
         #endregion
     }
 }

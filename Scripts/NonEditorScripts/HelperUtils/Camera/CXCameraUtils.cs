@@ -1,11 +1,11 @@
-using UnityEngine;
 using System;
+using UnityEngine;
 using System.Collections;
 
 namespace CXUtils.CodeUtils
 {
     ///<summary> Cx's Camera Class </summary>
-    public class CameraUtils
+    public class CameraUtils : CXBaseUtils
     {
         ///<summary> Options for camera ports </summary>
         public enum PortOptions
@@ -35,7 +35,7 @@ namespace CXUtils.CodeUtils
         #region CameraOtherHelperMethods
 
         static Vector2 LU;
-        static Vector2 LD = new Vector2(0, 0);
+        static Vector2 LD = Vector2.zero;
         static Vector2 RU;
         static Vector2 RD;
         //middles
@@ -44,13 +44,16 @@ namespace CXUtils.CodeUtils
         static Vector2 ML;
         static Vector2 MR;
 
+        static float halfWidth;
+        static float halfHeight;
+
         ///<summary> This method will get the edges of the camera and return the edge camera pos </summary>
         public static Vector3 GetCameraPortPosOnWorldPos(Camera camera, PortOptions port)
         {
             #region Vars
 
-            float halfWidth = camera.pixelWidth / 2f;
-            float halfHeight = camera.pixelHeight / 2f;
+            halfWidth = camera.pixelWidth / 2f;
+            halfHeight = camera.pixelHeight / 2f;
 
             #endregion
 
@@ -73,28 +76,28 @@ namespace CXUtils.CodeUtils
             switch (port)
             {
                 case PortOptions.LeftUp:
-                return camera.ScreenToWorldPoint(LU);
+                    return camera.ScreenToWorldPoint(LU);
 
                 case PortOptions.LeftDown:
-                return camera.ScreenToWorldPoint(LD);
+                    return camera.ScreenToWorldPoint(LD);
 
                 case PortOptions.RightUp:
-                return camera.ScreenToWorldPoint(RU);
+                    return camera.ScreenToWorldPoint(RU);
 
                 case PortOptions.RightDown:
-                return camera.ScreenToWorldPoint(RD);
+                    return camera.ScreenToWorldPoint(RD);
 
                 case PortOptions.UpMiddle:
-                return camera.ScreenToWorldPoint(MU);
+                    return camera.ScreenToWorldPoint(MU);
 
                 case PortOptions.DownMiddle:
-                return camera.ScreenToWorldPoint(MD);
+                    return camera.ScreenToWorldPoint(MD);
 
                 case PortOptions.LeftMiddle:
-                return camera.ScreenToWorldPoint(ML);
+                    return camera.ScreenToWorldPoint(ML);
 
                 default: // PortOptions.RightMiddle
-                return camera.ScreenToWorldPoint(MR);
+                    return camera.ScreenToWorldPoint(MR);
             }
         }
 
@@ -105,7 +108,8 @@ namespace CXUtils.CodeUtils
                 throw new Exception($"{camera.name} is not orthographic! please turn on orthographic in order to use this method!");
 
             //getting the border of the real world space
-            Vector2 BorderPositive = new Vector2(GetCameraPortPosOnWorldPos(camera, PortOptions.RightMiddle).x, GetCameraPortPosOnWorldPos(camera, PortOptions.UpMiddle).y);
+            Vector2 BorderPositive = new Vector2(GetCameraPortPosOnWorldPos(camera, PortOptions.RightMiddle).x,
+                GetCameraPortPosOnWorldPos(camera, PortOptions.UpMiddle).y);
             return BorderPositive - (Vector2)camera.transform.position;
         }
 
@@ -120,18 +124,22 @@ namespace CXUtils.CodeUtils
     [Serializable]
     struct CameraShake : IDebugDescribable
     {
-        #region Properties
-        [SerializeField] private readonly Transform shakeTransform;
-        [SerializeField] private readonly float shakeMin, shakeMax;
-        public Transform ShakeTransform => shakeTransform;
+        #region Vars
+
+        //Public
         public float ShakeMin => shakeMin;
         public float ShakeMax => shakeMax;
+        public Transform ShakeTransform => shakeTransform;
 
         /// <summary> Triggers when start shaking, EventArgs: original Position (Center camera shake) </summary>
         public event EventHandler<Vector3> Trigger_StartShake;
 
         /// <summary> Triggers while shakeing, EventArgs: shaking offset </summary> </summary>
         public event EventHandler<Vector3> Trigger_WhileShake;
+
+        //Private
+        [SerializeField] private Transform shakeTransform;
+        [SerializeField] private float shakeMin, shakeMax;
 
         #endregion
 
@@ -172,7 +180,7 @@ namespace CXUtils.CodeUtils
         public void StartShake(MonoBehaviour monBhav, Vector3 origin, float time) =>
             monBhav.StartCoroutine(Shake(origin, time));
 
-        /// <summary> Starts to shake the given transform </summary> 
+        /// <summary> Starts to shake the given transform </summary>
         public void StartShake(MonoBehaviour monBhav, Transform origin, float time) =>
             monBhav.StartCoroutine(Shake(origin, time));
 
@@ -187,6 +195,7 @@ namespace CXUtils.CodeUtils
         #endregion
 
         #region Private Methods
+
         //Transform origin
         private IEnumerator Shake(Transform origin, float time)
         {
@@ -237,6 +246,5 @@ namespace CXUtils.CodeUtils
         public string DebugDescribe() =>
             $"Camera Shake: shaking: {shakeTransform }\nShake Range: {shakeMin} ~ {shakeMax}";
         #endregion
-
     }
 }

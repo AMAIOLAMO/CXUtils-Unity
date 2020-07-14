@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace CXUtils.CodeUtils
 {
     ///<summary> Cx's Mesh managing Class </summary>
-    public class MeshUtils
+    public class MeshUtils : CXBaseUtils
     {
         #region All Mesh
         /// <summary> Adds a triangle mesh on a mesh </summary>

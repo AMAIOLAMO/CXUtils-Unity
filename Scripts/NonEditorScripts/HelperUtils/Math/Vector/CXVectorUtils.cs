@@ -4,7 +4,7 @@ using UnityEngine;
 namespace CXUtils.CodeUtils
 {
     ///<summary> CX's Vector class </summary>
-    public class VectorUtils
+    public class VectorUtils : CXBaseUtils
     {
         #region Floor & Ceil
 
