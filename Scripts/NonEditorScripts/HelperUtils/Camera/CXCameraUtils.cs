@@ -5,11 +5,11 @@ using System.Collections;
 namespace CXUtils.CodeUtils
 {
     ///<summary> Cx's Camera Class </summary>
-    public class CameraUtils : CXBaseUtils
+    public class CameraUtils : IBaseUtils
     {
         ///<summary> Options for camera ports </summary>
         public enum PortOptions
-        { LeftUp, LeftDown, RightUp, RightDown, LeftMiddle, RightMiddle, UpMiddle, DownMiddle }
+        { LeftUp, LeftDown, RightUp, RightDown, LeftMiddle, RightMiddle, UpMiddle, DownMiddle, Center }
 
         #region MousePosition
 
@@ -34,8 +34,9 @@ namespace CXUtils.CodeUtils
 
         #region CameraOtherHelperMethods
 
-        static Vector2 LU;
+        //corners
         static Vector2 LD = Vector2.zero;
+        static Vector2 LU;
         static Vector2 RU;
         static Vector2 RD;
         //middles
@@ -43,6 +44,8 @@ namespace CXUtils.CodeUtils
         static Vector2 MD;
         static Vector2 ML;
         static Vector2 MR;
+        //center
+        static Vector2 camCenter;
 
         static float halfWidth;
         static float halfHeight;
@@ -59,7 +62,7 @@ namespace CXUtils.CodeUtils
 
             #region postions
 
-            //positions
+            //corners
             LU = new Vector2(0, camera.pixelHeight);
             //LD is been initialized already
             RU = new Vector2(camera.pixelWidth, camera.pixelHeight);
@@ -70,6 +73,9 @@ namespace CXUtils.CodeUtils
             MD = new Vector2(halfWidth, 0);
             ML = new Vector2(0, halfHeight);
             MR = new Vector2(camera.pixelWidth, halfHeight);
+
+            //Center
+            camCenter = new Vector2(halfWidth, halfHeight);
 
             #endregion
 
@@ -96,26 +102,27 @@ namespace CXUtils.CodeUtils
                 case PortOptions.LeftMiddle:
                     return camera.ScreenToWorldPoint(ML);
 
-                default: // PortOptions.RightMiddle
+                case PortOptions.RightMiddle:
                     return camera.ScreenToWorldPoint(MR);
+
+                default: // PortOptions.Center
+                    return camera.ScreenToWorldPoint(camCenter);
             }
         }
 
         ///<summary> Get's the Vector2 border in world space </summary>
-        public static Vector2 GetCameraBounds_Vec2_Ortho(Camera camera)
+        public static Bounds GetCameraBounds_Vec2_Ortho(Camera camera)
         {
             if (!camera.orthographic)
-                throw new Exception($"{camera.name} is not orthographic! please turn on orthographic in order to use this method!");
+                throw new ArgumentException($"{camera.name} is not orthographic! please turn on orthographic in order to use this method!",
+                    nameof(camera.orthographic));
 
             //getting the border of the real world space
             Vector2 BorderPositive = new Vector2(GetCameraPortPosOnWorldPos(camera, PortOptions.RightMiddle).x,
                 GetCameraPortPosOnWorldPos(camera, PortOptions.UpMiddle).y);
-            return BorderPositive - (Vector2)camera.transform.position;
-        }
 
-        ///<summary> Get's the border in world space </summary>
-        public static Bounds GetCameraBorders_Ortho(Camera camera) =>
-            new Bounds(camera.transform.position, GetCameraBounds_Vec2_Ortho(camera) * 2);
+            return new Bounds(camera.transform.position, BorderPositive);
+        }
 
         #endregion
     }
@@ -150,8 +157,8 @@ namespace CXUtils.CodeUtils
         {
             this.shakeTransform = shakeTransform;
 
-            if (shakeRadius < 0)
-                DebugUtils.LogError<Exception>(shakeTransform, "Value Invalid!");
+            if (shakeRadius <= 0)
+                throw new ArgumentOutOfRangeException("Shake radius must be bigger than 0!", nameof(shakeRadius));
 
             shakeMin = -shakeRadius;
             shakeMax = shakeRadius;
@@ -187,6 +194,14 @@ namespace CXUtils.CodeUtils
         /// <summary> Starts to shake the given transform </summary>
         public void StartShake(MonoBehaviour monBhav, float time) =>
             StartShake(monBhav, monBhav.transform.position, time);
+
+        /// <summary> Shakes once </summary>
+        public void Shake(Vector3 origin) =>
+            ShakeTransform.position = origin + GenerateShakeVec();
+
+        /// <summary> Shakes once </summary>
+        public void Shake(Transform origin) =>
+            Shake(origin.position);
 
         /// <summary> Stop the shake of the given transform </summary>
         public void StopShake(MonoBehaviour monBhav) =>
@@ -239,12 +254,11 @@ namespace CXUtils.CodeUtils
         }
 
         private Vector3 GenerateShakeVec() =>
-            new Vector3(UnityEngine.Random.Range(ShakeMin, ShakeMax),
-                UnityEngine.Random.Range(ShakeMin, ShakeMax),
-                UnityEngine.Random.Range(ShakeMin, ShakeMax));
+            VectorUtils.RandomVec3(ShakeMin, ShakeMax);
 
         public string DebugDescribe() =>
-            $"Camera Shake: shaking: {shakeTransform }\nShake Range: {shakeMin} ~ {shakeMax}";
+            $"Camera Shake: shaking transform: {shakeTransform}\nShake Range: ({shakeMin} ~ {shakeMax})";
+
         #endregion
     }
 }

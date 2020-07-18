@@ -1,12 +1,11 @@
 using System;
-using UnityEngine;
 
 using Random = UnityEngine.Random;
 
 namespace CXUtils.CodeUtils
 {
     /// <summary> Options flags for checking range </summary>
-    public enum CheckRangeOptions
+    public enum RangeOptions
     {
         ///<summary> Include Max, exclude Min </summary>
         IncMax,
@@ -19,25 +18,48 @@ namespace CXUtils.CodeUtils
     }
 
     ///<summary> Cx's Math Function Class </summary>
-    public class MathUtils : CXBaseUtils
+    public class MathUtils : IBaseUtils
     {
+        #region Consts
+
+        /// <summary> PI * 2 </summary>
+        public const float TAU = 6.28318530717958f;
+
+        #endregion
 
         #region Range Manipulation
 
         ///<summary> Returns if the float is in the given range </summary>
-        public static bool CheckValueInRange(float x, float Min, float Max,
-        CheckRangeOptions checkRangeMode = CheckRangeOptions.IncBoth)
+        public static bool ValueInRange(float x, float Min, float Max,
+        RangeOptions checkRangeMode = RangeOptions.IncBoth)
         {
             switch (checkRangeMode)
             {
-                case CheckRangeOptions.IncMax:
-                return (x > Min && x <= Max);
-                case CheckRangeOptions.IncMin:
-                return (x >= Min && x < Max);
-                case CheckRangeOptions.IncBoth:
-                return (x >= Min && x <= Max);
+                case RangeOptions.IncMax:
+                    return (x > Min && x <= Max);
+                case RangeOptions.IncMin:
+                    return (x >= Min && x < Max);
+                case RangeOptions.IncBoth:
+                    return (x >= Min && x <= Max);
                 default:
-                return (x > Min && x < Max);
+                    return (x > Min && x < Max);
+            }
+        }
+
+        ///<summary> Returns if the float is in the given range </summary>
+        public static bool ValueInRange(double x, double Min, double Max,
+        RangeOptions checkRangeMode = RangeOptions.IncBoth)
+        {
+            switch (checkRangeMode)
+            {
+                case RangeOptions.IncMax:
+                    return (x > Min && x <= Max);
+                case RangeOptions.IncMin:
+                    return (x >= Min && x < Max);
+                case RangeOptions.IncBoth:
+                    return (x >= Min && x <= Max);
+                default:
+                    return (x > Min && x < Max);
             }
         }
 
@@ -51,6 +73,7 @@ namespace CXUtils.CodeUtils
         */
         public static float Map(float val, float in_min, float in_max, float out_min, float out_max) =>
             ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+
         #endregion
 
         #region Lines
@@ -69,7 +92,8 @@ namespace CXUtils.CodeUtils
 
             //make boolean and check
             bool t_Bool, u_Bool;
-            (t_Bool, u_Bool) = (CheckValueInRange(t, 0f, 1f), CheckValueInRange(u, 0f, 1f));
+            (t_Bool, u_Bool) = (ValueInRange(t, 0f, 1f), ValueInRange(u, 0f, 1f));
+
             //making the bool to the things
             return (t_Bool && u_Bool);
         }
@@ -101,45 +125,15 @@ namespace CXUtils.CodeUtils
 
         ///<summary> Convert's a given degree angle into radiants </summary>
         ///<param name="deg"> The converting Degrees </param>
-        public static float DegreeToRadiants(float deg) =>
+        public static float DegToRad(float deg) =>
             deg * UnityEngine.Mathf.Deg2Rad;
 
         ///<summary> Convert's a given radiant angle to degree </summary>
         ///<param name="rad"> The converting Radiants </param>
-        public static float RadiantsToDegree(float rad) =>
+        public static float RadToDeg(float rad) =>
             rad * UnityEngine.Mathf.Rad2Deg;
 
         #endregion
-
-        ///<summary> Get's the angle between two vectors </summary>
-        ///<param name="from"> The vector start with </param>
-        ///<param name="to"> The vector end with </param>
-        public static float AngleBetweenVects2D(Vector2 from, Vector2 to)
-        {
-            float angle = Vector2.Angle(from, to);
-            Vector2 diffBetweenFromAndTo = to - from;
-
-            if (diffBetweenFromAndTo.y < 0)
-                angle = -angle;
-
-            return angle;
-        }
-
-        #endregion
-
-        #region Random
-
-        /// <summary> Randomly decides and returns a boolean </summary>
-        public static bool FlipCoin(float threshHold = .5f) =>
-            Random.Range(0f, 1f) > threshHold;
-
-        /// <summary> Randomly decides between two items </summary>
-        public static T FlipCoin<T>(T t1, T t2, float threshHold = .5f) =>
-            FlipCoin(threshHold) ? t1 : t2;
-
-        /// <summary> Randomly returns a float between 0 ~ 1 </summary>
-        public static float RandomFloat() =>
-            Random.Range(0f, 1f);
 
         #endregion
 

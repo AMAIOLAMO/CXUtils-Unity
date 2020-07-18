@@ -3,12 +3,12 @@
 namespace CXUtils.CodeUtils
 {
     ///<summary> A simple noise helper class </summary>
-    public class NoiseUtils : CXBaseUtils
+    public class NoiseUtils : IBaseUtils
     {
         #region Perlin noise
 
         /// <summary> Procedural noise generation, Perlin noise (scale cannot be 0)
-        /// <para>Note: seed will be default to 0</para></summary>
+        /// <para>QUICK NOTE:seed will be default to 0</para></summary>
         public static float PerlinNoise(float x, float y, float scale, float? seed = null)
         {
             float currentSeed = seed ?? 0;
@@ -16,13 +16,14 @@ namespace CXUtils.CodeUtils
         }
 
         /// <summary> Procedural noise generation, Perlin noise (scale cannot be 0)
-        /// <para>Note: seed will be default to 0</para></summary>
+        /// <para>QUICK NOTE:seed will be default to 0</para></summary>
         public static float PerlinNoise(Vector2 position, float scale, float? seed = null) =>
             PerlinNoise(position.x, position.y, scale, seed);
 
         /// <summary> Generates a boolean value that the threshHold gives.
-        /// <para>(clamps threshHold value between 0 ~ 1)</para>
-        /// <para>Note: seed will be default to 0</para></summary>
+        /// <para>QUICK NOTEs:</para>
+        /// <para>clamps threshHold value between 0 ~ 1</para>
+        /// <para>seed will be default to 0</para></summary>
         public static bool PerlinNoise_FlipCoin(float x, float y, float scale, float threshHold = .5f,
          float? seed = null)
         {
@@ -31,8 +32,9 @@ namespace CXUtils.CodeUtils
         }
 
         /// <summary> Generates a boolean value that the threshHold gives.
-        /// <para>(clamps threshHold value between 0 ~ 1)</para>
-        /// <para>Note: seed will be default to 0</para></summary>
+        /// <para>QUICK NOTEs:</para>
+        /// <para>clamps threshHold value between 0 ~ 1</para>
+        /// <para>seed will be default to 0</para></summary>
         public static bool PerlinNoise_FlipCoin(Vector2 position, float scale, float threshHold = .5f,
          float? seed = null) =>
             PerlinNoise_FlipCoin(position.x, position.y, scale, threshHold, seed);
@@ -42,7 +44,7 @@ namespace CXUtils.CodeUtils
         #region Noise maps
 
         ///<summary> Generates a simple perlin noise map and returns the int array 
-        ///<para>parent x -> child y, format: int[x, y]</para></summary>
+        ///<para>QUICK NOTE: format: float[x, y]</para></summary>
         public static float[,] PerlinNoiseMap(int width, int height, int start_x, int start_y, float scale,
          float? seed = null)
         {
@@ -55,23 +57,27 @@ namespace CXUtils.CodeUtils
             return map;
         }
 
-        ///<summary> Combines two perlin noise maps (returns a 0 by 0 map if failed) </summary>
-        public static float[,] CombinePerlinNoiseMap(float[,] map1, float[,] map2)
+        ///<summary> Combines two perlin noise maps 
+        ///<para>QUICK NOTE: returns a 0 by 0 map if failed</para> </summary>
+        public static bool TryCombinePerlinNoiseMap(float[,] map1, float[,] map2, out float[,] noiseMap)
         {
             int MP1_Width = map1.GetLength(0);
             int MP1_Height = map1.GetLength(1);
 
             if (!MP1_Width.Equals(map2.GetLength(0)) || !MP1_Height.Equals(map2.GetLength(1)))
-                return new float[0, 0];
+            {
+                noiseMap = default;
+                return false;
+            }
 
-            float[,] returnedMap = new float[MP1_Width, MP1_Height];
+            noiseMap = new float[MP1_Width, MP1_Height];
 
             //*else
             for (int x = 0; x < MP1_Width; x++)
                 for (int y = 0; y < MP1_Height; y++)
-                    returnedMap[x, y] = map1[x, y] * map2[x, y];
+                    noiseMap[x, y] = map1[x, y] * map2[x, y];
 
-            return returnedMap;
+            return true;
         }
 
         #endregion

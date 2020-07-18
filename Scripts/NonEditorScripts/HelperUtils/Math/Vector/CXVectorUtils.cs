@@ -1,33 +1,13 @@
 using System;
 using UnityEngine;
 
+using Random = UnityEngine.Random;
+
 namespace CXUtils.CodeUtils
 {
     ///<summary> CX's Vector class </summary>
-    public class VectorUtils : CXBaseUtils
+    public class VectorUtils : IBaseUtils
     {
-        #region Floor & Ceil
-
-        public static Vector2 Floor(Vector2 vec2) =>
-            Map(vec2, (val) => Mathf.Floor(val));
-
-        public static Vector3 Floor(Vector3 vec3) =>
-            Map(vec3, (val) => Mathf.Floor(val));
-
-        public static Vector4 Floor(Vector4 vec4) =>
-            Map(vec4, (val) => Mathf.Floor(val));
-
-        public static Vector2 Ceil(Vector2 vec2) =>
-            Map(vec2, (val) => Mathf.Ceil(val));
-
-        public static Vector3 Ceil(Vector3 vec3) =>
-            Map(vec3, (val) => Mathf.Ceil(val));
-
-        public static Vector4 Ceil(Vector4 vec4) =>
-            Map(vec4, (val) => Mathf.Ceil(val));
-
-        #endregion
-
         #region Map
 
         /// <summary> Maps a function to every axis of the vector 2 </summary>
@@ -60,6 +40,52 @@ namespace CXUtils.CodeUtils
             return vec4;
         }
 
+        #endregion
+
+        #region Math
+
+        ///<summary> Get's the angle between two vectors </summary>
+        ///<param name="from"> The vector start with </param>
+        ///<param name="to"> The vector end with </param>
+        public static float AngleBetweenVects2D(Vector2 from, Vector2 to)
+        {
+            float angle = Vector2.Angle(from, to);
+            float diffY = to.y - from.y;
+            
+            if (diffY < 0)
+                angle = -angle;
+
+            return angle;
+        }
+
+        #endregion
+
+        #region Random
+
+        /// <summary> Generates a random vector2 </summary>
+        public static Vector2 RandomVec2(float min, float max) =>
+            new Vector2(Random.Range(min, max), Random.Range(min, max));
+
+        /// <summary> Generates a random vector3 </summary>
+        public static Vector3 RandomVec3(float min, float max) =>
+            new Vector3(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));
+
+        /// <summary> Generates a random vector4 </summary>
+        public static Vector4 RandomVec4(float min, float max) =>
+            new Vector4(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));
+
+        /// <summary> Generates a random vector2Int </summary>
+        public static Vector2Int RandomVec2Int(int min, int max) =>
+            new Vector2Int(Random.Range(min, max), Random.Range(min, max));
+
+        /// <summary> Generates a random vector3Int </summary>
+        public static Vector3Int RandomVec3Int(int min, int max) =>
+            new Vector3Int(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));
+
+        /// <summary> Generates a random vector4Int
+        /// <para>QUICK NOTE: there is no Vector4Int, so becareful of using it as an integer</para></summary>
+        public static Vector4 RandomVec4Int(int min, int max) =>
+            new Vector4(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));
         #endregion
 
         #region Rounding
@@ -108,19 +134,25 @@ namespace CXUtils.CodeUtils
 
         #endregion
 
-        #region Math
+        #region Floor & Ceil
 
-        ///<summary> Get's the dot product (the similarities) of the given two vectors </summary>
-        public static float Dot(Vector2 vect1, Vector2 vect2) =>
-            vect1.x * vect2.x + vect1.y * vect2.y;
+        public static Vector2 Floor(Vector2 vec2) =>
+            Map(vec2, (val) => Mathf.Floor(val));
 
-        ///<summary> Get's the dot product (the similarities) of the given two vectors </summary>
-        public static float Dot(Vector3 vect1, Vector3 vect2) =>
-            Dot((Vector2)vect1, (Vector2)vect2) + vect1.z * vect2.z;
+        public static Vector3 Floor(Vector3 vec3) =>
+            Map(vec3, (val) => Mathf.Floor(val));
 
-        ///<summary> Get's the dot product (the similarities) of the given two vectors </summary>
-        public static float Dot(Vector4 vect1, Vector4 vect2) =>
-            Dot((Vector3)vect1, (Vector3)vect2) + vect1.w * vect2.w;
+        public static Vector4 Floor(Vector4 vec4) =>
+            Map(vec4, (val) => Mathf.Floor(val));
+
+        public static Vector2 Ceil(Vector2 vec2) =>
+            Map(vec2, (val) => Mathf.Ceil(val));
+
+        public static Vector3 Ceil(Vector3 vec3) =>
+            Map(vec3, (val) => Mathf.Ceil(val));
+
+        public static Vector4 Ceil(Vector4 vec4) =>
+            Map(vec4, (val) => Mathf.Ceil(val));
 
         #endregion
 

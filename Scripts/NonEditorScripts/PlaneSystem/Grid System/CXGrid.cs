@@ -574,7 +574,7 @@ namespace CXUtils.GridSystem
     }
 
     /// <summary> A Utils class for CXGrid </summary>
-    public class CXGridUtils : CXBaseUtils
+    public class CXGridUtils : IBaseUtils
     {
         /// <summary>
         /// Get's the Grid's line positions for line renderer

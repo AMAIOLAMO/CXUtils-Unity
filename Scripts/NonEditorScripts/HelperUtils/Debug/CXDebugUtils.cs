@@ -29,7 +29,7 @@ namespace CXUtils.CodeUtils
     #endregion
 
     /// <summary> A class full of helper function for debugging </summary>
-    public class DebugUtils : CXBaseUtils
+    public class DebugUtils : IBaseUtils
     {
         #region Logs
 
@@ -50,20 +50,20 @@ namespace CXUtils.CodeUtils
             switch (logListMode)
             {
                 case LogListOptions.oneLine:
-                sb.Append($"Items({listT.Length}): ");
+                    sb.Append($"Items({listT.Length}): ");
 
-                for (i = 0; i < listIndexMax; i++)
-                    sb.Append($"{listT[i]}{between}");
+                    for (i = 0; i < listIndexMax; i++)
+                        sb.Append($"{listT[i]}{between}");
 
-                sb.Append($"{listT[i]}");
-                break;
+                    sb.Append($"{listT[i]}");
+                    break;
 
                 case LogListOptions.Multiline:
-                for (i = 0; i < listIndexMax; i++)
-                    sb.Append($"\nItem {i} : {listT[i]}{between}");
+                    for (i = 0; i < listIndexMax; i++)
+                        sb.Append($"\nItem {i} : {listT[i]}{between}");
 
-                sb.Append($"\nItem {listIndexMax} : {listT[i]}");
-                break;
+                    sb.Append($"\nItem {listIndexMax} : {listT[i]}");
+                    break;
             }
 
             Dlog(sender, sb.ToString());
@@ -80,6 +80,39 @@ namespace CXUtils.CodeUtils
         /// <summary> Logs the description for this object </summary>
         public static void LogDescription(object sender, IDebugDescribable debugDescribable) =>
             Log(sender, debugDescribable.DebugDescribe());
+
+        #endregion
+
+        #region Editor
+
+        /// <summary> Runs a method only inside the editor </summary>
+        public static bool RunInEditor(Action action)
+        {
+#if UNITY_EDITOR
+            action?.Invoke();
+            return true;
+#endif
+            return false;
+        }
+        /// <summary> Runs a method only inside the build </summary>
+        public static bool RunInBuild(Action action)
+        {
+#if !UNITY_EDITOR
+            action?.Invoke();
+            return true;
+#endif
+            return false;
+        }
+
+        /// <summary> Runs two methods between Editor and build </summary>
+        public static void RunInEditorOrBuild(Action editorAction, Action buildAction)
+        {
+#if UNITY_EDITOR
+            editorAction?.Invoke();
+#else
+            buildAction?.Invoke();
+#endif
+        }
 
         #endregion
 

@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 namespace CXUtils.CodeUtils
 {
     ///<summary> A helper for scene managing </summary>
-    public class SceneUtils : CXBaseUtils
+    public class SceneUtils : IBaseUtils
     {
         #region Vars
 

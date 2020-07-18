@@ -16,7 +16,7 @@ namespace CXUtils.CodeUtils
     }
 
     ///<summary> Cx's Color Class </summary>
-    public class ColorUtils : CXBaseUtils
+    public class ColorUtils : IBaseUtils
     {
         #region Predefine Colors
 
