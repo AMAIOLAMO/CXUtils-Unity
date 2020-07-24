@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace CXUtils.CodeUtils
 {
@@ -10,9 +11,9 @@ namespace CXUtils.CodeUtils
     public enum LogListOptions
     {
         /// <summary> Logs on one line </summary>
-        oneLine,
+        Single,
         /// <summary> Logs on multiple lines </summary>
-        Multiline
+        Multiple
     }
 
     #endregion
@@ -38,18 +39,34 @@ namespace CXUtils.CodeUtils
             Dlog(sender, msg);
 
         /// <summary> Logs a list of objects using ToString </summary>
-        public static void LogList<T>(object sender, T[] listT, LogListOptions logListMode = LogListOptions.oneLine, string between = ", ")
+        public static void LogList<T>(object sender, T[] listT, LogListOptions logListMode = LogListOptions.Single, string between = ", ")
         {
             if (listT.Length == 0)
+            {
+                Dlog(sender, $"Items(0): List: {nameof(listT)}'s length is 0");
                 return;
+            }
+
+            if (listT.Length == 1)
+                switch (logListMode)
+                {
+                    case LogListOptions.Single:
+                        Dlog(sender, $"Items({listT.Length}): {listT[0]}");
+                        return;
+
+                    case LogListOptions.Multiple:
+                        Dlog(sender, $"Items({listT.Length}):\nItem 0 : {listT[0]}");
+                        return;
+                }
 
             StringBuilder sb = new StringBuilder();
+
             int i;
             int listIndexMax = listT.Length - 1;
 
             switch (logListMode)
             {
-                case LogListOptions.oneLine:
+                case LogListOptions.Single:
                     sb.Append($"Items({listT.Length}): ");
 
                     for (i = 0; i < listIndexMax; i++)
@@ -58,7 +75,7 @@ namespace CXUtils.CodeUtils
                     sb.Append($"{listT[i]}");
                     break;
 
-                case LogListOptions.Multiline:
+                case LogListOptions.Multiple:
                     for (i = 0; i < listIndexMax; i++)
                         sb.Append($"\nItem {i} : {listT[i]}{between}");
 
@@ -92,7 +109,9 @@ namespace CXUtils.CodeUtils
             action?.Invoke();
             return true;
 #endif
+#pragma warning disable CS0162
             return false;
+#pragma warning restore
         }
         /// <summary> Runs a method only inside the build </summary>
         public static bool RunInBuild(Action action)

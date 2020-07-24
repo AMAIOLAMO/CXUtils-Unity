@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-
 using Random = UnityEngine.Random;
 
 namespace CXUtils.CodeUtils
@@ -51,7 +50,7 @@ namespace CXUtils.CodeUtils
         {
             float angle = Vector2.Angle(from, to);
             float diffY = to.y - from.y;
-            
+
             if (diffY < 0)
                 angle = -angle;
 
@@ -86,6 +85,23 @@ namespace CXUtils.CodeUtils
         /// <para>QUICK NOTE: there is no Vector4Int, so becareful of using it as an integer</para></summary>
         public static Vector4 RandomVec4Int(int min, int max) =>
             new Vector4(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));
+
+        /// <summary>
+        /// Generates a random direction based on the given direction
+        /// <para>QUICK NOTE: this method offsets the current vector</para>
+        /// </summary>
+        public static Vector3 RandomDirection(Vector3 direction)
+        {
+            //get's the original magnitude
+            float originMagnitude = direction.magnitude;
+
+            direction = direction.normalized;
+            //adding a new direction on to the original direction
+            direction += RandomVec3(0f, 1f);
+            direction = SetLength(direction, originMagnitude);
+            return direction;
+        }
+
         #endregion
 
         #region Rounding
@@ -115,14 +131,14 @@ namespace CXUtils.CodeUtils
         public static Vector2Int RoundToInt(Vector2 vec2)
         {
             Vector2 rounded = Round(vec2);
-            return new Vector2Int((int)rounded.x, (int)rounded.y);
+            return new Vector2Int((int) rounded.x, (int) rounded.y);
         }
 
         ///<summary> Round the Given to Int </summary>
         public static Vector3Int RoundToInt(Vector3 vec3)
         {
             Vector3 rounded = Round(vec3);
-            return new Vector3Int((int)rounded.x, (int)rounded.y, (int)rounded.z);
+            return new Vector3Int((int) rounded.x, (int) rounded.y, (int) rounded.z);
         }
 
         ///<summary> Round the Given to Int </summary>
