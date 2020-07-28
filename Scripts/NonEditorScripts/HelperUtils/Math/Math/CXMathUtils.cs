@@ -18,7 +18,7 @@ namespace CXUtils.CodeUtils
     }
 
     ///<summary> Cx's Math Function Class </summary>
-    public class MathUtils : IBaseUtils
+    public class MathUtils
     {
         #region Consts
 
@@ -30,8 +30,7 @@ namespace CXUtils.CodeUtils
         #region Range Manipulation
 
         ///<summary> Returns if the float is in the given range </summary>
-        public static bool ValueInRange(float x, float Min, float Max,
-        RangeOptions checkRangeMode = RangeOptions.IncBoth)
+        public static bool ValueInRange(float x, float Min, float Max, RangeOptions checkRangeMode = RangeOptions.IncBoth)
         {
             switch (checkRangeMode)
             {
@@ -46,9 +45,10 @@ namespace CXUtils.CodeUtils
             }
         }
 
-        ///<summary> Returns if the float is in the given range </summary>
-        public static bool ValueInRange(double x, double Min, double Max,
-        RangeOptions checkRangeMode = RangeOptions.IncBoth)
+        ///<summary>
+        ///Returns if the double is in the given range
+        ///</summary>
+        public static bool ValueInRange(double x, double Min, double Max, RangeOptions checkRangeMode = RangeOptions.IncBoth)
         {
             switch (checkRangeMode)
             {
@@ -71,8 +71,7 @@ namespace CXUtils.CodeUtils
             / (in_Max - in_Min) -- divide the size of the in_range (got the ans from range 0)
             + out_Min -- and offset the value back to the original range
         */
-        public static float Map(float val, float in_min, float in_max, float out_min, float out_max) =>
-            ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+        public static float Map(float val, float in_min, float in_max, float out_min, float out_max) => ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 
         #endregion
 
@@ -138,10 +137,6 @@ namespace CXUtils.CodeUtils
         #endregion
 
         #region Other useful methods
-
-        /// <summary> Swaps two objects </summary>
-        public static void Swap<T>(ref T T1, ref T T2) =>
-            (T1, T2) = (T2, T1);
 
         /// <summary> The summification function Zigma </summary>
         public static float Zigma(int start_i, int end_i, Func<float, float> function)

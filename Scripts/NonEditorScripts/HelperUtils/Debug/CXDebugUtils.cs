@@ -30,7 +30,7 @@ namespace CXUtils.CodeUtils
     #endregion
 
     /// <summary> A class full of helper function for debugging </summary>
-    public class DebugUtils : IBaseUtils
+    public class DebugUtils
     {
         #region Logs
 
@@ -87,16 +87,13 @@ namespace CXUtils.CodeUtils
         }
 
         /// <summary> Logs an Error </summary>
-        public static void LogError(object sender, string msg) =>
-            DlogError<Exception>(sender, msg);
+        public static void LogError(object sender, string msg) => DlogError<Exception>(sender, msg);
 
         /// <summary> Logs an Error </summary>
-        public static void LogError<T>(object sender, string msg) where T : Exception, new() =>
-            DlogError<T>(sender, msg);
+        public static void LogError<T>(object sender, string msg) where T : Exception, new() => DlogError<T>(sender, msg);
 
         /// <summary> Logs the description for this object </summary>
-        public static void LogDescription(object sender, IDebugDescribable debugDescribable) =>
-            Log(sender, debugDescribable.DebugDescribe());
+        public static void LogDescription(object sender, IDebugDescribable debugDescribable) => Log(sender, debugDescribable.DebugDescribe());
 
         #endregion
 
@@ -138,8 +135,7 @@ namespace CXUtils.CodeUtils
         #region Performance
 
         /// <summary> Get's the current FPS (Frames per second) </summary>
-        public static float GetFPS() =>
-            GetCurrentFPS();
+        public static float GetFPS() => GetCurrentFPS();
 
         #endregion
 

@@ -16,7 +16,7 @@ namespace CXUtils.CodeUtils
     }
 
     ///<summary> Cx's Color Class </summary>
-    public class ColorUtils : IBaseUtils
+    public static class ColorUtils
     {
         #region Predefine Colors
 
@@ -76,16 +76,14 @@ namespace CXUtils.CodeUtils
 
         ///<summary> Blends two color's together with a float (Clamps the blend variable to 0 ~ 1)
         ///<para>It's simply another way of saying Color.lerp()</para></summary>
-        public static Color BlendColors(Color color1, Color color2, float blend) =>
-            Color.Lerp(color1, color2, blend); //learned this from shader coding, "Blend SrcAlpha OneMinusSrcAlpha" :D
+        public static Color BlendColors(Color color1, Color color2, float blend) => Color.Lerp(color1, color2, blend); //learned this from shader coding, "Blend SrcAlpha OneMinusSrcAlpha" :D
 
         #endregion
 
         #region GrayScale
 
         ///<summary> Get's the gray scale of the color </summary>
-        public static float GetGrayScale(Color color,
-         LumaConvertOptions lumaConvertOptions = LumaConvertOptions.Weighted)
+        public static float GetGrayScale(this Color color, LumaConvertOptions lumaConvertOptions = LumaConvertOptions.Weighted)
         {
             switch (lumaConvertOptions)
             {
@@ -102,28 +100,23 @@ namespace CXUtils.CodeUtils
         }
 
         ///<summary> Get's the gray scale of the color by getting the average of the color </summary>
-        public static float GetGrayScale_Weighted(Color color) =>
-            (color.r + color.g + color.b) / 3f;
+        public static float GetGrayScale_Weighted(this Color color) => (color.r + color.g + color.b) / 3f;
 
         ///<summary> Get's the gray scale of the color using the Luminosity method </summary>
-        public static float GetGrayScale_Luma(Color color) =>
-            .2126f * color.r + .7152f * color.g + .0722f * color.b;
+        public static float GetGrayScale_Luma(this Color color) => .2126f * color.r + .7152f * color.g + .0722f * color.b;
 
         ///<summary> Same as the first luma method, but more quicker </summary>
-        public static float GetGrayScale_Luma2(Color color) =>
-            (color.r + color.r + color.b + color.g + color.g + color.g) / 6f;
+        public static float GetGrayScale_Luma2(this Color color) => (color.r + color.r + color.b + color.g + color.g + color.g) / 6f;
 
         ///<summary> Get's the color of the GrayScale value with the given GrayScale value </summary>
-        public static Color GetGrayScaleColorByGrayScale(float grayScale, float alpha = 1) =>
-            new Color(grayScale, grayScale, grayScale, alpha);
+        public static Color GetGrayScaleColorByGrayScale(this float grayScale, float alpha = 1) => new Color(grayScale, grayScale, grayScale, alpha);
 
         #endregion
 
         #region Convert
 
         /// <summary> Converts all 255 based int Colors into unity Colors </summary>
-        public static Color Convert255ToColor(int r, int g, int b, int a) =>
-            new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+        public static Color Convert255ToColor(int r, int g, int b, int a) => new Color(r / 255f, g / 255f, b / 255f, a / 255f);
 
         #endregion
 

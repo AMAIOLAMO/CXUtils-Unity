@@ -3,7 +3,7 @@
 namespace CXUtils.CodeUtils
 {
     ///<summary> A simple noise helper class </summary>
-    public class NoiseUtils : IBaseUtils
+    public class NoiseUtils
     {
         #region Perlin noise
 
@@ -17,27 +17,19 @@ namespace CXUtils.CodeUtils
 
         /// <summary> Procedural noise generation, Perlin noise (scale cannot be 0)
         /// <para>QUICK NOTE:seed will be default to 0</para></summary>
-        public static float PerlinNoise(Vector2 position, float scale, float? seed = null) =>
-            PerlinNoise(position.x, position.y, scale, seed);
+        public static float PerlinNoise(Vector2 position, float scale, float? seed = null) => PerlinNoise(position.x, position.y, scale, seed);
 
         /// <summary> Generates a boolean value that the threshHold gives.
         /// <para>QUICK NOTEs:</para>
         /// <para>clamps threshHold value between 0 ~ 1</para>
         /// <para>seed will be default to 0</para></summary>
-        public static bool PerlinNoise_FlipCoin(float x, float y, float scale, float threshHold = .5f,
-         float? seed = null)
-        {
-            threshHold = Mathf.Clamp01(threshHold);
-            return PerlinNoise(x, y, scale, seed) > threshHold;
-        }
+        public static bool PerlinNoise_FlipCoin(float x, float y, float scale, float threshHold = .5f, float? seed = null) => PerlinNoise(x, y, scale, seed) > Mathf.Clamp01(threshHold);
 
         /// <summary> Generates a boolean value that the threshHold gives.
         /// <para>QUICK NOTEs:</para>
         /// <para>clamps threshHold value between 0 ~ 1</para>
         /// <para>seed will be default to 0</para></summary>
-        public static bool PerlinNoise_FlipCoin(Vector2 position, float scale, float threshHold = .5f,
-         float? seed = null) =>
-            PerlinNoise_FlipCoin(position.x, position.y, scale, threshHold, seed);
+        public static bool PerlinNoise_FlipCoin(Vector2 position, float scale, float threshHold = .5f, float? seed = null) => PerlinNoise_FlipCoin(position.x, position.y, scale, threshHold, seed);
 
         #endregion
 
@@ -45,8 +37,7 @@ namespace CXUtils.CodeUtils
 
         ///<summary> Generates a simple perlin noise map and returns the int array 
         ///<para>QUICK NOTE: format: float[x, y]</para></summary>
-        public static float[,] PerlinNoiseMap(int width, int height, int start_x, int start_y, float scale,
-         float? seed = null)
+        public static float[,] PerlinNoiseMap(int width, int height, int start_x, int start_y, float scale, float? seed = null)
         {
             float[,] map = new float[width, height];
 

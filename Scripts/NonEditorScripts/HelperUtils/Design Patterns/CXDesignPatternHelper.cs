@@ -4,7 +4,7 @@ using CXUtils.CodeUtils;
 namespace CXUtils.DesignPatterns
 {
     /// <summary> A helper class for making design patterns </summary>
-    public class DesignPatternUtils : IBaseUtils
+    public class DesignPatternUtils
     {
         /// <summary>
         /// Creates a simple singleton manager.

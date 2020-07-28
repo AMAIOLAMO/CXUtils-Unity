@@ -4,7 +4,7 @@ using UnityEngine;
 namespace CXUtils.CodeUtils
 {
     /// <summary> A helper for controlling texts </summary>
-    public class TextUtils : IBaseUtils
+    public class TextUtils
     {
         #region SpawnTxtOnWorld
 

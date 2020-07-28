@@ -14,8 +14,7 @@ namespace CXUtils.UsefulTypes
 
         public RangeValueBase(T value, T min, T max) : base(min, max)
         {
-            if (!InRange(value))
-                ExceptionUtils.ThrowException<Exception>($"[{nameof(RangeValueBase<T>)}] Constructor Error: Value out of range!");
+            if (!InRange(value)) new Exception().ThrowInUnity($"[{nameof(RangeValueBase<T>)}] Constructor Error: Value out of range!");
 
             Value = value;
         }

@@ -1,25 +1,23 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace CXUtils.CodeUtils
 {
     /// <summary> CX's Exception Utils, good for handeling Exceptions </summary>
-    public class ExceptionUtils : IBaseUtils
+    public static class ExceptionUtils
     {
-        /// <summary> Throws an exception and error </summary>
-        public static void ThrowException<TException>(object errorMsg, bool onUnity = true)
-            where TException : Exception, new()
+        /// <summary>
+        /// Throws an exception and error inside of unity
+        /// </summary>
+        public static void ThrowInUnity<TException>(this TException ex, object errorMsg, bool onUnity = true) where TException : Exception, new()
         {
-            if (onUnity)
-                Debug.LogError(errorMsg);
+            if (onUnity) Debug.LogError(errorMsg);
 
-            throw new TException();
+            throw ex;
         }
 
-        /// <summary> Throws an exception and error </summary>
-        public static void ThrowException<TException>(string objName, object errorMsg, bool onUnity = true)
-            where TException : Exception, new() =>
-            ThrowException<TException>($"{objName}: {errorMsg}", onUnity);
+        /// <inheritdoc cref="ThrowInUnity{TException}(TException, object, bool)"/>
+        public static void ThrowInUnity<TException>(this TException ex, string objName, object errorMsg, bool onUnity = true) where TException : Exception, new() =>
+            ex.ThrowInUnity($"{objName}: {errorMsg}", onUnity);
     }
 }

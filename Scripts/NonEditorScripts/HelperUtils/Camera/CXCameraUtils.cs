@@ -5,7 +5,7 @@ using System.Collections;
 namespace CXUtils.CodeUtils
 {
     ///<summary> Cx's Camera Class </summary>
-    public class CameraUtils : IBaseUtils
+    public static class CameraUtils
     {
         ///<summary> Options for camera ports </summary>
         public enum PortOptions
@@ -17,18 +17,18 @@ namespace CXUtils.CodeUtils
         public static Vector3 GetMouseOnWorldPos() => GetMouseOnWorldPos(Camera.main);
 
         ///<summary> This method will get the mouse position on the scene position on the camera </summary>
-        public static Vector3 GetMouseOnWorldPos(Camera camera) => camera.ScreenToWorldPoint(Input.mousePosition);
+        public static Vector3 GetMouseOnWorldPos(this Camera camera) => camera.ScreenToWorldPoint(Input.mousePosition);
 
         ///<summary> This method will get the mouse position on the viewport pos on the camera </summary>
-        public static Vector3 GetMouseOnViewPortPos(Camera camera) => camera.ScreenToViewportPoint(Input.mousePosition);
+        public static Vector3 GetMouseOnViewPortPos(this Camera camera) => camera.ScreenToViewportPoint(Input.mousePosition);
 
         /// <summary> Get's the Ray that shoots out with the current mouse position </summary>
-        public static Ray GetRayWithMousePos(Camera camera) => camera.ScreenPointToRay(Input.mousePosition);
+        public static Ray GetRayWithMousePos(this Camera camera) => camera.ScreenPointToRay(Input.mousePosition);
 
         /// <summary> Recieves the raycasthit info with the mouse position using the given camera </summary>
-        public static bool GetRaycastHitWithMousePos(Camera camera, out RaycastHit raycastHit, float maxDistance = float.MaxValue,
+        public static bool GetRaycastHitWithMousePos(this Camera camera, out RaycastHit raycastHit, float maxDistance = float.PositiveInfinity,
             int layerMask = default, QueryTriggerInteraction queryTriggerInteraction = default) =>
-            Physics.Raycast(GetRayWithMousePos(camera), out raycastHit, maxDistance, layerMask, queryTriggerInteraction);
+            Physics.Raycast(camera.GetRayWithMousePos(), out raycastHit, maxDistance, layerMask, queryTriggerInteraction);
 
         #endregion
 
@@ -51,7 +51,7 @@ namespace CXUtils.CodeUtils
         static float halfHeight;
 
         ///<summary> This method will get the edges of the camera and return the edge camera pos </summary>
-        public static Vector3 GetCameraPortPosOnWorldPos(Camera camera, PortOptions port)
+        public static Vector3 GetCameraPortPosOnWorldPos(this Camera camera, PortOptions port)
         {
             #region Vars
 
@@ -111,7 +111,7 @@ namespace CXUtils.CodeUtils
         }
 
         ///<summary> Get's the Vector2 border in world space </summary>
-        public static Bounds GetCameraBounds_Vec2_Ortho(Camera camera)
+        public static Bounds GetCameraBounds_Vec2_Ortho(this Camera camera)
         {
             if (!camera.orthographic)
                 throw new ArgumentException($"{camera.name} is not orthographic! please turn on orthographic in order to use this method!",

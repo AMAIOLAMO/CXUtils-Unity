@@ -21,18 +21,15 @@ namespace CXUtils.GridSystem
     [Serializable]
     public class CXGrid : CXGrid<object>
     {
-        public CXGrid(Vector2Int gridSize, float cellSize, Vector3 origin = default, Func<int, int, object> createGridOBJ = null,
-            GridDimentionOptions gridDimention = GridDimentionOptions.XY) :
+        public CXGrid(Vector2Int gridSize, float cellSize, Vector3 origin = default, Func<int, int, object> createGridOBJ = null, GridDimentionOptions gridDimention = GridDimentionOptions.XY) :
             base(gridSize, cellSize, origin, createGridOBJ, gridDimention)
         { }
 
-        public CXGrid(int width, int height, float cellSize, Vector3 origin = default, object initialValue = null,
-            GridDimentionOptions gridDimention = GridDimentionOptions.XY) :
+        public CXGrid(int width, int height, float cellSize, Vector3 origin = default, object initialValue = null, GridDimentionOptions gridDimention = GridDimentionOptions.XY) :
             base(width, height, cellSize, origin, initialValue, gridDimention)
         { }
 
-        public CXGrid(int width, int height, float cellSize, Vector3 origin = default, Func<int, int, object> createGridOBJ = null,
-            GridDimentionOptions gridDimention = GridDimentionOptions.XY) :
+        public CXGrid(int width, int height, float cellSize, Vector3 origin = default, Func<int, int, object> createGridOBJ = null, GridDimentionOptions gridDimention = GridDimentionOptions.XY) :
             base(width, height, cellSize, origin, createGridOBJ, gridDimention)
         { }
     }
@@ -115,6 +112,7 @@ namespace CXUtils.GridSystem
         #region GetPositions
 
         #region WorldPosition
+
         /// <summary>Tries to converts the grid position into world position </summary>
         public bool TryGetWorldPosition(int x, int y, out Vector3 worldPosition)
         {
@@ -139,9 +137,11 @@ namespace CXUtils.GridSystem
         /// <summary> Converts the grid position into world position </summary> 
         public Vector3 GetWorldPosition(Vector2Int gridPosition) =>
             GetWorldPosition(gridPosition.x, gridPosition.y);
+
         #endregion
 
         #region GridPosition
+
         /// <summary> Converts the world position into grid position </summary>
         public bool TryGetGridPosition(Vector3 worldPosition, out Vector2Int gridPosition)
         {
@@ -573,13 +573,12 @@ namespace CXUtils.GridSystem
         #endregion
     }
 
-    /// <summary> A Utils class for CXGrid </summary>
-    public class CXGridUtils : IBaseUtils
+    public static class CXGridExtensions
     {
         /// <summary>
         /// Get's the Grid's line positions for line renderer
         /// </summary>
-        public static List<Vector3> GetGridLinePositions<T>(CXGrid<T> grid)
+        public static List<Vector3> GetGridLinePositions<T>(this CXGrid<T> grid)
         {
             List<Vector3> Positions = new List<Vector3>();
 
@@ -622,7 +621,7 @@ namespace CXUtils.GridSystem
         /// <summary>
         /// Draws the grid using the line renderer
         /// </summary>
-        public static void DrawGridByLineRenderer<T>(CXGrid<T> grid, LineRenderer lineRenderer)
+        public static void DrawGridByLineRenderer<T>(this CXGrid<T> grid, LineRenderer lineRenderer)
         {
             List<Vector3> Positions = GetGridLinePositions(grid);
 
