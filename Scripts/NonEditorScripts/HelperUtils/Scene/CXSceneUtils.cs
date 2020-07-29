@@ -10,10 +10,24 @@ namespace CXUtils.CodeUtils
     {
         #region Vars
 
-        public static int NextSceneIndex => SM.GetActiveScene().buildIndex + 1;
+        /// <summary>
+        /// Current Active Scene index
+        /// </summary>
+        public static int CurrentSceneIndex => SM.GetActiveScene().buildIndex;
 
-        public static int PreviousSceneIndex => SM.GetActiveScene().buildIndex - 1;
+        /// <summary>
+        /// Next Scene index
+        /// </summary>
+        public static int NextSceneIndex => CurrentSceneIndex + 1;
 
+        /// <summary>
+        /// Previous Scene index
+        /// </summary>
+        public static int PrevSceneIndex => CurrentSceneIndex - 1;
+
+        /// <summary>
+        /// Last Scene index
+        /// </summary>
         public static int LastSceneIndex => SM.sceneCount - 1;
 
         #endregion
@@ -21,12 +35,12 @@ namespace CXUtils.CodeUtils
         #region SceneCheck
 
         /// <summary>
-        /// Returns if the scene exists, checking <paramref name="sceneIndex"/>
+        /// Returns if the scene exists, checking using <paramref name="sceneIndex"/>
         /// </summary>
         public static bool SceneExists(int sceneIndex) => sceneIndex >= 0 && sceneIndex < SM.sceneCount;
 
         /// <summary>
-        /// Returns if the scene exists, checking <paramref name="sceneName"/>
+        /// Returns if the scene exists, checking using <paramref name="sceneName"/>
         /// </summary>
         public static bool SceneExists(string sceneName) => SM.GetSceneByName(sceneName).IsValid();
 
@@ -39,7 +53,10 @@ namespace CXUtils.CodeUtils
         /// <inheritdoc cref="TryLoadNextScene(LoadSceneMode)"/>
         public static bool LoadNextScene() => TryLoadNextScene(LoadSceneMode.Single);
 
-        ///<summary> Load The Next Scene and Return if the next scene is valid </summary>
+        ///<summary> 
+        ///Tries to load the next scene.
+        ///<para>Return if the next scene is valid</para>
+        ///</summary>
         public static bool TryLoadNextScene(LoadSceneMode loadSceneMode)
         {
             if (!SceneExists(NextSceneIndex)) return false;
@@ -52,7 +69,7 @@ namespace CXUtils.CodeUtils
 
         #region Async
         
-        /// <summary> Loads the next scene asyncronously </summary>
+        /// <inheritdoc cref="LoadNextSceneAsync(LoadSceneMode, out AsyncOperation)"/>
         public static bool LoadNextSceneAsync(out AsyncOperation asyncOperation) => LoadNextSceneAsync(LoadSceneMode.Single, out asyncOperation);
 
         /// <summary> Loads the next scene asyncronously </summary>
@@ -81,7 +98,7 @@ namespace CXUtils.CodeUtils
         public static bool TryGetNextScene(out Scene scene) => TryGetSceneAt(NextSceneIndex, out scene);
 
         /// <summary> Tries to get the previous scene </summary>
-        public static bool TryGetPreviousScene(out Scene scene) => TryGetSceneAt(PreviousSceneIndex, out scene);
+        public static bool TryGetPreviousScene(out Scene scene) => TryGetSceneAt(PrevSceneIndex, out scene);
 
         /// <summary> Tries to get the given index's scene </summary>
         public static bool TryGetSceneAt(int index, out Scene scene)

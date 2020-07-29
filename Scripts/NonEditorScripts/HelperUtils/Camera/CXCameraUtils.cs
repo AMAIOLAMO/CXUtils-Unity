@@ -14,10 +14,10 @@ namespace CXUtils.CodeUtils
         #region MousePosition
 
         ///<summary> This method will get the mouse position on the scene position on the camera </summary>
-        public static Vector3 GetMouseOnWorldPos() => GetMouseOnWorldPos(Camera.main);
-
-        ///<summary> This method will get the mouse position on the scene position on the camera </summary>
         public static Vector3 GetMouseOnWorldPos(this Camera camera) => camera.ScreenToWorldPoint(Input.mousePosition);
+
+        ///<inheritdoc cref="GetMouseOnViewPortPos(Camera)"/>
+        public static Vector3 GetMouseOnWorldPos() => GetMouseOnWorldPos(Camera.main);
 
         ///<summary> This method will get the mouse position on the viewport pos on the camera </summary>
         public static Vector3 GetMouseOnViewPortPos(this Camera camera) => camera.ScreenToViewportPoint(Input.mousePosition);
@@ -81,45 +81,32 @@ namespace CXUtils.CodeUtils
 
             switch (port)
             {
-                case PortOptions.LeftUp:
-                    return camera.ScreenToWorldPoint(LU);
+                case PortOptions.LeftUp: return camera.ScreenToWorldPoint(LU);
+                case PortOptions.LeftDown: return camera.ScreenToWorldPoint(LD);
 
-                case PortOptions.LeftDown:
-                    return camera.ScreenToWorldPoint(LD);
+                case PortOptions.RightUp: return camera.ScreenToWorldPoint(RU);
+                case PortOptions.RightDown: return camera.ScreenToWorldPoint(RD);
 
-                case PortOptions.RightUp:
-                    return camera.ScreenToWorldPoint(RU);
+                case PortOptions.UpMiddle: return camera.ScreenToWorldPoint(MU);
+                case PortOptions.DownMiddle: return camera.ScreenToWorldPoint(MD);
 
-                case PortOptions.RightDown:
-                    return camera.ScreenToWorldPoint(RD);
+                case PortOptions.LeftMiddle: return camera.ScreenToWorldPoint(ML);
+                case PortOptions.RightMiddle: return camera.ScreenToWorldPoint(MR);
 
-                case PortOptions.UpMiddle:
-                    return camera.ScreenToWorldPoint(MU);
-
-                case PortOptions.DownMiddle:
-                    return camera.ScreenToWorldPoint(MD);
-
-                case PortOptions.LeftMiddle:
-                    return camera.ScreenToWorldPoint(ML);
-
-                case PortOptions.RightMiddle:
-                    return camera.ScreenToWorldPoint(MR);
-
-                default: // PortOptions.Center
-                    return camera.ScreenToWorldPoint(camCenter);
+                case PortOptions.Center: return camera.ScreenToWorldPoint(camCenter);
             }
+
+            throw ExceptionUtils.GetErrorException(ErrorType.NotAccessible);
         }
 
         ///<summary> Get's the Vector2 border in world space </summary>
         public static Bounds GetCameraBounds_Vec2_Ortho(this Camera camera)
         {
             if (!camera.orthographic)
-                throw new ArgumentException($"{camera.name} is not orthographic! please turn on orthographic in order to use this method!",
-                    nameof(camera.orthographic));
+                throw new ArgumentException($"{camera.name} is not orthographic! please turn on orthographic in order to use this method!", nameof(camera.orthographic));
 
             //getting the border of the real world space
-            Vector2 BorderPositive = new Vector2(GetCameraPortPosOnWorldPos(camera, PortOptions.RightMiddle).x,
-                GetCameraPortPosOnWorldPos(camera, PortOptions.UpMiddle).y);
+            Vector2 BorderPositive = new Vector2(GetCameraPortPosOnWorldPos(camera, PortOptions.RightMiddle).x, GetCameraPortPosOnWorldPos(camera, PortOptions.UpMiddle).y);
 
             return new Bounds(camera.transform.position, BorderPositive);
         }

@@ -60,11 +60,13 @@ namespace CXUtils.HelperComponents
         #endregion
 
         #region Main Methods
+
         public void FollowObject()
         {
             FollowPos();
             FollowRotation();
         }
+
         public void FollowPos()
         {
             Vector3 newPos = transformTo.position;
@@ -81,6 +83,7 @@ namespace CXUtils.HelperComponents
             transform.position = newPos;
 
         }
+
         public void FollowRotation()
         {
             Quaternion newRot = default;
@@ -89,10 +92,7 @@ namespace CXUtils.HelperComponents
             {
                 newRot = transformTo.rotation;
 
-                if (objectFollowRotationOptions == ObjectFollowRotationOptions.NoLerp)
-                {
-                    //then nothing (because it's up there already)
-                }
+                //if (objectFollowRotationOptions == ObjectFollowRotationOptions.NoLerp) then do nothing
 
                 if (objectFollowRotationOptions == ObjectFollowRotationOptions.HasLerp)
                     newRot = Quaternion.Lerp(transform.rotation, newRot, MathUtils.Map(RotationSpeed, 0, 100, 0, 1));

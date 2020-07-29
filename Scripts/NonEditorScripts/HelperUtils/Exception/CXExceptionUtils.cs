@@ -26,6 +26,7 @@ namespace CXUtils.CodeUtils
 
         /// <summary>
         /// Throws an exception and error inside of unity
+        /// <para><paramref name="onUnity"/> for logging error to unity using <see cref="Debug.LogError(object)"/></para>
         /// </summary>
         public static void ThrowInUnity<TException>(this TException ex, object errorMsg, bool onUnity = true) where TException : Exception, new()
         {
@@ -40,7 +41,7 @@ namespace CXUtils.CodeUtils
 
         #region Simplifiers
 
-        private static string GetErrorMsg(ErrorType errorType)
+        static string GetErrorMsg(ErrorType errorType)
         {
             switch (errorType)
             {

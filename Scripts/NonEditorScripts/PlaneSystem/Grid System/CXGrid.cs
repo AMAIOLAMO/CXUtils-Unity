@@ -295,32 +295,26 @@ namespace CXUtils.GridSystem
         {
             switch (GridDimention)
             {
-                case GridDimentionOptions.XY:
-                    return new Vector3(x, y, 0);
+                case GridDimentionOptions.XY:  return new Vector3(x, y, 0);
 
-                case GridDimentionOptions.XZ:
-                    return new Vector3(x, 0, y);
+                case GridDimentionOptions.XZ: return new Vector3(x, 0, y);
 
-                // YZ
-                default:
-                    return new Vector3(0, x, y);
+                case GridDimentionOptions.YZ: return new Vector3(0, x, y);
             }
+
+            throw ExceptionUtils.GetErrorException(ErrorType.NotAccessible);
         }
 
         private Vector2 PlanePosToXY(Vector3 PlaneCoords)
         {
             switch (GridDimention)
             {
-                case GridDimentionOptions.XY:
-                    return PlaneCoords;
-
-                case GridDimentionOptions.XZ:
-                    return new Vector2(PlaneCoords.x, PlaneCoords.z);
-
-                // YZ
-                default:
-                    return new Vector2(PlaneCoords.y, PlaneCoords.z);
+                case GridDimentionOptions.XY: return PlaneCoords;
+                case GridDimentionOptions.XZ: return new Vector2(PlaneCoords.x, PlaneCoords.z);
+                case GridDimentionOptions.YZ: return new Vector2(PlaneCoords.y, PlaneCoords.z);
             }
+
+            throw ExceptionUtils.GetErrorException(ErrorType.NotAccessible);
         }
 
         private void InitGrid(int width, int height, float cellSize, Vector3 origin, GridDimentionOptions gridDimentionOptions)

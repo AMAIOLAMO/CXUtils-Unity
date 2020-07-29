@@ -20,12 +20,13 @@ namespace CXUtils.CodeUtils
     {
         #region Predefine Colors
 
-        /// <summary> Unity doesn't have more colors? Use this! </summary>
+        /// <summary>
+        /// Unity doesn't have more colors? Use this! :D
+        /// <para>Credits: All colors from <seealso cref="https://en.wikipedia.org/wiki/Web_colors"/></para>
+        /// </summary>
         public class PredefColors
         {
-            /*
-             * Colors all From Wikipedia: Web_Colors => https://en.wikipedia.org/wiki/Web_colors
-             */
+            //Colors all From Wikipedia: Web_Colors => https://en.wikipedia.org/wiki/Web_colors
 
             //Red Colors
             public static Color mistyRose => new Color(1, .89f, 1);
@@ -63,9 +64,10 @@ namespace CXUtils.CodeUtils
 
         #region Manipulate Colors
 
-        ///<summary> Mapping A Color In A Range To Another Range </summary>
-        public static Color Map(Color value, Color In_Min, Color In_Max,
-            Color Out_Min, Color Out_Max) =>
+        ///<summary>
+        ///Mapping A Color In A Color Range To Another Color Range
+        ///</summary>
+        public static Color Map(Color value, Color In_Min, Color In_Max, Color Out_Min, Color Out_Max) =>
             new Color
             {
                 r = MathUtils.Map(value.r, In_Min.r, In_Max.r, Out_Min.r, Out_Max.r),
@@ -87,16 +89,12 @@ namespace CXUtils.CodeUtils
         {
             switch (lumaConvertOptions)
             {
-                case LumaConvertOptions.Weighted:
-                    return GetGrayScale_Weighted(color);
-
-                case LumaConvertOptions.Luminosity_STD:
-                    return GetGrayScale_Luma(color);
-
-                //Luminosity_Performance
-                default:
-                    return GetGrayScale_Luma2(color);
+                case LumaConvertOptions.Weighted: return GetGrayScale_Weighted(color);
+                case LumaConvertOptions.Luminosity_STD: return GetGrayScale_Luma(color);
+                case LumaConvertOptions.Luminosity_Performance: return GetGrayScale_Luma2(color);
             }
+
+            throw ExceptionUtils.GetErrorException(ErrorType.NotAccessible);
         }
 
         ///<summary> Get's the gray scale of the color by getting the average of the color </summary>
