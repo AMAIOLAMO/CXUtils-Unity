@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using UnityEngine;
-using System.Collections.Generic;
 
 namespace CXUtils.CodeUtils
 {

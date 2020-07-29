@@ -2,6 +2,7 @@
 using UnityEngine;
 using CXUtils.CodeUtils;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CXUtils.GridSystem
 {
@@ -78,8 +79,7 @@ namespace CXUtils.GridSystem
 
         #region Constructors
 
-        public CXGrid(int width, int height, float cellSize,
-            Vector3 origin = default, T initialValue = default,
+        public CXGrid(int width, int height, float cellSize, Vector3 origin = default, T initialValue = default,
             GridDimentionOptions gridDimention = GridDimentionOptions.XY)
         {
             InitGrid(width, height, cellSize, origin, gridDimention);
@@ -88,8 +88,7 @@ namespace CXUtils.GridSystem
             SetAllValues(initialValue);
         }
 
-        public CXGrid(int width, int height, float cellSize,
-            Vector3 origin = default, Func<int, int, T> createGridOBJ = null,
+        public CXGrid(int width, int height, float cellSize, Vector3 origin = default, Func<int, int, T> createGridOBJ = null,
             GridDimentionOptions gridDimention = GridDimentionOptions.XY)
         {
             InitGrid(width, height, cellSize, origin, gridDimention);
@@ -98,8 +97,7 @@ namespace CXUtils.GridSystem
             MapValues(createGridOBJ);
         }
 
-        public CXGrid(Vector2Int gridSize, float cellSize,
-            Vector3 origin = default, Func<int, int, T> createGridOBJ = null,
+        public CXGrid(Vector2Int gridSize, float cellSize, Vector3 origin = default, Func<int, int, T> createGridOBJ = null,
             GridDimentionOptions gridDimention = GridDimentionOptions.XY)
         {
             InitGrid(gridSize, cellSize, origin, gridDimention);
@@ -298,14 +296,14 @@ namespace CXUtils.GridSystem
             switch (GridDimention)
             {
                 case GridDimentionOptions.XY:
-                return new Vector3(x, y, 0);
+                    return new Vector3(x, y, 0);
 
                 case GridDimentionOptions.XZ:
-                return new Vector3(x, 0, y);
+                    return new Vector3(x, 0, y);
 
                 // YZ
                 default:
-                return new Vector3(0, x, y);
+                    return new Vector3(0, x, y);
             }
         }
 
@@ -314,14 +312,14 @@ namespace CXUtils.GridSystem
             switch (GridDimention)
             {
                 case GridDimentionOptions.XY:
-                return PlaneCoords;
+                    return PlaneCoords;
 
                 case GridDimentionOptions.XZ:
-                return new Vector2(PlaneCoords.x, PlaneCoords.z);
+                    return new Vector2(PlaneCoords.x, PlaneCoords.z);
 
                 // YZ
                 default:
-                return new Vector2(PlaneCoords.y, PlaneCoords.z);
+                    return new Vector2(PlaneCoords.y, PlaneCoords.z);
             }
         }
 
@@ -424,12 +422,10 @@ namespace CXUtils.GridSystem
         #region Other Utils
 
         /// <summary> Gets the grid value on the given Grid Position and converting it to a string </summary>
-        public string ToString(int x, int y) =>
-            GridArray[x, y].ToString();
+        public string ToString(int x, int y) => GridArray[x, y].ToString();
 
         /// <summary> Gets the grid value on the given Grid Position and converting it to a string </summary>
-        public string ToString(Vector2Int gridPosition) =>
-            ToString(gridPosition.x, gridPosition.y);
+        public string ToString(Vector2Int gridPosition) => ToString(gridPosition.x, gridPosition.y);
 
         #endregion
 

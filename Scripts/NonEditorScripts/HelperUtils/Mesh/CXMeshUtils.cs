@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CXUtils.CodeUtils
 {
-    ///<summary> Cx's Mesh managing Class </summary>
+    ///<summary> CX's Helper Mesh Utils and extensions </summary>
     public static class MeshUtils
     {
         #region All Mesh
@@ -14,11 +14,9 @@ namespace CXUtils.CodeUtils
             List<Vector3> verticies = new List<Vector3>();
             List<int> triangles = new List<int>();
 
-            foreach (var vert in mesh.vertices)
-                verticies.Add(vert);
+            foreach (var vert in mesh.vertices) verticies.Add(vert);
 
-            foreach (var tris in mesh.triangles)
-                triangles.Add(tris);
+            foreach (var tris in mesh.triangles) triangles.Add(tris);
 
             //clear the mesh, for less wrongs
             mesh.Clear();
@@ -57,12 +55,8 @@ namespace CXUtils.CodeUtils
 
             //vetrticies
             for (float z = 0; z <= wholeGridSize.y; z += eachGridSize)
-            {
                 for (float x = 0; x <= wholeGridSize.x; x += eachGridSize)
-                {
                     verticies.Add(new Vector3(x, 0, z));
-                }
-            }
 
             //triangles
             int vert = 0;
