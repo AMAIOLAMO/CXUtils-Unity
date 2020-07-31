@@ -210,12 +210,26 @@ namespace CXUtils.CodeUtils
         /// <summary>
         /// Get's the length of this Vector
         /// </summary>
-        public static float GetLength(this Vector3 vect) => Mathf.Sqrt(vect.x * vect.x + vect.y * vect.y);
+        public static float GetLength(this Vector2 vect) => Mathf.Sqrt(vect.x * vect.x + vect.y * vect.y);
+
+        /// <inheritdoc cref="GetLength(Vector2)"/>
+        public static float GetLength(this Vector3 vect) => Mathf.Sqrt(vect.x * vect.x + vect.y * vect.y + vect.z * vect.z);
+
+        /// <inheritdoc cref="GetLength(Vector2)"/>
+        public static float GetLength(this Vector4 vect) => Mathf.Sqrt(vect.x * vect.x + vect.y * vect.y + vect.z * vect.z + vect.w * vect.w);
+
 
         ///<summary>
         ///Set's the magnitude / length of the <paramref name="vect"/> to the given length
         ///</summary>
         public static Vector3 SetLength(this ref Vector3 vect, float len) => vect = vect.normalized * len;
+
+        /// <inheritdoc cref="SetLength(ref Vector3, float)"/>
+        public static Vector2 SetLength(this ref Vector2 vect, float len) => vect = vect.normalized * len;
+
+        /// <inheritdoc cref="SetLength(ref Vector3, float)"/>
+        public static Vector4 SetLength(this ref Vector4 vect, float len) => vect = vect.normalized * len;
+
 
         ///<summary> Clamps the vector by magnitude value </summary>
         public static Vector3 Clamp(Vector3 vect, float minLen, float maxLen) => vect.magnitude > maxLen ? vect.SetLength(maxLen) : (vect.magnitude < minLen ? vect.SetLength(minLen) : vect);
