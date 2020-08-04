@@ -30,8 +30,7 @@ namespace CXUtils.Managers
         public InputInfo FindInputInfoByName(string name)
         {
             foreach (var i in InputInfos)
-                if (i.NameKeyPair.Key.Equals(name))
-                    return i;
+                if (i.NameKeyPair.Key.Equals(name)) return i;
 
             return null;
         }
