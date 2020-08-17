@@ -72,16 +72,14 @@ namespace CXUtils.HelperComponents
             Vector3 newPos = transformTo.position;
 
             //check the has off set (if has then add)
-            if (objectFollowPositionOptions == ObjectFollowPositionOptions.All || objectFollowPositionOptions == ObjectFollowPositionOptions.HasOffsetOnly)
-                newPos += offSet;
-
-            if (objectFollowPositionOptions == ObjectFollowPositionOptions.All || objectFollowPositionOptions == ObjectFollowPositionOptions.HasLerpOnly)
-                newPos = Vector3.Lerp(transform.position, newPos, MathUtils.Map(MovingSpeed, 0, 100, 0, 1));
-
+            if(objectFollowPositionOptions == ObjectFollowPositionOptions.All)
+            {
+                if(objectFollowPositionOptions == ObjectFollowPositionOptions.HasOffsetOnly) newPos += offSet;
+                if(objectFollowPositionOptions == ObjectFollowPositionOptions.HasLerpOnly) newPos = Vector3.Lerp(transform.position, newPos, MathUtils.Map(MovingSpeed, 0, 100, 0, 1));
+            }
 
             //then just set it
             transform.position = newPos;
-
         }
 
         public void FollowRotation()
@@ -94,12 +92,10 @@ namespace CXUtils.HelperComponents
 
                 //if (objectFollowRotationOptions == ObjectFollowRotationOptions.NoLerp) then do nothing
 
-                if (objectFollowRotationOptions == ObjectFollowRotationOptions.HasLerp)
-                    newRot = Quaternion.Lerp(transform.rotation, newRot, MathUtils.Map(RotationSpeed, 0, 100, 0, 1));
+                if (objectFollowRotationOptions == ObjectFollowRotationOptions.HasLerp) newRot = Quaternion.Lerp(transform.rotation, newRot, RotationSpeed / 100f);
             }
 
-            if (newRot != default)
-                transform.rotation = newRot;
+            if (newRot != default) transform.rotation = newRot;
         }
 
         #endregion

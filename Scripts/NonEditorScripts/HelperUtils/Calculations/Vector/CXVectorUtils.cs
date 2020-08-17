@@ -95,8 +95,7 @@ namespace CXUtils.CodeUtils
             float angle = Vector2.Angle(from, to);
             float diffY = to.y - from.y;
 
-            if (diffY < 0)
-                angle = -angle;
+            if (diffY < 0) angle = -angle;
 
             return angle;
         }
@@ -148,12 +147,12 @@ namespace CXUtils.CodeUtils
         #region Rounding Extensions
 
         ///<summary>
-        ///Round the Given vector 
+        ///Round the Given vector
         ///</summary>
         public static Vector2 Round(this ref Vector2 vec2) => vec2.Map((val) => Mathf.Round(val));
 
         ///<summary>
-        ///Round the Given vector 
+        ///Round the Given vector
         ///</summary>
         public static Vector3 Round(this ref Vector3 vec3) => vec3.Map((val) => Mathf.Round(val));
 

@@ -1,7 +1,5 @@
 using System;
 
-using Random = UnityEngine.Random;
-
 namespace CXUtils.CodeUtils
 {
     /// <summary> Options flags for checking range </summary>

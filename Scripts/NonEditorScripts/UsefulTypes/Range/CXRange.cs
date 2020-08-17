@@ -1,6 +1,6 @@
 ﻿using System;
-using CXUtils.CodeUtils;
 using UnityEngine;
+using CXUtils.CodeUtils;
 
 namespace CXUtils.UsefulTypes
 {

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using System.Collections;
 
@@ -7,6 +8,7 @@ namespace CXUtils.CodeUtils
     ///<summary> Cx's Camera Class </summary>
     public static class CameraUtils
     {
+
         ///<summary> Options for camera ports </summary>
         public enum PortOptions
         { LeftUp, LeftDown, RightUp, RightDown, LeftMiddle, RightMiddle, UpMiddle, DownMiddle, Center }
@@ -29,7 +31,7 @@ namespace CXUtils.CodeUtils
         public static bool GetRaycastHitWithMousePos(this Camera camera, out RaycastHit raycastHit, float maxDistance = float.PositiveInfinity,
             int layerMask = default, QueryTriggerInteraction queryTriggerInteraction = default) =>
             Physics.Raycast(camera.GetRayWithMousePos(), out raycastHit, maxDistance, layerMask, queryTriggerInteraction);
-
+        
         #endregion
 
         #region CameraOtherHelperMethods
@@ -96,7 +98,7 @@ namespace CXUtils.CodeUtils
                 case PortOptions.Center: return camera.ScreenToWorldPoint(camCenter);
             }
 
-            throw ExceptionUtils.GetErrorException(ErrorType.NotAccessible);
+            throw ExceptionUtils.GetException(ErrorType.NotAccessible);
         }
 
         ///<summary> Get's the Vector2 border in world space </summary>

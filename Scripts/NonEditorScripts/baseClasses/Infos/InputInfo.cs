@@ -19,22 +19,17 @@ namespace CXUtils.DataUtils.Infos
         #endregion
 
         //Constructor
-        public InputInfo(KeyValuePair<string, KeyCode> nameKeyPair) =>
-            NameKeyPair = nameKeyPair;
+        public InputInfo(KeyValuePair<string, KeyCode> nameKeyPair) => NameKeyPair = nameKeyPair;
 
-        public InputInfo(string name = "__None__", KeyCode key = KeyCode.None) =>
-            NameKeyPair = new KeyValuePair<string, KeyCode>(name, key);
+        public InputInfo(string name = "__None__", KeyCode key = KeyCode.None) => NameKeyPair = new KeyValuePair<string, KeyCode>(name, key);
 
         #region Script Methods
 
-        public new string DebugDescribe() =>
-            $"InputInfo: Name: {NameKeyPair.Key}, KeyCode: {NameKeyPair.Value}";
+        public new string DebugDescribe() => $"InputInfo: Name: {NameKeyPair.Key}, KeyCode: {NameKeyPair.Value}";
 
-        public new string ToString() =>
-            "Input Info";
+        public new string ToString() => "Input Info";
 
-        public bool Equals(InputInfo inputInfo) =>
-            (NameKeyPair.Key.Equals(inputInfo.NameKeyPair.Key) && NameKeyPair.Value == inputInfo.NameKeyPair.Value);
+        public bool Equals(InputInfo inputInfo) => (NameKeyPair.Key.Equals(inputInfo.NameKeyPair.Key) && NameKeyPair.Value == inputInfo.NameKeyPair.Value);
 
         #endregion
     }

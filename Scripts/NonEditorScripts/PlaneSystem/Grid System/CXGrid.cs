@@ -1,8 +1,8 @@
 ﻿using System;
 using UnityEngine;
 using CXUtils.CodeUtils;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace CXUtils.GridSystem
 {
@@ -302,7 +302,7 @@ namespace CXUtils.GridSystem
                 case GridDimentionOptions.YZ: return new Vector3(0, x, y);
             }
 
-            throw ExceptionUtils.GetErrorException(ErrorType.NotAccessible);
+            throw ExceptionUtils.GetException(ErrorType.NotAccessible);
         }
 
         private Vector2 PlanePosToXY(Vector3 PlaneCoords)
@@ -314,7 +314,7 @@ namespace CXUtils.GridSystem
                 case GridDimentionOptions.YZ: return new Vector2(PlaneCoords.y, PlaneCoords.z);
             }
 
-            throw ExceptionUtils.GetErrorException(ErrorType.NotAccessible);
+            throw ExceptionUtils.GetException(ErrorType.NotAccessible);
         }
 
         private void InitGrid(int width, int height, float cellSize, Vector3 origin, GridDimentionOptions gridDimentionOptions)

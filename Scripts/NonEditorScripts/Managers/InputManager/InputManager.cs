@@ -1,5 +1,5 @@
-﻿using CXUtils.DataUtils.Infos;
-using UnityEngine;
+﻿using UnityEngine;
+using CXUtils.DataUtils.Infos;
 
 namespace CXUtils.Managers
 {
@@ -15,14 +15,7 @@ namespace CXUtils.Managers
 
         #endregion
 
-        #region MainThread
-
-        private void Awake()
-        {
-            Instance = this;
-        }
-
-        #endregion
+        private void Awake() => Instance = this;
 
         #region Finding Inputs
 
