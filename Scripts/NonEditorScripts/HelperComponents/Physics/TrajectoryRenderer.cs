@@ -3,6 +3,7 @@ using UnityEngine;
 namespace CXUtils.HelperComponents
 {
     ///<summary> A Trajectory Renderer for renderering trajectories on x and y position </summary>
+    [AddComponentMenu("CXUtils/Physics/TrajectoryRenderer")]
     public class TrajectoryRenderer : MonoBehaviour
     {
         #region Variables

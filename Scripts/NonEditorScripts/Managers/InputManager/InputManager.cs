@@ -4,6 +4,7 @@ using CXUtils.DataUtils.Infos;
 namespace CXUtils.Managers
 {
     /// <summary> Manages all the input </summary>
+    [AddComponentMenu("CXUtils/Manager/InputManager")]
     public class InputManager : MonoBehaviour
     {
         #region Vars and Fields

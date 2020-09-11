@@ -21,14 +21,12 @@ namespace CXUtils.CodeUtils.Generic
 
         #endregion
 
-        public Heap(int maxHeapSize) =>
-            items = new T[maxHeapSize];
+        public Heap(int maxHeapSize) => items = new T[maxHeapSize];
 
         #region Script Methods
 
         /// <summary> Check if this heap contains this item </summary>
-        public bool Contains(T item) =>
-            Equals(items[item.HeapIndex], item);
+        public bool Contains(T item) => Equals(items[item.HeapIndex], item);
 
         /// <summary> Adds an item to the bottom and sort it up </summary>
         public void Add(T item)
@@ -72,19 +70,15 @@ namespace CXUtils.CodeUtils.Generic
                     swapIndex = childIndexLeft;
 
                     if (childIndexRight < Count)
-                        if (items[childIndexLeft].CompareTo(items[childIndexRight]) < 0)
-                            swapIndex = childIndexRight;
+                        if (items[childIndexLeft].CompareTo(items[childIndexRight]) < 0) swapIndex = childIndexRight;
 
-                    if (item.CompareTo(items[swapIndex]) < 0)
-                        Swap(item, items[swapIndex]);
+                    if (item.CompareTo(items[swapIndex]) < 0) Swap(item, items[swapIndex]);
 
-                    else
-                        return;
+                    else return;
 
                 }
                 //no childs
-                else
-                    return;
+                else return;
             }
         }
 
@@ -96,10 +90,8 @@ namespace CXUtils.CodeUtils.Generic
             {
                 T parentItem = items[parentIndex];
 
-                if (item.CompareTo(parentItem) > 0)
-                    Swap(item, parentItem);
-                else
-                    break;
+                if (item.CompareTo(parentItem) > 0) Swap(item, parentItem);
+                else break;
 
                 parentIndex = (item.HeapIndex - 1) / 2;
             }
@@ -115,8 +107,7 @@ namespace CXUtils.CodeUtils.Generic
             itemB.HeapIndex = itemAIndex;
         }
 
-        public object Clone() => 
-            new Heap<T>(items.Length) { items = items.Clone() as T[] }; 
+        public object Clone() => new Heap<T>(items.Length) { items = items.Clone() as T[] };
 
         #endregion
     }

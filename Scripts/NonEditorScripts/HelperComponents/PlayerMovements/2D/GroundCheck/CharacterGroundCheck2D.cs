@@ -2,16 +2,15 @@
 
 namespace CXUtils.HelperComponents
 {
+    [AddComponentMenu("CXUtils/Player/2D/CharacterGroundCheck2D")]
     public class CharacterGroundCheck2D : MonoBehaviour
     {
         #region Vars and fields
         /// <summary> The Colliding mode </summary>
-        public enum CollideMode
-        { Collision, Trigger }
+        public enum CollideMode { Collision, Trigger }
 
         /// <summary> Options for collision updates </summary>
-        public enum CollisionUpdateOptions
-        { Update, FixedUpdate, LateUpdate }
+        public enum CollisionUpdateOptions { Update, FixedUpdate, LateUpdate }
 
         //private
 

@@ -1,10 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using CXUtils.CodeUtils;
 
 namespace CXUtils.HelperComponents
 {
     /// <summary> A simple camera shaker </summary>
+    [AddComponentMenu("CXUtils/Camera/CameraShaker")]
     public class CameraShaker : MonoBehaviour
     {
         [SerializeField] private CameraShake cameraShake;

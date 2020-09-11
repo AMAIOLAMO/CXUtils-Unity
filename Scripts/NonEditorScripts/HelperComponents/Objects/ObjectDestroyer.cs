@@ -10,6 +10,7 @@ namespace CXUtils.HelperComponents
 
 #pragma warning disable IDE0044
     /// <summary> A simple helper component for destroying an object </summary>
+    [AddComponentMenu("CXUtils/Objects/ObjectDestroyer")]
     public class ObjectDestroyer : MonoBehaviour
     {
         [Header("Configuration")]

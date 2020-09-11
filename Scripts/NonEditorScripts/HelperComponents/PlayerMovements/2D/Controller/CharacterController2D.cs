@@ -5,6 +5,7 @@ using System;
 namespace CXUtils.HelperComponents
 {
     /// <summary> A Character controller for 2Dimention games </summary>
+    [AddComponentMenu("CXUtils/Player/2D/CharacterController2D")]
     public class CharacterController2D : MonoBehaviour, IDebugDescribable
     {
         #region Enums
