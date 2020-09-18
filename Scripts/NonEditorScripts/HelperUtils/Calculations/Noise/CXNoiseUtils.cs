@@ -9,7 +9,7 @@ namespace CXUtils.CodeUtils
 
         /// <summary> Procedural noise generation, Perlin noise (scale cannot be 0)
         /// <para>QUICK NOTE:seed will be default to 0</para></summary>
-        public static float PerlinNoise(float x, float y, float scale, float? seed = null)
+        public static float PerlinNoise(int x, int y, float scale, float? seed = null)
         {
             float currentSeed = seed ?? 0;
             return Mathf.PerlinNoise(x / scale + currentSeed, y / scale + currentSeed);
@@ -17,19 +17,19 @@ namespace CXUtils.CodeUtils
 
         /// <summary> Procedural noise generation, Perlin noise (scale cannot be 0)
         /// <para>QUICK NOTE:seed will be default to 0</para></summary>
-        public static float PerlinNoise(Vector2 position, float scale, float? seed = null) => PerlinNoise(position.x, position.y, scale, seed);
+        public static float PerlinNoise(Vector2Int position, float scale, float? seed = null) => PerlinNoise(position.x, position.y, scale, seed);
 
         /// <summary> Generates a boolean value that the threshHold gives.
         /// <para>QUICK NOTEs:</para>
         /// <para>clamps threshHold value between 0 ~ 1</para>
         /// <para>seed will be default to 0</para></summary>
-        public static bool PerlinNoise_FlipCoin(float x, float y, float scale, float threshHold = .5f, float? seed = null) => PerlinNoise(x, y, scale, seed) > Mathf.Clamp01(threshHold);
+        public static bool PerlinNoise_FlipCoin(int x, int y, float scale, float threshHold = .5f, float? seed = null) => PerlinNoise(x, y, scale, seed) > Mathf.Clamp01(threshHold);
 
         /// <summary> Generates a boolean value that the threshHold gives.
         /// <para>QUICK NOTEs:</para>
         /// <para>clamps threshHold value between 0 ~ 1</para>
         /// <para>seed will be default to 0</para></summary>
-        public static bool PerlinNoise_FlipCoin(Vector2 position, float scale, float threshHold = .5f, float? seed = null) => PerlinNoise_FlipCoin(position.x, position.y, scale, threshHold, seed);
+        public static bool PerlinNoise_FlipCoin(Vector2Int position, float scale, float threshHold = .5f, float? seed = null) => PerlinNoise_FlipCoin(position.x, position.y, scale, threshHold, seed);
 
         #endregion
 
@@ -72,7 +72,6 @@ namespace CXUtils.CodeUtils
         }
 
         #endregion
-
     }
 
 }

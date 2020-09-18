@@ -95,7 +95,8 @@ namespace CXUtils.CodeUtils
             float angle = Vector2.Angle(from, to);
             float diffY = to.y - from.y;
 
-            if (diffY < 0) angle = -angle;
+            if (diffY < 0)
+                angle = -angle;
 
             return angle;
         }
@@ -147,12 +148,12 @@ namespace CXUtils.CodeUtils
         #region Rounding Extensions
 
         ///<summary>
-        ///Round the Given vector
+        ///Round the Given vector 
         ///</summary>
         public static Vector2 Round(this ref Vector2 vec2) => vec2.Map((val) => Mathf.Round(val));
 
         ///<summary>
-        ///Round the Given vector
+        ///Round the Given vector 
         ///</summary>
         public static Vector3 Round(this ref Vector3 vec3) => vec3.Map((val) => Mathf.Round(val));
 
@@ -167,7 +168,7 @@ namespace CXUtils.CodeUtils
         public static Vector2Int GetRoundToInt(this Vector2 vec2)
         {
             Vector2 rounded = vec2.Round();
-            return new Vector2Int((int) rounded.x, (int) rounded.y);
+            return new Vector2Int((int)rounded.x, (int)rounded.y);
         }
 
         ///<summary>
@@ -177,7 +178,7 @@ namespace CXUtils.CodeUtils
         public static Vector3Int GetRoundToInt(this Vector3 vec3)
         {
             Vector3 rounded = vec3.Round();
-            return new Vector3Int((int) rounded.x, (int) rounded.y, (int) rounded.z);
+            return new Vector3Int((int)rounded.x, (int)rounded.y, (int)rounded.z);
         }
 
         ///<summary>
@@ -196,12 +197,35 @@ namespace CXUtils.CodeUtils
 
         public static Vector4 Floor(this Vector4 vec4) => vec4.Map((val) => Mathf.Floor(val));
 
+        public static Vector2Int FloorToInt(this Vector2 vec2)
+        {
+            vec2.Floor();
+            return new Vector2Int((int)vec2.x, (int)vec2.y);
+        }
+
+        public static Vector3Int FloorToInt(this Vector3 vec3)
+        {
+            vec3.Floor();
+            return new Vector3Int((int)vec3.x, (int)vec3.y, (int)vec3.z);
+        }
+
         public static Vector2 Ceil(this Vector2 vec2) => vec2.Map((val) => Mathf.Ceil(val));
 
         public static Vector3 Ceil(this Vector3 vec3) => vec3.Map((val) => Mathf.Ceil(val));
 
         public static Vector4 Ceil(this Vector4 vec4) => vec4.Map((val) => Mathf.Ceil(val));
 
+        public static Vector2Int CeilToInt(this Vector2 vec2)
+        {
+            vec2.Ceil();
+            return new Vector2Int((int)vec2.x, (int)vec2.y);
+        }
+
+        public static Vector3Int CeilToInt(this Vector3 vec3)
+        {
+            vec3.Ceil();
+            return new Vector3Int((int)vec3.x, (int)vec3.y, (int)vec3.z);
+        }
         #endregion
 
         #region Vector Manipulation Extensions & Utils
