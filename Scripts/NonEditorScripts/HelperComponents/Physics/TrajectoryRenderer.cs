@@ -38,11 +38,9 @@ namespace CXUtils.HelperComponents
             float accelerationDueToGravity, float initialialVelocity = 1f,
             float angleOfInitVelocityFromHorizontalPos = 0f)
         {
-            (this.lineRenderer, this.ADueToGravity) =
-                (lineRenderer, accelerationDueToGravity);
+            (this.lineRenderer, ADueToGravity) = (lineRenderer, accelerationDueToGravity);
 
-            (this.InitV, this.InitA) =
-                (initialialVelocity, angleOfInitVelocityFromHorizontalPos);
+            (InitV, InitA) = (initialialVelocity, angleOfInitVelocityFromHorizontalPos);
 
             StartPosition = startingPosition;
         }

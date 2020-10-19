@@ -18,12 +18,8 @@ namespace CXUtils.CodeUtils
     ///<summary> Cx's Math Function Class </summary>
     public class MathUtils
     {
-        #region Consts
-
         /// <summary> PI * 2 </summary>
         public const float TAU = 6.28318530717958f;
-
-        #endregion
 
         #region Range Manipulation
 
@@ -106,13 +102,11 @@ namespace CXUtils.CodeUtils
 
         ///<summary> This will map the whole real Number line into the range of 0 - 1
         /// <para>using calculation 1f / (Math.Pow(Math.E, -x)); </para> </summary>
-        public static float Sigmoid_1(float x) =>
-            1f / ((float)Math.Pow(Math.E, -x));
+        public static float Sigmoid_1(float x) => 1f / ((float)Math.Pow(Math.E, -x));
 
         ///<summary> This will map the whole real Number line into the range of 0 - 1
         /// <para>using calculation Math.Pow(Math.E, x) / (Math.Pow(Math.E, x) + 1f);</para> </summary>
-        public static float Sigmoid_2(float x) =>
-            (float)Math.Pow(Math.E, x) / ((float)Math.Pow(Math.E, x) + 1f);
+        public static float Sigmoid_2(float x) => (float)Math.Pow(Math.E, x) / ((float)Math.Pow(Math.E, x) + 1f);
 
         #endregion
 
@@ -122,13 +116,11 @@ namespace CXUtils.CodeUtils
 
         ///<summary> Convert's a given degree angle into radiants </summary>
         ///<param name="deg"> The converting Degrees </param>
-        public static float DegToRad(float deg) =>
-            deg * UnityEngine.Mathf.Deg2Rad;
+        public static float DegToRad(float deg) => deg * UnityEngine.Mathf.Deg2Rad;
 
         ///<summary> Convert's a given radiant angle to degree </summary>
         ///<param name="rad"> The converting Radiants </param>
-        public static float RadToDeg(float rad) =>
-            rad * UnityEngine.Mathf.Rad2Deg;
+        public static float RadToDeg(float rad) => rad * UnityEngine.Mathf.Rad2Deg;
 
         #endregion
 
@@ -140,8 +132,7 @@ namespace CXUtils.CodeUtils
         public static float Zigma(int start_i, int end_i, Func<float, float> function)
         {
             float ans = 0;
-            for (int i = start_i; i <= end_i; i++)
-                ans += function(i);
+            for (int i = start_i; i <= end_i; i++) ans += function(i);
             return ans;
         }
 
