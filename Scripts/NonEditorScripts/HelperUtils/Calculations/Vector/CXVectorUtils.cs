@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+
 using Random = UnityEngine.Random;
 
 namespace CXUtils.CodeUtils
@@ -95,7 +96,7 @@ namespace CXUtils.CodeUtils
             float angle = Vector2.Angle(from, to);
             float diffY = to.y - from.y;
 
-            if (diffY < 0)
+            if ( diffY < 0 )
                 angle = -angle;
 
             return angle;
@@ -150,17 +151,17 @@ namespace CXUtils.CodeUtils
         ///<summary>
         ///Round the Given vector 
         ///</summary>
-        public static Vector2 Round(this ref Vector2 vec2) => vec2.Map((val) => Mathf.Round(val));
+        public static Vector2 Round(this Vector2 vec2) => vec2.Map((val) => Mathf.Round(val));
 
         ///<summary>
         ///Round the Given vector 
         ///</summary>
-        public static Vector3 Round(this ref Vector3 vec3) => vec3.Map((val) => Mathf.Round(val));
+        public static Vector3 Round(this Vector3 vec3) => vec3.Map((val) => Mathf.Round(val));
 
         ///<summary>
         ///Round the Given vector
         ///</summary>
-        public static Vector4 Round(this ref Vector4 vec4) => vec4.Map((val) => Mathf.Round(val));
+        public static Vector4 Round(this Vector4 vec4) => vec4.Map((val) => Mathf.Round(val));
 
         ///<summary>
         ///Round the Given vector to their int version
@@ -191,6 +192,7 @@ namespace CXUtils.CodeUtils
 
         #region Floor & Ceil Extensions
 
+        //flooring
         public static Vector2 Floor(this Vector2 vec2) => vec2.Map((val) => Mathf.Floor(val));
 
         public static Vector3 Floor(this Vector3 vec3) => vec3.Map((val) => Mathf.Floor(val));
@@ -209,6 +211,7 @@ namespace CXUtils.CodeUtils
             return new Vector3Int((int)vec3.x, (int)vec3.y, (int)vec3.z);
         }
 
+        //ceiling
         public static Vector2 Ceil(this Vector2 vec2) => vec2.Map((val) => Mathf.Ceil(val));
 
         public static Vector3 Ceil(this Vector3 vec3) => vec3.Map((val) => Mathf.Ceil(val));
@@ -226,6 +229,7 @@ namespace CXUtils.CodeUtils
             vec3.Ceil();
             return new Vector3Int((int)vec3.x, (int)vec3.y, (int)vec3.z);
         }
+
         #endregion
 
         #region Vector Manipulation Extensions & Utils
@@ -255,7 +259,7 @@ namespace CXUtils.CodeUtils
 
 
         ///<summary> Clamps the vector by magnitude value </summary>
-        public static Vector3 Clamp(Vector3 vect, float minLen, float maxLen) => vect.magnitude > maxLen ? vect.SetLength(maxLen) : (vect.magnitude < minLen ? vect.SetLength(minLen) : vect);
+        public static Vector3 Clamp(Vector3 vect, float minLen, float maxLen) => vect.magnitude > maxLen ? vect.SetLength(maxLen) : ( vect.magnitude < minLen ? vect.SetLength(minLen) : vect );
 
         #endregion
     }
