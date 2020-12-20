@@ -12,17 +12,18 @@ namespace CXUtils.UsefulTypes
         /// <summary>
         /// The min value of this range
         /// </summary>
-        public T Min { get; private set; }
+        public readonly T min;
 
         /// <summary>
         /// The max value of this range
         /// </summary>
-        public T Max { get; private set; }
+        public readonly T max;
 
         /// <summary> A simple range options for checking ranges </summary>
         public RangeOptions RangeOptions { get; set; }
 
-        public CXRangeBase(T min, T max, RangeOptions rangeOptions = RangeOptions.IncBoth) => (Min, Max, RangeOptions) = (min, max, rangeOptions);
+        public CXRangeBase(T min, T max, RangeOptions rangeOptions = RangeOptions.IncBoth) =>
+            (this.min, this.max, RangeOptions) = (min, max, rangeOptions);
 
         /// <summary> Checks if <paramref name="value"/> is in range </summary>
         public abstract bool InRange(T value);
@@ -33,14 +34,15 @@ namespace CXUtils.UsefulTypes
     /// </summary>
     public class RangeInt : CXRangeBase<int>, ICloneable
     {
-        public RangeInt(int min, int max, RangeOptions rangeOptions = RangeOptions.IncBoth) : base(min, max, rangeOptions) 
+        public RangeInt(int min, int max, RangeOptions rangeOptions = RangeOptions.IncBoth) : base(min, max, rangeOptions)
         {
-            if (min > max) throw new ArgumentOutOfRangeException($"{nameof(min)} is bigger than {nameof(max)} and that does not make sense!");
+            if ( min > max )
+                throw new ArgumentOutOfRangeException($"{nameof(min)} is bigger than {nameof(max)} and that does not make sense!");
         }
 
-        public object Clone() => new RangeInt(Min, Max, RangeOptions);
+        public object Clone() => new RangeInt(min, max, RangeOptions);
 
-        public override bool InRange(int value) => MathUtils.ValueInRange(value, Min, Max, RangeOptions);
+        public override bool InRange(int value) => MathUtils.ValueInRange(value, min, max, RangeOptions);
     }
 
     /// <summary>
@@ -48,14 +50,15 @@ namespace CXUtils.UsefulTypes
     /// </summary>
     public class RangeFloat : CXRangeBase<float>, ICloneable
     {
-        public RangeFloat(float min, float max, RangeOptions rangeOptions = RangeOptions.IncBoth) : base(min, max, rangeOptions) 
+        public RangeFloat(float min, float max, RangeOptions rangeOptions = RangeOptions.IncBoth) : base(min, max, rangeOptions)
         {
-            if (min > max) throw new ArgumentOutOfRangeException($"{nameof(min)} is bigger than {nameof(max)} and that does not make sense!");
+            if ( min > max )
+                throw new ArgumentOutOfRangeException($"{nameof(min)} is bigger than {nameof(max)} and that does not make sense!");
         }
 
-        public object Clone() => new RangeFloat(Min, Max, RangeOptions);
+        public object Clone() => new RangeFloat(min, max, RangeOptions);
 
-        public override bool InRange(float value) => MathUtils.ValueInRange(value, Min, Max, RangeOptions);
+        public override bool InRange(float value) => MathUtils.ValueInRange(value, min, max, RangeOptions);
     }
 
     /// <summary>
@@ -65,19 +68,22 @@ namespace CXUtils.UsefulTypes
     {
         public RangeDouble(double min, double max, RangeOptions rangeOptions = RangeOptions.IncBoth) : base(min, max, rangeOptions)
         {
-            if (min > max) throw new ArgumentOutOfRangeException($"{nameof(min)} is bigger than {nameof(max)} and that does not make sense!");
+            if ( min > max )
+                throw new ArgumentOutOfRangeException($"{nameof(min)} is bigger than {nameof(max)} and that does not make sense!");
         }
 
-        public object Clone() => new RangeDouble(Min, Max, RangeOptions);
+        public object Clone() => new RangeDouble(min, max, RangeOptions);
 
-        public override bool InRange(double value) => MathUtils.ValueInRange(value, Min, Max, RangeOptions);
+        public override bool InRange(double value) => MathUtils.ValueInRange(value, min, max, RangeOptions);
     }
 
     //Just extensions for ranges
     public static class CXRangeExtensions
     {
-        public static Vector2Int ToVector2Int(this RangeInt range) => new Vector2Int(range.Min, range.Max);
-        public static Vector2 ToVector2(this RangeFloat range) => new Vector2(range.Min, range.Max);
-        public static Vector2 ToVector2(this RangeDouble range) => new Vector2((float)range.Min, (float)range.Max);
+        public static Vector2Int ToVector2Int(this RangeInt range) => new Vector2Int(range.min, range.max);
+
+        public static Vector2 ToVector2(this RangeFloat range) => new Vector2(range.min, range.max);
+
+        public static Vector2 ToVector2(this RangeDouble range) => new Vector2((float)range.min, (float)range.max);
     }
 }

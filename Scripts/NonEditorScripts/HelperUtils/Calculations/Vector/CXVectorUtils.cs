@@ -86,24 +86,6 @@ namespace CXUtils.CodeUtils
 
         #endregion
 
-        #region Math
-
-        ///<summary> Get's the angle between two vectors </summary>
-        ///<param name="from"> The vector start with </param>
-        ///<param name="to"> The vector end with </param>
-        public static float AngleBetweenVects2D(Vector2 from, Vector2 to)
-        {
-            float angle = Vector2.Angle(from, to);
-            float diffY = to.y - from.y;
-
-            if ( diffY < 0 )
-                angle = -angle;
-
-            return angle;
-        }
-
-        #endregion
-
         #region Random
 
         /// <summary> Generates a random vector2 </summary>
@@ -112,6 +94,16 @@ namespace CXUtils.CodeUtils
         /// <summary> Generates a random vector2Int </summary>
         public static Vector2Int RandomVec2Int(int min, int max) => new Vector2Int(Random.Range(min, max), Random.Range(min, max));
 
+        /// <summary>
+        /// Generates a random vector2 inside a circle
+        /// </summary>
+        public static Vector2 RandomVec2InCircle(float maxLength) => Random.insideUnitCircle * maxLength;
+
+        /// <summary>
+        /// Generates a random vector2 inside a circle
+        /// </summary>
+        public static Vector2 RandomVec2InCircle(float min, float max) =>
+            Clamp(Random.insideUnitCircle * max, min, max);
 
         /// <summary> Generates a random vector3 </summary>
         public static Vector3 RandomVec3(float min, float max) => new Vector3(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));
@@ -119,6 +111,15 @@ namespace CXUtils.CodeUtils
         /// <summary> Generates a random vector3Int </summary>
         public static Vector3Int RandomVec3Int(int min, int max) => new Vector3Int(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));
 
+        /// <summary>
+        /// Generates a random vector3 inside a Sphere
+        /// </summary>
+        public static Vector3 RandomVec3InSphere(float maxLength) => Random.insideUnitSphere * maxLength;
+
+        /// <summary>
+        /// Generates a random vector3 inside a Sphere
+        /// </summary>
+        public static Vector3 RandomVec3InSphere(float min, float max) => Clamp(Random.insideUnitSphere * max, min, max);
 
         /// <summary> Generates a random vector4 </summary>
         public static Vector4 RandomVec4(float min, float max) => new Vector4(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));
@@ -146,22 +147,41 @@ namespace CXUtils.CodeUtils
 
         #endregion
 
+        #region Approximation
+
+        /// <summary>
+        /// Checks if two vectors are approximately equal to each other
+        /// (for floating points natural problem at comparing in each other)
+        /// </summary>
+        public static bool IsApproximately(this Vector2 vect, Vector2 other) =>
+            Mathf.Approximately(vect.x, other.x) && Mathf.Approximately(vect.y, other.y);
+
+        /// <inheritdoc cref="IsApproximately(Vector2, Vector2)"/>
+        public static bool IsApproximately(this Vector3 vect, Vector3 other) =>
+            Mathf.Approximately(vect.x, other.x) && Mathf.Approximately(vect.y, other.y) && Mathf.Approximately(vect.z, other.z);
+
+        /// <inheritdoc cref="IsApproximately(Vector2, Vector2)"/>
+        public static bool IsApproximately(this Vector4 vect, Vector4 other) =>
+            Mathf.Approximately(vect.x, other.x) && Mathf.Approximately(vect.y, other.y) && Mathf.Approximately(vect.z, other.z) && Mathf.Approximately(vect.w, other.w);
+
+        #endregion
+
         #region Rounding Extensions
 
         ///<summary>
         ///Round the Given vector 
         ///</summary>
-        public static Vector2 Round(this Vector2 vec2) => vec2.Map((val) => Mathf.Round(val));
+        public static Vector2 Round(this Vector2 vec2) => vec2.Map(Mathf.Round);
 
         ///<summary>
         ///Round the Given vector 
         ///</summary>
-        public static Vector3 Round(this Vector3 vec3) => vec3.Map((val) => Mathf.Round(val));
+        public static Vector3 Round(this Vector3 vec3) => vec3.Map(Mathf.Round);
 
         ///<summary>
         ///Round the Given vector
         ///</summary>
-        public static Vector4 Round(this Vector4 vec4) => vec4.Map((val) => Mathf.Round(val));
+        public static Vector4 Round(this Vector4 vec4) => vec4.Map(Mathf.Round);
 
         ///<summary>
         ///Round the Given vector to their int version
@@ -186,18 +206,18 @@ namespace CXUtils.CodeUtils
         ///Round the Given vector to their int version
         ///<para>Returns the new version, but does not override the original version</para>
         ///</summary>
-        public static Vector4 GetRoundToInt(this Vector4 vec4) => vec4.Map((val) => Mathf.RoundToInt(val));
+        public static Vector4 GetRoundToInt(this Vector4 vec4) => vec4.Map(Mathf.RoundToInt);
 
         #endregion
 
         #region Floor & Ceil Extensions
 
         //flooring
-        public static Vector2 Floor(this Vector2 vec2) => vec2.Map((val) => Mathf.Floor(val));
+        public static Vector2 Floor(this Vector2 vec2) => vec2.Map(Mathf.Floor);
 
-        public static Vector3 Floor(this Vector3 vec3) => vec3.Map((val) => Mathf.Floor(val));
+        public static Vector3 Floor(this Vector3 vec3) => vec3.Map(Mathf.Floor);
 
-        public static Vector4 Floor(this Vector4 vec4) => vec4.Map((val) => Mathf.Floor(val));
+        public static Vector4 Floor(this Vector4 vec4) => vec4.Map(Mathf.Floor);
 
         public static Vector2Int FloorToInt(this Vector2 vec2)
         {
@@ -212,11 +232,11 @@ namespace CXUtils.CodeUtils
         }
 
         //ceiling
-        public static Vector2 Ceil(this Vector2 vec2) => vec2.Map((val) => Mathf.Ceil(val));
+        public static Vector2 Ceil(this Vector2 vec2) => vec2.Map(Mathf.Ceil);
 
-        public static Vector3 Ceil(this Vector3 vec3) => vec3.Map((val) => Mathf.Ceil(val));
+        public static Vector3 Ceil(this Vector3 vec3) => vec3.Map(Mathf.Ceil);
 
-        public static Vector4 Ceil(this Vector4 vec4) => vec4.Map((val) => Mathf.Ceil(val));
+        public static Vector4 Ceil(this Vector4 vec4) => vec4.Map(Mathf.Ceil);
 
         public static Vector2Int CeilToInt(this Vector2 vec2)
         {
@@ -234,16 +254,23 @@ namespace CXUtils.CodeUtils
 
         #region Vector Manipulation Extensions & Utils
 
+        public static float GetUnSqrtLength(this Vector2 vect) => vect.x * vect.x + vect.y * vect.y;
+
+        public static float GetUnSqrtLength(this Vector3 vect) => vect.x * vect.x + vect.y * vect.y + vect.z * vect.z;
+
+        public static float GetUnSqrtLength(this Vector4 vect) => vect.x * vect.x + vect.y * vect.y + vect.z * vect.z + vect.w * vect.w;
+
+
         /// <summary>
         /// Get's the length of this Vector
         /// </summary>
-        public static float GetLength(this Vector2 vect) => Mathf.Sqrt(vect.x * vect.x + vect.y * vect.y);
+        public static float GetLength(this Vector2 vect) => Mathf.Sqrt(vect.GetUnSqrtLength());
 
         /// <inheritdoc cref="GetLength(Vector2)"/>
-        public static float GetLength(this Vector3 vect) => Mathf.Sqrt(vect.x * vect.x + vect.y * vect.y + vect.z * vect.z);
+        public static float GetLength(this Vector3 vect) => Mathf.Sqrt(vect.GetUnSqrtLength());
 
         /// <inheritdoc cref="GetLength(Vector2)"/>
-        public static float GetLength(this Vector4 vect) => Mathf.Sqrt(vect.x * vect.x + vect.y * vect.y + vect.z * vect.z + vect.w * vect.w);
+        public static float GetLength(this Vector4 vect) => Mathf.Sqrt(vect.GetUnSqrtLength());
 
 
         ///<summary>
