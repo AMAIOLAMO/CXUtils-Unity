@@ -91,13 +91,13 @@ namespace CXUtils.CodeUtils
         /// <summary> Generates a random vector2 </summary>
         public static Vector2 RandomVec2(float min, float max) => new Vector2(Random.Range(min, max), Random.Range(min, max));
 
-        /// <summary> Generates a random vector2Int </summary>
+        /// <summary> Generates a random vector2Int in a square </summary>
         public static Vector2Int RandomVec2Int(int min, int max) => new Vector2Int(Random.Range(min, max), Random.Range(min, max));
 
         /// <summary>
         /// Generates a random vector2 inside a circle
         /// </summary>
-        public static Vector2 RandomVec2InCircle(float maxLength) => Random.insideUnitCircle * maxLength;
+        public static Vector2 RandomVecCircle(float maxLength) => Random.insideUnitCircle * maxLength;
 
         /// <summary>
         /// Generates a random vector2 inside a circle
@@ -114,7 +114,7 @@ namespace CXUtils.CodeUtils
         /// <summary>
         /// Generates a random vector3 inside a Sphere
         /// </summary>
-        public static Vector3 RandomVec3InSphere(float maxLength) => Random.insideUnitSphere * maxLength;
+        public static Vector3 RandomVecSphere(float maxLength) => Random.insideUnitSphere * maxLength;
 
         /// <summary>
         /// Generates a random vector3 inside a Sphere
