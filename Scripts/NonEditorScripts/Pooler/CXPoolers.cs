@@ -5,10 +5,21 @@ using System;
 namespace CXUtils.CodeUtils
 {
     /// <summary>
+    /// implements a single pool cycle
+    /// </summary>
+    public interface IPoolCycle
+    {
+        /// <summary>
+        /// When one pool cycle happened, this will trigger
+        /// </summary>
+        public event Action OnCycle;
+    }
+
+    /// <summary>
     /// A simple pooler base that you could use to pool stuff for performace
     /// </summary>
     /// <typeparam name="T">The type you want to pool</typeparam>
-    public abstract class CXPoolerBase<T> where T : new()
+    public class CXPoolerBase<T> : IPoolCycle where T : new()
     {
         public CXPoolerBase(int poolCapacity, Func<int, T> initFunc)
         {
@@ -18,35 +29,30 @@ namespace CXUtils.CodeUtils
                 poolingItems.Add(initFunc(i));
         }
 
-        public CXPoolerBase(List<T> newPool) =>
-            poolingItems = newPool;
+        public CXPoolerBase(List<T> pool) =>
+            poolingItems = pool;
 
         protected List<T> poolingItems;
+
+        public int PoolCapacity => poolingItems.Count;
+
+        int currentPoppingCount = 0;
+
+        public event Action OnCycle;
 
         /// <summary>
         /// Pops an item from the pool
         /// </summary>
-        public abstract T PopPool();
-    }
-
-    /// <summary>
-    /// A CX's Game object pooler
-    /// </summary>
-    public class CXGameObjectPooler : CXPoolerBase<GameObject>
-    {
-        public CXGameObjectPooler(List<GameObject> newPool) : base(newPool) { }
-
-        public CXGameObjectPooler(int poolCapacity, Func<int, GameObject> initFunc) : base(poolCapacity, initFunc) { }
-
-        int currentPoppingCount = 0;
-
-        public override GameObject PopPool()
+        public virtual T PopPool()
         {
             //if the current is already the max, then use the first one
             if ( currentPoppingCount == poolingItems.Count )
+            {
                 currentPoppingCount = 0;
+                OnCycle?.Invoke();
+            }
 
-            GameObject poolingItem = poolingItems[currentPoppingCount];
+            T poolingItem = poolingItems[currentPoppingCount];
 
             currentPoppingCount++;
 
