@@ -3,7 +3,7 @@ using System;
 namespace CXUtils.CodeUtils
 {
     /// <summary> Options flags for checking range </summary>
-    public enum RangeOptions
+    public enum RangeOptions : byte
     {
         ///<summary> Include Max, exclude Min </summary>
         IncMax,
@@ -18,7 +18,7 @@ namespace CXUtils.CodeUtils
     ///<summary> Cx's Math Function Class </summary>
     public class MathUtils
     {
-        /// <summary> simply PI * 2 </summary>
+        /// <summary> Represents PI * 2 </summary>
         public const float TAU = 6.28318530717958f;
 
         #region Range Manipulation
@@ -82,7 +82,7 @@ namespace CXUtils.CodeUtils
             (t_Bool, u_Bool) = (ValueInRange(t, 0f, 1f), ValueInRange(u, 0f, 1f));
 
             //making the bool to the things
-            return ( t_Bool && u_Bool );
+            return t_Bool && u_Bool;
         }
 
         ///<summary> Checks if the two lines in 2D will collide with each other </summary>
@@ -123,7 +123,25 @@ namespace CXUtils.CodeUtils
         #region Other useful methods
 
         /// <summary> The summifying function </summary>
-        public static float Sum(int start_i, int end_i, Func<int, float> function)
+        public static int SumInt(int start_i, int end_i, Func<int, int> function)
+        {
+            int ans = 0;
+            for ( int i = start_i; i <= end_i; i++ )
+                ans += function(i);
+            return ans;
+        }
+
+        /// <inheritdoc cref="SumInt(int, int, Func{int, int})"/>
+        public static double SumDouble(int start_i, int end_i, Func<int, double> function)
+        {
+            double ans = 0;
+            for ( int i = start_i; i <= end_i; i++ )
+                ans += function(i);
+            return ans;
+        }
+
+        /// <inheritdoc cref="SumInt(int, int, Func{int, int})"/>
+        public static float SumFloat(int start_i, int end_i, Func<int, float> function)
         {
             float ans = 0;
             for ( int i = start_i; i <= end_i; i++ )

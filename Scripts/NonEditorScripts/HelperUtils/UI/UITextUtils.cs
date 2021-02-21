@@ -4,28 +4,32 @@ using UnityEngine;
 namespace CXUtils.CodeUtils
 {
     /// <summary> A helper for controlling texts </summary>
-    public class TextUtils
+    public struct TextUtils
     {
         /// <summary> Instantiates a text on the world </summary>
-        public static TextMesh SpawnTextOnWorld(Transform parent, Vector3 position, Func<TextMesh, TextMesh> modifier, int sortingOrder = 0, bool usingLocalPosition = false)
+        public static TextMesh SpawnTextOnWorld(Transform parent, Vector3 position, 
+           Func<TextMesh, TextMesh> modifier, int sortingOrder = 0, bool usingLocalPosition = false)
         {
             GameObject go_Text = new GameObject("Text_World", typeof(TextMesh));
             Transform trans = go_Text.transform;
             TextMesh txtMesh = go_Text.GetComponent<TextMesh>();
 
             //parent
-            if (parent != null) trans.SetParent(parent);
+            if ( parent != null )
+                trans.SetParent(parent);
 
             //setting transform
-            if (usingLocalPosition) trans.localPosition = position;
-            else trans.position = position;
+            if ( usingLocalPosition )
+                trans.localPosition = position;
+            else
+                trans.position = position;
 
             //txtMesh set
             txtMesh = modifier(txtMesh);
 
             //set sorting order
             txtMesh.GetComponent<MeshRenderer>().sortingOrder = sortingOrder;
-            
+
             return txtMesh;
         }
 

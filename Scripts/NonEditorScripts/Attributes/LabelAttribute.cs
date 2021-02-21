@@ -8,11 +8,12 @@
         public LabelAttribute(string label) => this.label = label;
 
         public string label;
-
+#if UNITY_EDITOR
         public override GUIContent GetLabel(GUIContent label)
         {
             label.text = this.label;
             return label;
         }
+#endif
     }
 }

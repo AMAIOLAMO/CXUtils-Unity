@@ -68,6 +68,7 @@ namespace CXUtils.CodeUtils
                     triangles.Add(vert + 1);
                     triangles.Add(vert);
                     triangles.Add(vert + wholeGridSize.x + 1);
+
                     triangles.Add(vert + 1);
                     triangles.Add(vert + wholeGridSize.x + 1);
                     triangles.Add(vert + wholeGridSize.x + 2);
