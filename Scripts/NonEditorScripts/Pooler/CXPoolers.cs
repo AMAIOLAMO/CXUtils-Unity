@@ -29,6 +29,9 @@ namespace CXUtils.CodeUtils
         public abstract T PopPool();
     }
 
+    /// <summary>
+    /// A CX's Game object pooler
+    /// </summary>
     public class CXGameObjectPooler : CXPoolerBase<GameObject>
     {
         public CXGameObjectPooler(List<GameObject> newPool) : base(newPool) { }
