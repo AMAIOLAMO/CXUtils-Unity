@@ -5,13 +5,20 @@ using CXUtils.CodeUtils;
 namespace CXUtils.PlaneSystem
 {
     /// <summary> Options for Plane Dimentions </summary>
-    public enum PlaneDimentionOptions { XY, XZ, YZ }
-
-    /// <summary> A Plane class from CXUtils 
-    /// <para> Used as a base class for other plane based classes </para> </summary>
-    public struct Plane : IEquatable<Plane>
+    public enum PlaneDimentionOptions : byte
     {
-        public Plane(PlaneDimentionOptions planeDimention) => PlaneDimention = planeDimention;
+        XY = 0,
+        XZ = 1,
+        YZ = 2
+    }
+
+    /// <summary>
+    /// A Place data structure from CXUtils <br/>
+    /// Used for determining what plane you are using in a 3Dimetional space
+    /// </summary>
+    public struct CXPlane : IEquatable<CXPlane>
+    {
+        public CXPlane(PlaneDimentionOptions planeDimention) => PlaneDimention = planeDimention;
 
         public PlaneDimentionOptions PlaneDimention { get; set; }
 
@@ -23,18 +30,22 @@ namespace CXUtils.PlaneSystem
         /// </summary>
         public static Vector3 GetNormal(PlaneDimentionOptions planeDimentionOptions)
         {
-            switch (planeDimentionOptions)
+            switch ( planeDimentionOptions )
             {
-                case PlaneDimentionOptions.XY: return -Vector3.forward;
+                case PlaneDimentionOptions.XY:
+                return -Vector3.forward;
 
-                case PlaneDimentionOptions.XZ: return Vector3.up;
+                case PlaneDimentionOptions.XZ:
+                return Vector3.up;
 
-                case PlaneDimentionOptions.YZ: return Vector3.right;
+                case PlaneDimentionOptions.YZ:
+                return Vector3.right;
 
-                default: throw ExceptionUtils.GetException(ErrorType.NotAccessible);
+                default:
+                throw ExceptionUtils.GetException(ErrorType.NotAccessible);
             }
         }
 
-        public bool Equals(Plane other) => other.PlaneDimention.Equals(PlaneDimention);
+        public bool Equals(CXPlane other) => other.PlaneDimention.Equals(PlaneDimention);
     }
 }
