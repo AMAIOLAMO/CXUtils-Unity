@@ -4,6 +4,26 @@ using System.Collections.Generic;
 namespace CXUtils.CodeUtils
 {
     /// <summary>
+    /// Implements a capacity for pool
+    /// </summary>
+    public interface IPoolCapacity
+    {
+        int PoolCapacity { get; }
+    }
+
+    /// <summary>
+    /// Implements a pool that is expandable
+    /// </summary>
+    public interface IPoolExpandable<T> : IPoolCapacity where T : new()
+    {
+        /// <summary>
+        /// Expands the pool with more items
+        /// </summary>
+        /// <returns>The new capacity of the expanded pool</returns>
+        int ExpandPool(int expandAmount, Func<int, T> initFunc);
+    }
+
+    /// <summary>
     /// implements a single pool cycle
     /// </summary>
     public interface IPoolCycleEvent
@@ -15,25 +35,46 @@ namespace CXUtils.CodeUtils
     }
 
     /// <summary>
+    /// Implements a waitable item in the pool
+    /// </summary>
+    public interface IPoolInUseItem
+    {
+        /// <summary>
+        /// Triggers when used
+        /// </summary>
+        public event Action OnUse;
+
+        /// <summary>
+        /// Triggers when finish using
+        /// </summary>
+        public event Action OnDispose;
+    }
+
+    /// <summary>
     /// A simple pooler base that you could use to pool stuff for performace
     /// </summary>
     /// <typeparam name="T">The type you want to pool</typeparam>
-    public class CXPoolerBase<T> : IPoolCycleEvent where T : new()
+    public class CXPoolerBase<T> : IPoolCapacity, IPoolCycleEvent where T : new()
     {
         public CXPoolerBase(int poolCapacity, Func<int, T> initFunc)
         {
-            poolingItems = new List<T>();
+            poolItems = new List<T>();
+
+            PoolCapacity = poolCapacity;
 
             for ( int i = 0; i < poolCapacity; i++ )
-                poolingItems.Add(initFunc(i));
+                poolItems.Add(initFunc(i));
         }
 
-        public CXPoolerBase(List<T> pool) =>
-            poolingItems = pool;
+        public CXPoolerBase(List<T> pool)
+        {
+            poolItems = pool;
+            PoolCapacity = pool.Count;
+        }
 
-        protected List<T> poolingItems;
+        protected List<T> poolItems;
 
-        public int PoolCapacity => poolingItems.Count;
+        public int PoolCapacity { get; private set; }
 
         int currentPoppingCount = 0;
 
@@ -45,17 +86,101 @@ namespace CXUtils.CodeUtils
         public virtual T PopPool()
         {
             //if the current is already the max, then use the first one
-            if ( currentPoppingCount == poolingItems.Count )
+            if ( currentPoppingCount == poolItems.Count )
             {
                 currentPoppingCount = 0;
-                OnCycle?.Invoke();
+                InvokeOnCycle();
             }
 
-            T poolingItem = poolingItems[currentPoppingCount];
+            T poolingItem = poolItems[currentPoppingCount];
 
             currentPoppingCount++;
 
             return poolingItem;
+        }
+
+        /// <summary>
+        /// Invokes the method <see cref="OnCycle"/>
+        /// </summary>
+        protected void InvokeOnCycle() => OnCycle?.Invoke();
+    }
+
+    /// <summary>
+    /// A pool that auto queues stuff from the pool
+    /// </summary>
+    public class CXStackPoolerBase<T> : IPoolCapacity, IPoolExpandable<T> where T : IPoolInUseItem, new()
+    {
+        public CXStackPoolerBase(Stack<T> queuePool)
+        {
+            poolingItems = queuePool;
+
+            PoolCapacity = queuePool.Count;
+        }
+
+        public CXStackPoolerBase(int poolCapacity, Func<int, T> initFunc)
+        {
+            poolingItems = new Stack<T>();
+
+            PoolCapacity = poolCapacity;
+
+            for ( int i = 0; i < poolCapacity; i++ )
+                poolingItems.Push(initFunc(i));
+        }
+
+        protected Stack<T> poolingItems;
+
+        public int PoolCapacity { get; private set; }
+
+        /// <summary>
+        /// The current pool item count
+        /// </summary>
+        public int Count => poolingItems.Count;
+
+        /// <summary>
+        /// Just checks if the pool is empty or not
+        /// </summary>
+        public bool IsPoolEmpty => poolingItems.Count == 0;
+
+        /// <summary>
+        /// Tries to pop an item from the pool <br/>
+        /// return true if could pop an item else false
+        /// </summary>
+        public virtual bool TryPopPool(out T item)
+        {
+            //if no items to pop out from the pool then return false
+            if ( IsPoolEmpty )
+            {
+                item = default;
+                return false;
+            }
+
+            item = PopPool();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Pops from the pool (Non safe)
+        /// </summary>
+        public virtual T PopPool()
+        {
+            T poolItem = poolingItems.Pop();
+
+            //adds a dispose trigger ->
+            poolItem.OnDispose += () => poolingItems.Push(poolItem);
+
+            return poolItem;
+        }
+
+        public int ExpandPool(int expandAmount, Func<int, T> initFunc)
+        {
+            PoolCapacity += expandAmount;
+
+            //just push item into the expanded amount :D
+            for ( int i = 0; i < expandAmount; i++ )
+                poolingItems.Push(initFunc(i));
+
+            return PoolCapacity;
         }
     }
 }

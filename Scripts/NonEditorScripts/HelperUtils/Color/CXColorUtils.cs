@@ -22,7 +22,7 @@ namespace CXUtils.CodeUtils
         /// Unity doesn't have more predefined colors? Use this! :D
         /// <para>Credits: All colors from <seealso cref="https://en.wikipedia.org/wiki/Web_colors"/></para>
         /// </summary>
-        public class MoreColors
+        public struct MoreColors
         {
             //Colors all From Wikipedia: Web_Colors => https://en.wikipedia.org/wiki/Web_colors
 
