@@ -137,7 +137,7 @@ namespace CXUtils.CodeUtils
         #region Performance
 
         const int FPS_BUFFER_LEN = 60;
-        static int[] FPSBuffer = new int[FPS_BUFFER_LEN];
+        static readonly int[] FPSBuffer = new int[FPS_BUFFER_LEN];
         static bool fpsBufferFull = false;
         static int fpsBufferIndex = 0;
 
@@ -165,7 +165,7 @@ namespace CXUtils.CodeUtils
             }
             //else
 
-            for ( int i = 0; i <= FPS_BUFFER_LEN; i++ )
+            for ( int i = 0; i < FPS_BUFFER_LEN; i++ )
                 sum += FPSBuffer[i];
 
             return sum / FPS_BUFFER_LEN;
