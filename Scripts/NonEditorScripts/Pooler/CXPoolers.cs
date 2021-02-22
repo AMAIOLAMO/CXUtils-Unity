@@ -1,13 +1,12 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 namespace CXUtils.CodeUtils
 {
     /// <summary>
     /// implements a single pool cycle
     /// </summary>
-    public interface IPoolCycle
+    public interface IPoolCycleEvent
     {
         /// <summary>
         /// When one pool cycle happened, this will trigger
@@ -19,7 +18,7 @@ namespace CXUtils.CodeUtils
     /// A simple pooler base that you could use to pool stuff for performace
     /// </summary>
     /// <typeparam name="T">The type you want to pool</typeparam>
-    public class CXPoolerBase<T> : IPoolCycle where T : new()
+    public class CXPoolerBase<T> : IPoolCycleEvent where T : new()
     {
         public CXPoolerBase(int poolCapacity, Func<int, T> initFunc)
         {
