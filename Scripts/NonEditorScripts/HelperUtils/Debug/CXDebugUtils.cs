@@ -136,6 +136,41 @@ namespace CXUtils.CodeUtils
 
         #region Performance
 
+        const int FPS_BUFFER_LEN = 60;
+        static int[] FPSBuffer = new int[FPS_BUFFER_LEN];
+        static bool fpsBufferFull = false;
+        static int fpsBufferIndex = 0;
+
+        /// <summary>
+        /// Recieves the avrg FPS :D
+        /// </summary>
+        public static int GetAvrgFPS()
+        {
+            FPSBuffer[fpsBufferIndex++] = GetFPS();
+
+            if ( fpsBufferIndex >= FPS_BUFFER_LEN )
+            {
+                fpsBufferIndex = 0;
+                fpsBufferFull = true;
+            }
+
+            int sum = 0;
+
+            if ( !fpsBufferFull )
+            {
+                for ( int i = 0; i <= fpsBufferIndex; i++ )
+                    sum += FPSBuffer[i];
+
+                return sum / (fpsBufferIndex + 1);
+            }
+            //else
+
+            for ( int i = 0; i <= FPS_BUFFER_LEN; i++ )
+                sum += FPSBuffer[i];
+
+            return sum / FPS_BUFFER_LEN;
+        }
+
         /// <summary> Get's the current FPS (Frames per second) </summary>
         public static int GetFPS() => (int)( 1f / Time.unscaledDeltaTime );
 
