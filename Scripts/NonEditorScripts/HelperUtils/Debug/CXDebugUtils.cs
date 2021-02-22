@@ -40,22 +40,22 @@ namespace CXUtils.CodeUtils
         /// <summary> Logs a list of objects using ToString </summary>
         public static void LogList<T>(object sender, T[] listT, LogListOptions logListMode = LogListOptions.Single, string between = ", ")
         {
-            if (listT.Length == 0)
+            if ( listT.Length == 0 )
             {
                 Dlog(sender, $"Items(0): List: {nameof(listT)}'s length is 0");
                 return;
             }
 
-            if (listT.Length == 1)
-                switch (logListMode)
+            if ( listT.Length == 1 )
+                switch ( logListMode )
                 {
                     case LogListOptions.Single:
-                        Dlog(sender, $"Items({listT.Length}): {listT[0]}");
-                        return;
+                    Dlog(sender, $"Items({listT.Length}): {listT[0]}");
+                    return;
 
                     case LogListOptions.Multiple:
-                        Dlog(sender, $"Items({listT.Length}):\nItem 0 : {listT[0]}");
-                        return;
+                    Dlog(sender, $"Items({listT.Length}):\nItem 0 : {listT[0]}");
+                    return;
                 }
 
             StringBuilder sb = new StringBuilder();
@@ -63,23 +63,23 @@ namespace CXUtils.CodeUtils
             int i;
             int listIndexMax = listT.Length - 1;
 
-            switch (logListMode)
+            switch ( logListMode )
             {
                 case LogListOptions.Single:
-                    sb.Append($"Items({listT.Length}): ");
+                sb.Append($"Items({listT.Length}): ");
 
-                    for (i = 0; i < listIndexMax; i++)
-                        sb.Append($"{listT[i]}{between}");
+                for ( i = 0; i < listIndexMax; i++ )
+                    sb.Append($"{listT[i]}{between}");
 
-                    sb.Append($"{listT[i]}");
-                    break;
+                sb.Append($"{listT[i]}");
+                break;
 
                 case LogListOptions.Multiple:
-                    for (i = 0; i < listIndexMax; i++)
-                        sb.Append($"\nItem {i} : {listT[i]}{between}");
+                for ( i = 0; i < listIndexMax; i++ )
+                    sb.Append($"\nItem {i} : {listT[i]}{between}");
 
-                    sb.Append($"\nItem {listIndexMax} : {listT[i]}");
-                    break;
+                sb.Append($"\nItem {listIndexMax} : {listT[i]}");
+                break;
             }
 
             Dlog(sender, sb.ToString());
@@ -109,6 +109,7 @@ namespace CXUtils.CodeUtils
             return false;
 #pragma warning restore
         }
+
         /// <summary> Runs a method only inside the build </summary>
         public static bool RunInBuild(Action action)
         {
@@ -136,7 +137,7 @@ namespace CXUtils.CodeUtils
         #region Performance
 
         /// <summary> Get's the current FPS (Frames per second) </summary>
-        public static float GetFPS() => GetCurrentFPS();
+        public static int GetFPS() => (int)( 1f / Time.unscaledDeltaTime );
 
         #endregion
 
@@ -154,19 +155,6 @@ namespace CXUtils.CodeUtils
         {
             DlogError(sender, msg);
             throw new T();
-        }
-
-        #endregion
-
-        #region Performance
-
-        static float deltaTime = 0f;
-
-        private static float GetCurrentFPS()
-        {
-            deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
-
-            return 1f / deltaTime;
         }
 
         #endregion
