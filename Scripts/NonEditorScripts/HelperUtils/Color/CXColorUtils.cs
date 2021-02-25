@@ -98,7 +98,7 @@ namespace CXUtils.CodeUtils
         public static float GetBrightness_Luma2(this Color color) => (color.r + color.r + color.b + color.g + color.g + color.g) / 6f;
 
         ///<summary> Get's the color of the GrayScale value with the given GrayScale value </summary>
-        public static Color GetBrightnessColorByBrightness(float grayScale, float alpha = 1) => new Color(grayScale, grayScale, grayScale, alpha);
+        public static Color FromBrightness(float grayScale, float alpha = 1) => new Color(grayScale, grayScale, grayScale, alpha);
 
         #endregion
 
