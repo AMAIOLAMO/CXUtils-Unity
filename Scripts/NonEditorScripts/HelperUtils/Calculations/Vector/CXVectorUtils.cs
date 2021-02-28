@@ -154,15 +154,15 @@ namespace CXUtils.CodeUtils
         /// (for floating points natural problem at comparing in each other)
         /// </summary>
         public static bool IsApproximately(this Vector2 vect, Vector2 other) =>
-            Mathf.Approximately(vect.x, other.x) && Mathf.Approximately(vect.y, other.y);
+            vect.x.IsApproximately(other.x) && vect.y.IsApproximately(other.y);
 
         /// <inheritdoc cref="IsApproximately(Vector2, Vector2)"/>
         public static bool IsApproximately(this Vector3 vect, Vector3 other) =>
-            Mathf.Approximately(vect.x, other.x) && Mathf.Approximately(vect.y, other.y) && Mathf.Approximately(vect.z, other.z);
+            vect.x.IsApproximately(other.x) && vect.y.IsApproximately(other.y) && vect.z.IsApproximately(other.z);
 
         /// <inheritdoc cref="IsApproximately(Vector2, Vector2)"/>
         public static bool IsApproximately(this Vector4 vect, Vector4 other) =>
-            Mathf.Approximately(vect.x, other.x) && Mathf.Approximately(vect.y, other.y) && Mathf.Approximately(vect.z, other.z) && Mathf.Approximately(vect.w, other.w);
+            vect.x.IsApproximately(other.x) && vect.y.IsApproximately(other.y) && vect.z.IsApproximately(other.z) && vect.w.IsApproximately(other.w);
 
         #endregion
 

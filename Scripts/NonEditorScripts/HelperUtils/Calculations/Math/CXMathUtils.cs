@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace CXUtils.CodeUtils
 {
@@ -16,7 +17,7 @@ namespace CXUtils.CodeUtils
     }
 
     ///<summary> Cx's Math Function Class </summary>
-    public class MathUtils
+    public struct MathUtils
     {
         /// <summary> Represents PI * 2 </summary>
         public const float TAU = 6.28318530717958f;
@@ -152,4 +153,16 @@ namespace CXUtils.CodeUtils
         #endregion
     }
 
+    /// <summary>
+    /// Cx's Float Extensions
+    /// </summary>
+    public static class FloatExtensions
+    {
+        /// <summary>
+        /// Checks if two floats are approximately equal
+        /// </summary>
+        /// <returns>If two float values are approximately equal together</returns>
+        public static bool IsApproximately(this float value, float other) =>
+            Mathf.Approximately(value, other);
+    }
 }
