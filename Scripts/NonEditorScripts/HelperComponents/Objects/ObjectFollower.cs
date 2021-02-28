@@ -74,7 +74,7 @@ namespace CXUtils.HelperComponents
 
             //check the has off set (if has then add)
             if(objectFollowPositionOptions == ObjectFollowPositionOptions.All || objectFollowPositionOptions == ObjectFollowPositionOptions.HasOffsetOnly) newPos += offSet;
-            if(objectFollowPositionOptions == ObjectFollowPositionOptions.All || objectFollowPositionOptions == ObjectFollowPositionOptions.HasLerpOnly) newPos = Vector3.Lerp(transform.position, newPos, MathUtils.Map(MovingSpeed, 0, 100, 0, 1));
+            if(objectFollowPositionOptions == ObjectFollowPositionOptions.All || objectFollowPositionOptions == ObjectFollowPositionOptions.HasLerpOnly) newPos = Vector3.Lerp(transform.position, newPos, MovingSpeed / 100f);
 
             //then just set it
             transform.position = newPos;
