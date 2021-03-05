@@ -12,7 +12,7 @@ namespace CXUtils.CodeUtils
         public static float PerlinNoise(int x, int y, float scale, float? seed = null)
         {
             float currentSeed = seed ?? 0;
-            return Mathf.PerlinNoise(x / scale + currentSeed, y / scale + currentSeed);
+            return Mathf.PerlinNoise(x * scale + currentSeed, y * scale + currentSeed);
         }
 
         /// <summary> Procedural noise generation, Perlin noise (scale cannot be 0)
@@ -41,8 +41,8 @@ namespace CXUtils.CodeUtils
         {
             float[,] map = new float[width, height];
 
-            for (int x = 0; x < width; x++)
-                for (int y = 0; y < height; y++)
+            for ( int x = 0; x < width; x++ )
+                for ( int y = 0; y < height; y++ )
                     map[x, y] = PerlinNoise(x + start_x, y + start_y, scale, seed);
 
             return map;
@@ -55,7 +55,7 @@ namespace CXUtils.CodeUtils
             int MP1_Width = map1.GetLength(0);
             int MP1_Height = map1.GetLength(1);
 
-            if (!MP1_Width.Equals(map2.GetLength(0)) || !MP1_Height.Equals(map2.GetLength(1)))
+            if ( !MP1_Width.Equals(map2.GetLength(0)) || !MP1_Height.Equals(map2.GetLength(1)) )
             {
                 noiseMap = default;
                 return false;
@@ -64,8 +64,8 @@ namespace CXUtils.CodeUtils
             noiseMap = new float[MP1_Width, MP1_Height];
 
             //*else
-            for (int x = 0; x < MP1_Width; x++)
-                for (int y = 0; y < MP1_Height; y++)
+            for ( int x = 0; x < MP1_Width; x++ )
+                for ( int y = 0; y < MP1_Height; y++ )
                     noiseMap[x, y] = map1[x, y] * map2[x, y];
 
             return true;
