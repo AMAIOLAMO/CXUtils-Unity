@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using CXUtils.CodeUtils;
 
 namespace CXUtils.HelperComponents
 {
@@ -42,19 +41,19 @@ namespace CXUtils.HelperComponents
 
         private void Update()
         {
-            if (objectUpdateOptions == ObjectUpdateOptions.Update)
+            if ( objectUpdateOptions == ObjectUpdateOptions.Update )
                 FollowObject();
         }
 
         private void FixedUpdate()
         {
-            if (objectUpdateOptions == ObjectUpdateOptions.FixedUpdate)
+            if ( objectUpdateOptions == ObjectUpdateOptions.FixedUpdate )
                 FollowObject();
         }
 
         private void LateUpdate()
         {
-            if (objectUpdateOptions == ObjectUpdateOptions.LateUpdate)
+            if ( objectUpdateOptions == ObjectUpdateOptions.LateUpdate )
                 FollowObject();
         }
 
@@ -73,8 +72,10 @@ namespace CXUtils.HelperComponents
             Vector3 newPos = transformTo.position;
 
             //check the has off set (if has then add)
-            if(objectFollowPositionOptions == ObjectFollowPositionOptions.All || objectFollowPositionOptions == ObjectFollowPositionOptions.HasOffsetOnly) newPos += offSet;
-            if(objectFollowPositionOptions == ObjectFollowPositionOptions.All || objectFollowPositionOptions == ObjectFollowPositionOptions.HasLerpOnly) newPos = Vector3.Lerp(transform.position, newPos, MovingSpeed / 100f);
+            if ( objectFollowPositionOptions == ObjectFollowPositionOptions.All || objectFollowPositionOptions == ObjectFollowPositionOptions.HasOffsetOnly )
+                newPos += offSet;
+            if ( objectFollowPositionOptions == ObjectFollowPositionOptions.All || objectFollowPositionOptions == ObjectFollowPositionOptions.HasLerpOnly )
+                newPos = Vector3.Lerp(transform.position, newPos, MovingSpeed / 100f);
 
             //then just set it
             transform.position = newPos;
@@ -84,16 +85,18 @@ namespace CXUtils.HelperComponents
         {
             Quaternion newRot = default;
 
-            if (objectFollowRotationOptions != ObjectFollowRotationOptions.None)
+            if ( objectFollowRotationOptions != ObjectFollowRotationOptions.None )
             {
                 newRot = transformTo.rotation;
 
                 //if (objectFollowRotationOptions == ObjectFollowRotationOptions.NoLerp) then do nothing
 
-                if (objectFollowRotationOptions == ObjectFollowRotationOptions.HasLerp) newRot = Quaternion.Lerp(transform.rotation, newRot, RotationSpeed / 100f);
+                if ( objectFollowRotationOptions == ObjectFollowRotationOptions.HasLerp )
+                    newRot = Quaternion.Lerp(transform.rotation, newRot, RotationSpeed / 100f);
             }
 
-            if (newRot != default) transform.rotation = newRot;
+            if ( newRot != default )
+                transform.rotation = newRot;
         }
 
         #endregion
