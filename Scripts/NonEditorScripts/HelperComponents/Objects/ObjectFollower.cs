@@ -31,6 +31,7 @@ namespace CXUtils.HelperComponents
 
         [Range(0f, 100f), Tooltip("The lerp speed of the follower")]
         public float MovingSpeed = 2f;
+
         [Range(0f, 100f), Tooltip("The rotation speed of the follower")]
         public float RotationSpeed = 2f;
 
@@ -83,17 +84,17 @@ namespace CXUtils.HelperComponents
 
         public void FollowRotation()
         {
-            Quaternion newRot = default;
+            //if none then just don't do anything
+            if ( objectFollowRotationOptions == ObjectFollowRotationOptions.None )
+                return;
 
-            if ( objectFollowRotationOptions != ObjectFollowRotationOptions.None )
-            {
-                newRot = transformTo.rotation;
+            //stores the target rotation
+            Quaternion newRot = transformTo.rotation;
 
-                //if (objectFollowRotationOptions == ObjectFollowRotationOptions.NoLerp) then do nothing
+            //if (objectFollowRotationOptions == ObjectFollowRotationOptions.NoLerp) then do nothing
 
-                if ( objectFollowRotationOptions == ObjectFollowRotationOptions.HasLerp )
-                    newRot = Quaternion.Lerp(transform.rotation, newRot, RotationSpeed / 100f);
-            }
+            if ( objectFollowRotationOptions == ObjectFollowRotationOptions.HasLerp )
+                newRot = Quaternion.Lerp(transform.rotation, newRot, RotationSpeed / 100f);
 
             if ( newRot != default )
                 transform.rotation = newRot;
