@@ -42,6 +42,7 @@ namespace CXUtils.CodeUtils
         /// </summary>
         public event Action OnTimerTriggered;
 
+        public bool FirstCycleCompleted => firstCycleCompleted;
         bool firstCycleCompleted;
 
         /// <summary>
