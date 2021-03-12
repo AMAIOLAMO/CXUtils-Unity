@@ -48,7 +48,8 @@ namespace CXUtils.CodeUtils
         /// </summary>
         public static void ThrowInUnity<TException>(this TException ex, object errorMsg, bool onUnity = true) where TException : Exception, new()
         {
-            if (onUnity) Debug.LogError(errorMsg);
+            if ( onUnity )
+                Debug.LogError(errorMsg);
 
             throw ex;
         }
@@ -61,19 +62,23 @@ namespace CXUtils.CodeUtils
 
         static string GetInvalidMsg(InvalidType invalidType)
         {
-            switch (invalidType)
+            switch ( invalidType )
             {
-                case InvalidType.ValueInvalid: return Invalid_ValueInvalid;
-                default: throw GetException(ErrorType.NotAccessible);
+                case InvalidType.ValueInvalid:
+                return Invalid_ValueInvalid;
+                default:
+                throw GetException(ErrorType.NotAccessible);
             }
         }
 
         static string GetErrorMsg(ErrorType errorType)
         {
-            switch (errorType)
+            switch ( errorType )
             {
-                case ErrorType.NotAccessible: return Error_NotAccessible;
-                default: throw GetException(ErrorType.NotAccessible);
+                case ErrorType.NotAccessible:
+                return Error_NotAccessible;
+                default:
+                throw GetException(ErrorType.NotAccessible);
             }
         }
 

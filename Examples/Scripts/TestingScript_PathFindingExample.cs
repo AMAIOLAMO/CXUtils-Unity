@@ -52,10 +52,8 @@ namespace CXUtils.Test
             WriteUseCutCornersText($"Cutting corners: {cuttingCorners}");
         }
 
-        void Update()
-        {
+        void Update() =>
             CheckInputs();
-        }
 
         private void OnDrawGizmos()
         {
@@ -106,9 +104,7 @@ namespace CXUtils.Test
                 ProceduralGenerateWalls(scale, threshHold);
 
             if ( Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(1) )
-            {
                 SetStartingPosition();
-            }
 
             else if ( Input.GetMouseButtonDown(1) )
                 IsWalkable_Add_Remove();
@@ -135,9 +131,7 @@ namespace CXUtils.Test
                     //simplifying the path for less drawing lines (because it will be annoying)
                     path = pathFinder.SimplifyPath(path);
 
-
-
-                    pathFinder.DrawLineDebug(path, 5f, Color.red);
+                    pathFinder.DrawLineDebug(path, 5f, Color.yellow);
                 }
 
             }
@@ -211,13 +205,13 @@ namespace CXUtils.Test
 
             threshHold = Mathf.Clamp01(threshHold);
 
-            float currentSeed = seed ?? Random.Range(0f, 1f);
+            float currentSeed = seed ?? Random.Range(-100f, 100f);
 
             pathFinder.Grid.MapValues
             (
                 (x, y) =>
                 {
-                    bool isWalkable = !NoiseUtils.PerlinNoise_FlipCoin(new Vector2Int(x, y), scale, threshHold, seed);
+                    bool isWalkable = !NoiseUtils.PerlinNoise_FlipCoin(new Vector2Int(x, y), scale, threshHold, currentSeed);
 
                     Vector3 currentPosition = pathFinder.Grid.GetWorldPosition(x, y) + pathFinder.Grid.CellCenterOffset;
 

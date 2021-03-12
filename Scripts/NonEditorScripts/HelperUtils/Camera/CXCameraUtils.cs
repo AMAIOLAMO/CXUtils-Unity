@@ -31,7 +31,7 @@ namespace CXUtils.CodeUtils
         public static bool GetRaycastHitWithMousePos(this Camera camera, out RaycastHit raycastHit, float maxDistance = float.PositiveInfinity,
             int layerMask = default, QueryTriggerInteraction queryTriggerInteraction = default) =>
             Physics.Raycast(camera.GetRayWithMousePos(), out raycastHit, maxDistance, layerMask, queryTriggerInteraction);
-        
+
         #endregion
 
         #region CameraOtherHelperMethods
@@ -81,21 +81,30 @@ namespace CXUtils.CodeUtils
 
             #endregion
 
-            switch (port)
+            switch ( port )
             {
-                case PortOptions.LeftUp: return camera.ScreenToWorldPoint(LU);
-                case PortOptions.LeftDown: return camera.ScreenToWorldPoint(LD);
+                case PortOptions.LeftUp:
+                return camera.ScreenToWorldPoint(LU);
+                case PortOptions.LeftDown:
+                return camera.ScreenToWorldPoint(LD);
 
-                case PortOptions.RightUp: return camera.ScreenToWorldPoint(RU);
-                case PortOptions.RightDown: return camera.ScreenToWorldPoint(RD);
+                case PortOptions.RightUp:
+                return camera.ScreenToWorldPoint(RU);
+                case PortOptions.RightDown:
+                return camera.ScreenToWorldPoint(RD);
 
-                case PortOptions.UpMiddle: return camera.ScreenToWorldPoint(MU);
-                case PortOptions.DownMiddle: return camera.ScreenToWorldPoint(MD);
+                case PortOptions.UpMiddle:
+                return camera.ScreenToWorldPoint(MU);
+                case PortOptions.DownMiddle:
+                return camera.ScreenToWorldPoint(MD);
 
-                case PortOptions.LeftMiddle: return camera.ScreenToWorldPoint(ML);
-                case PortOptions.RightMiddle: return camera.ScreenToWorldPoint(MR);
+                case PortOptions.LeftMiddle:
+                return camera.ScreenToWorldPoint(ML);
+                case PortOptions.RightMiddle:
+                return camera.ScreenToWorldPoint(MR);
 
-                case PortOptions.Center: return camera.ScreenToWorldPoint(camCenter);
+                case PortOptions.Center:
+                return camera.ScreenToWorldPoint(camCenter);
             }
 
             throw ExceptionUtils.GetException(ErrorType.NotAccessible);
@@ -104,7 +113,7 @@ namespace CXUtils.CodeUtils
         ///<summary> Get's the Vector2 border in world space </summary>
         public static Bounds GetCameraBounds_Vec2_Ortho(this Camera camera)
         {
-            if (!camera.orthographic)
+            if ( !camera.orthographic )
                 throw new ArgumentException($"{camera.name} is not orthographic! please turn on orthographic in order to use this method!", nameof(camera.orthographic));
 
             //getting the border of the real world space
@@ -146,7 +155,7 @@ namespace CXUtils.CodeUtils
         {
             this.shakeTransform = shakeTransform;
 
-            if (shakeRadius <= 0)
+            if ( shakeRadius <= 0 )
                 throw new ArgumentOutOfRangeException("Shake radius must be bigger than 0!", nameof(shakeRadius));
 
             shakeMin = -shakeRadius;
@@ -208,7 +217,7 @@ namespace CXUtils.CodeUtils
 
             Trigger_StartShake?.Invoke(this, origin.position);
 
-            while (currentTime > 0)
+            while ( currentTime > 0 )
             {
                 newOffset = GenerateShakeVec();
                 ShakeTransform.position = origin.position + newOffset;
@@ -229,7 +238,7 @@ namespace CXUtils.CodeUtils
 
             Trigger_StartShake?.Invoke(this, origin);
 
-            while (currentTime > 0)
+            while ( currentTime > 0 )
             {
                 newOffset = GenerateShakeVec();
                 ShakeTransform.position = origin + newOffset;
