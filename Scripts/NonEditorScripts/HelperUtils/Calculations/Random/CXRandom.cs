@@ -15,7 +15,7 @@ namespace CXUtils.CodeUtils
         public static double RandomDouble() => RandomFloat();
 
         /// <summary> Randomly decides and returns a boolean </summary>
-        public static bool FlipCoin(float threshold = .5f) => Random.Range(0f, 1f) > threshold;
+        public static bool FlipCoin(float threshold = .5f) => Random.Range(0f, 1f) >= threshold;
 
         /// <summary> Randomly decides between two items </summary>
         public static T FlipCoin<T>(T t1, T t2, float threshold = .5f) => FlipCoin(threshold) ? t1 : t2;
