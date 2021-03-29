@@ -37,74 +37,49 @@ namespace CXUtils.CodeUtils
         #region CameraOtherHelperMethods
 
         //corners
-        static Vector2 LD = Vector2.zero;
-        static Vector2 LU;
-        static Vector2 RU;
-        static Vector2 RD;
+        private static readonly Vector2 LeftDown = Vector2.zero;
+        private static readonly Vector2 LeftUp = new Vector2(0, 1);
+        private static readonly Vector2 RightUp = new Vector2(1, 1);
+        private static readonly Vector2 RightDown = new Vector2(1, 0);
+        
         //middles
-        static Vector2 MU;
-        static Vector2 MD;
-        static Vector2 ML;
-        static Vector2 MR;
+        private static readonly Vector2 MiddleUp = new Vector2(.5f, 1f);
+        private static readonly Vector2 MiddleDown = new Vector2(.5f, 0);
+        private static readonly Vector2 MiddleLeft = new Vector2(0, .5f);
+        private static readonly Vector2 MiddleRight = new Vector2(1f, .5f);
+        
         //center
-        static Vector2 camCenter;
+        private static readonly Vector2 MiddleCenter = new Vector2(.5f, .5f);
 
-        static float halfWidth;
-        static float halfHeight;
-
-        ///<summary> This method will get the edges of the camera and return the edge camera pos </summary>
-        public static Vector3 GetCameraPortPosOnWorldPos(this Camera camera, PortOptions port)
+        ///<summary> This method will get the edges of the camera and return the edge camera pos (only for ortho) </summary>
+        public static Vector3 GetCameraPortPosOnWorldPos_Ortho(this Camera camera, PortOptions port)
         {
-            #region Vars
-
-            halfWidth = camera.pixelWidth / 2f;
-            halfHeight = camera.pixelHeight / 2f;
-
-            #endregion
-
-            #region postions
-
-            //corners
-            LU = new Vector2(0, camera.pixelHeight);
-            //LD is been initialized already
-            RU = new Vector2(camera.pixelWidth, camera.pixelHeight);
-            RD = new Vector2(camera.pixelWidth, 0);
-
-            //middles
-            MU = new Vector2(halfWidth, camera.pixelHeight);
-            MD = new Vector2(halfWidth, 0);
-            ML = new Vector2(0, halfHeight);
-            MR = new Vector2(camera.pixelWidth, halfHeight);
-
-            //Center
-            camCenter = new Vector2(halfWidth, halfHeight);
-
-            #endregion
-
             switch ( port )
             {
                 case PortOptions.LeftUp:
-                return camera.ScreenToWorldPoint(LU);
+                return camera.ViewportToWorldPoint(LeftUp);
                 case PortOptions.LeftDown:
-                return camera.ScreenToWorldPoint(LD);
+                return camera.ViewportToWorldPoint(LeftDown);
 
                 case PortOptions.RightUp:
-                return camera.ScreenToWorldPoint(RU);
+                return camera.ViewportToWorldPoint(RightUp);
                 case PortOptions.RightDown:
-                return camera.ScreenToWorldPoint(RD);
+                return camera.ViewportToWorldPoint(RightDown);
 
+                
                 case PortOptions.UpMiddle:
-                return camera.ScreenToWorldPoint(MU);
+                return camera.ViewportToWorldPoint(MiddleUp);
                 case PortOptions.DownMiddle:
-                return camera.ScreenToWorldPoint(MD);
+                return camera.ViewportToWorldPoint(MiddleDown);
 
                 case PortOptions.LeftMiddle:
-                return camera.ScreenToWorldPoint(ML);
+                return camera.ViewportToWorldPoint(MiddleLeft);
                 case PortOptions.RightMiddle:
-                return camera.ScreenToWorldPoint(MR);
+                return camera.ViewportToWorldPoint(MiddleRight);
 
+                
                 case PortOptions.Center:
-                return camera.ScreenToWorldPoint(camCenter);
+                return camera.ViewportToScreenPoint(MiddleCenter);
             }
 
             throw ExceptionUtils.GetException(ErrorType.NotAccessible);
@@ -117,7 +92,7 @@ namespace CXUtils.CodeUtils
                 throw new ArgumentException($"{camera.name} is not orthographic! please turn on orthographic in order to use this method!", nameof(camera.orthographic));
 
             //getting the border of the real world space
-            Vector2 BorderPositive = new Vector2(GetCameraPortPosOnWorldPos(camera, PortOptions.RightMiddle).x, GetCameraPortPosOnWorldPos(camera, PortOptions.UpMiddle).y);
+            var BorderPositive = new Vector2(GetCameraPortPosOnWorldPos_Ortho(camera, PortOptions.RightMiddle).x, GetCameraPortPosOnWorldPos_Ortho(camera, PortOptions.UpMiddle).y);
 
             return new Bounds(camera.transform.position, BorderPositive);
         }
@@ -127,7 +102,7 @@ namespace CXUtils.CodeUtils
 
     /// <summary> A helper library for handling camera shake </summary>
     [Serializable]
-    struct CameraShake : IDebugDescribable
+    public struct CameraShake : IDebugDescribable
     {
         #region Vars
 
