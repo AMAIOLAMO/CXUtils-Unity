@@ -15,19 +15,11 @@ namespace CXUtils.DesignPatterns
         /// </summary>
         public static T Instance => GetInstance();
 
-        protected static bool _isAppQuitting = false;
-
         /// <summary>
         /// Get's an instance of this singleton class
         /// </summary>
         public static T GetInstance()
         {
-            if (_isAppQuitting)
-            {
-                Debug.LogWarning("Application is quitting! cannot get instance! of type: " + typeof(T).Name);
-                return null;
-            }
-            
             if (_instance != null) return _instance;
 
             _instance = FindObjectOfType<T>();
@@ -52,8 +44,6 @@ namespace CXUtils.DesignPatterns
             else if (_instance != this as T)
                 Destroy(gameObject);
         }
-
-        private void OnApplicationQuit() => _isAppQuitting = true;
     }
 
     /// <summary>
