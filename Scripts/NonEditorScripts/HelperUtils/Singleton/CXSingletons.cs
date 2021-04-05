@@ -60,9 +60,7 @@ namespace CXUtils.DesignPatterns
                 DontDestroyOnLoad(gameObject);
             }
             else if (_instance != this as T)
-            {
                 Destroy(gameObject);
-            }
             else
                 DontDestroyOnLoad(gameObject);
         }
