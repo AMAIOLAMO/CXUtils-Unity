@@ -11,7 +11,8 @@ namespace CXUtils.DesignPatterns
         protected static T _instance;
 
         /// <summary>
-        /// The instance of this class
+        /// The instance of this class <br/>
+        /// Simply a wrapper around <see cref="GetInstance"/>
         /// </summary>
         public static T Instance => GetInstance();
 
@@ -49,7 +50,6 @@ namespace CXUtils.DesignPatterns
     /// <summary>
     /// A singeton that auto does the <see cref="MonoBehaviour.DontDestroyOnLoad"/> method for you
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public abstract class DontDestroySingleton<T> : Singleton<T> where T : Component
     {
         protected override void Awake()
