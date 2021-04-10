@@ -5,7 +5,9 @@ using Random = UnityEngine.Random;
 
 namespace CXUtils.CodeUtils
 {
-    ///<summary> CX's Vector class </summary>
+    ///<summary>
+    /// CX's Vector class
+    /// </summary>
     public static class VectorUtils
     {
         #region Mapping Extensions
@@ -186,11 +188,8 @@ namespace CXUtils.CodeUtils
         ///<summary>
         ///Round the Given vector to their int version
         ///</summary>
-        public static Vector2Int GetRoundToInt(this Vector2 vec2)
-        {
-            Vector2 rounded = vec2.Round();
-            return new Vector2Int((int)rounded.x, (int)rounded.y);
-        }
+        public static Vector2Int GetRoundToInt(this Vector2 vec2) =>
+            new Vector2Int(Mathf.RoundToInt(vec2.x), Mathf.RoundToInt(vec2.y));
 
         ///<summary>
         ///Round the Given vector to their int version
@@ -198,8 +197,7 @@ namespace CXUtils.CodeUtils
         ///</summary>
         public static Vector3Int GetRoundToInt(this Vector3 vec3)
         {
-            Vector3 rounded = vec3.Round();
-            return new Vector3Int((int)rounded.x, (int)rounded.y, (int)rounded.z);
+            return new Vector3Int(Mathf.RoundToInt(vec3.x), Mathf.RoundToInt(vec3.y), Mathf.RoundToInt(vec3.z));
         }
 
         ///<summary>
@@ -219,17 +217,11 @@ namespace CXUtils.CodeUtils
 
         public static Vector4 Floor(this Vector4 vec4) => vec4.Map(Mathf.Floor);
 
-        public static Vector2Int FloorToInt(this Vector2 vec2)
-        {
-            vec2.Floor();
-            return new Vector2Int((int)vec2.x, (int)vec2.y);
-        }
+        public static Vector2Int FloorToInt(this Vector2 vec2) =>
+            new Vector2Int(Mathf.FloorToInt(vec2.x), Mathf.FloorToInt(vec2.y));
 
-        public static Vector3Int FloorToInt(this Vector3 vec3)
-        {
-            vec3.Floor();
-            return new Vector3Int((int)vec3.x, (int)vec3.y, (int)vec3.z);
-        }
+        public static Vector3Int FloorToInt(this Vector3 vec3) =>
+            new Vector3Int(Mathf.FloorToInt(vec3.x), Mathf.FloorToInt(vec3.y), Mathf.FloorToInt(vec3.z));
 
         //ceiling
         public static Vector2 Ceil(this Vector2 vec2) => vec2.Map(Mathf.Ceil);
@@ -238,17 +230,11 @@ namespace CXUtils.CodeUtils
 
         public static Vector4 Ceil(this Vector4 vec4) => vec4.Map(Mathf.Ceil);
 
-        public static Vector2Int CeilToInt(this Vector2 vec2)
-        {
-            vec2.Ceil();
-            return new Vector2Int((int)vec2.x, (int)vec2.y);
-        }
+        public static Vector2Int CeilToInt(this Vector2 vec2) =>
+            new Vector2Int(Mathf.CeilToInt(vec2.x), Mathf.CeilToInt(vec2.y));
 
-        public static Vector3Int CeilToInt(this Vector3 vec3)
-        {
-            vec3.Ceil();
-            return new Vector3Int((int)vec3.x, (int)vec3.y, (int)vec3.z);
-        }
+        public static Vector3Int CeilToInt(this Vector3 vec3) =>
+            new Vector3Int(Mathf.CeilToInt(vec3.x), Mathf.CeilToInt(vec3.y), Mathf.CeilToInt(vec3.z));
 
         #endregion
 

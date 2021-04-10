@@ -4,7 +4,7 @@
 
 //Consts
 #define PI 3.14159265358979
-#define TWOPI 6.2831853071795
+#define TAU 6.2831853071795
 
 //vectors
 #define VEC2_ONE float2(1, 1)
@@ -12,7 +12,7 @@
 #define VEC3_ONE float3(1, 1, 1)
 #define VEC3_ZERO float3(0, 0, 0)
 #define VEC4_ONE float4(1, 1, 1, 1)
-#define Vec4_ZERO float4(0, 0, 0, 0)
+#define VEC4_ZERO float4(0, 0, 0, 0)
 
 //Degrees
 
@@ -20,19 +20,20 @@
 #define RADToDEG 57.29578
 
 //maps one value to another, no safety checks
-float Map(float value, float In_Min, float In_Max, float Out_Min, float Out_Max)
+float map(float value, float in_min, float in_max, float out_min, float out_max)
 {
-    return ((value - In_Min) * (Out_Max - Out_Min)) / (In_Max - In_Min) + Out_Min;
+    return ((value - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 }
 
 float2 RotateVector2(float2 vec, float Rad_Angle)
 {
     float2 output = float2(vec.x * cos(Rad_Angle) - vec.y * sin(Rad_Angle),
                            vec.x * sin(Rad_Angle) + vec.y * cos(Rad_Angle));
+    return output;
 }
 
 //clamps the value between 0 and 1
-float Clamp01(float value)
+float clamp01(float value)
 {
     return clamp(value, 0, 1);
 }
