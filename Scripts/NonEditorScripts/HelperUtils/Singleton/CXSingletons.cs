@@ -1,3 +1,5 @@
+using System;
+using CXUtils.CodeUtils;
 using UnityEngine;
 
 namespace CXUtils.DesignPatterns
@@ -9,6 +11,8 @@ namespace CXUtils.DesignPatterns
     public abstract class Singleton<T> : MonoBehaviour where T : Component
     {
         protected static T _instance;
+
+        private static bool _isApplicationQuitting = false;
 
         /// <summary>
         /// The instance of this class <br/>
@@ -25,9 +29,16 @@ namespace CXUtils.DesignPatterns
 
             _instance = FindObjectOfType<T>();
 
-            //if can find it now, then return
             if (_instance != null)
                 return _instance;
+            
+            //if didn't get any instance and is already quitting
+            if (_isApplicationQuitting)
+            {
+                Debug.LogWarning("Application is already quitting and you are still accessing a singleton! " +
+                                 "(If you want to clear something up, use OnDisable instead)");
+                return null;
+            }
             
             //else just create it
             var obj = new GameObject { name = typeof(T).Name };
@@ -36,7 +47,6 @@ namespace CXUtils.DesignPatterns
 
             return _instance;
         }
-
         protected virtual void Awake()
         {
             if (_instance == null)
@@ -44,11 +54,20 @@ namespace CXUtils.DesignPatterns
             
             else if (_instance != this as T)
                 Destroy(gameObject);
+        
+            // hook to the quitting event with an application quit variable
+            Application.quitting += OnApplicationQuit;
         }
+        
+        private void OnDestroy() =>
+            Application.quitting -= OnApplicationQuit;
+
+        private void OnApplicationQuit() =>
+            _isApplicationQuitting = true;
     }
 
     /// <summary>
-    /// A singeton that auto does the <see cref="MonoBehaviour.DontDestroyOnLoad"/> method for you
+    /// A singleton that auto does the <see cref="MonoBehaviour.DontDestroyOnLoad"/> method for you
     /// </summary>
     public abstract class DontDestroySingleton<T> : Singleton<T> where T : Component
     {

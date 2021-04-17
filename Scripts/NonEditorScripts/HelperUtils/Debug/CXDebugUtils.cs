@@ -35,14 +35,14 @@ namespace CXUtils.CodeUtils
 
         /// <summary> Logs a single message </summary>
         public static void Log(object sender, object msg) =>
-            Dlog(sender, msg);
+            DLog(sender, msg);
 
         /// <summary> Logs a list of objects using ToString </summary>
         public static void LogList<T>(object sender, T[] listT, LogListOptions logListMode = LogListOptions.Single, string between = ", ")
         {
             if ( listT.Length == 0 )
             {
-                Dlog(sender, $"Items(0): List: {nameof(listT)}'s length is 0");
+                DLog(sender, $"Items(0): List: {nameof(listT)}'s length is 0");
                 return;
             }
 
@@ -50,11 +50,11 @@ namespace CXUtils.CodeUtils
                 switch ( logListMode )
                 {
                     case LogListOptions.Single:
-                    Dlog(sender, $"Items({listT.Length}): {listT[0]}");
+                    DLog(sender, $"Items({listT.Length}): {listT[0]}");
                     return;
 
                     case LogListOptions.Multiple:
-                    Dlog(sender, $"Items({listT.Length}):\nItem 0 : {listT[0]}");
+                    DLog(sender, $"Items({listT.Length}):\nItem 0 : {listT[0]}");
                     return;
                 }
 
@@ -82,15 +82,17 @@ namespace CXUtils.CodeUtils
                 break;
             }
 
-            Dlog(sender, sb.ToString());
+            DLog(sender, sb.ToString());
         }
 
         /// <summary> Logs an Error </summary>
-        public static void LogError(object sender, string msg) => DlogError<Exception>(sender, msg);
+        public static void LogError(object sender, string msg) => DLogError<Exception>(sender, msg);
 
         /// <summary> Logs an Error </summary>
-        public static void LogError<T>(object sender, string msg) where T : Exception, new() => DlogError<T>(sender, msg);
+        public static void LogError<T>(in object sender, in string msg) where T : Exception, new() => DLogError<T>(sender, msg);
 
+        public static void LogWarning(in object sender, in string msg) => DLogWarning(sender, msg);
+        
         /// <summary> Logs the description for this object </summary>
         public static void LogDescription(object sender, IDebugDescribable debugDescribable) => Log(sender, debugDescribable.DebugDescribe());
 
@@ -136,32 +138,32 @@ namespace CXUtils.CodeUtils
 
         #region Performance
 
-        const int FPS_BUFFER_LEN = 60;
-        static readonly int[] FPSBuffer = new int[FPS_BUFFER_LEN];
-        static bool fpsBufferFull = false;
-        static int fpsBufferIndex = 0;
+        private const int FPS_BUFFER_LEN = 60;
+        private static readonly int[] FPSBuffer = new int[FPS_BUFFER_LEN];
+        private static bool _fpsBufferFull = false;
+        private static int _fpsBufferIndex = 0;
 
         /// <summary>
         /// Recieves the avrg FPS :D
         /// </summary>
         public static int GetAvrgFPS()
         {
-            FPSBuffer[fpsBufferIndex++] = GetFPS();
+            FPSBuffer[_fpsBufferIndex++] = GetFPS();
 
-            if ( fpsBufferIndex >= FPS_BUFFER_LEN )
+            if ( _fpsBufferIndex >= FPS_BUFFER_LEN )
             {
-                fpsBufferIndex = 0;
-                fpsBufferFull = true;
+                _fpsBufferIndex = 0;
+                _fpsBufferFull = true;
             }
 
             int sum = 0;
 
-            if ( !fpsBufferFull )
+            if ( !_fpsBufferFull )
             {
-                for ( int i = 0; i <= fpsBufferIndex; i++ )
+                for ( int i = 0; i <= _fpsBufferIndex; i++ )
                     sum += FPSBuffer[i];
 
-                return sum / (fpsBufferIndex + 1);
+                return sum / (_fpsBufferIndex + 1);
             }
             //else
 
@@ -180,17 +182,26 @@ namespace CXUtils.CodeUtils
 
         #region Logs
 
-        static void Dlog(object sender, object msg) =>
-            Debug.Log($"[{sender}] {msg}");
+        private static void DLog(object sender, object msg) =>
+            Debug.Log("[" + sender + "]" + msg);
 
-        static void DlogError(object sender, object msg) =>
-            Debug.LogError($"[{sender}] {msg}");
+        private static void DLogError(object sender, object msg) =>
+            Debug.LogError(LogArgToString(sender, msg));
 
-        static void DlogError<T>(object sender, string msg) where T : Exception, new()
+        private static void DLogError<T>(object sender, string msg) where T : Exception, new()
         {
-            DlogError(sender, msg);
+            DLogError(sender, msg);
             throw new T();
         }
+
+        private static void DLogWarning(object sender, string msg) =>
+            Debug.LogWarning(LogArgToString(sender, msg));
+
+        #endregion
+
+        #region Helper Utils
+
+        private static string LogArgToString(in object sender, in object msg) => "[" + sender + "]" + msg;
 
         #endregion
 
