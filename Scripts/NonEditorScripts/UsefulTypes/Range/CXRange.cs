@@ -42,7 +42,7 @@ namespace CXUtils.UsefulTypes
 
         public object Clone() => new RangeInt(min, max, RangeOptions);
 
-        public override bool InRange(int value) => MathUtils.ValueInRange(value, min, max, RangeOptions);
+        public override bool InRange(int value) => MathUtils.InRange(value, min, max, RangeOptions);
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ namespace CXUtils.UsefulTypes
 
         public object Clone() => new RangeFloat(min, max, RangeOptions);
 
-        public override bool InRange(float value) => MathUtils.ValueInRange(value, min, max, RangeOptions);
+        public override bool InRange(float value) => MathUtils.InRange(value, min, max, RangeOptions);
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ namespace CXUtils.UsefulTypes
 
         public object Clone() => new RangeDouble(min, max, RangeOptions);
 
-        public override bool InRange(double value) => MathUtils.ValueInRange(value, min, max, RangeOptions);
+        public override bool InRange(double value) => MathUtils.InRange(value, min, max, RangeOptions);
     }
 
     //Just extensions for ranges

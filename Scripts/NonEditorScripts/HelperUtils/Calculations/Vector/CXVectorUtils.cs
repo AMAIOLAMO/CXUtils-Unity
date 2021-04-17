@@ -142,7 +142,7 @@ namespace CXUtils.CodeUtils
             direction = direction.normalized;
             //adding a new direction on to the original direction
             direction += RandomVec3(0f, 1f);
-            direction.SetLength(originMagnitude);
+            direction.SetMagnitude(originMagnitude);
 
             return direction;
         }
@@ -240,39 +240,25 @@ namespace CXUtils.CodeUtils
 
         #region Vector Manipulation Extensions & Utils
 
-        public static float GetUnSqrtLength(this Vector2 vect) => vect.x * vect.x + vect.y * vect.y;
-
-        public static float GetUnSqrtLength(this Vector3 vect) => vect.x * vect.x + vect.y * vect.y + vect.z * vect.z;
-
-        public static float GetUnSqrtLength(this Vector4 vect) => vect.x * vect.x + vect.y * vect.y + vect.z * vect.z + vect.w * vect.w;
-
-
-        /// <summary>
-        /// Get's the length of this Vector
-        /// </summary>
-        public static float GetLength(this Vector2 vect) => Mathf.Sqrt(vect.GetUnSqrtLength());
-
-        /// <inheritdoc cref="GetLength(Vector2)"/>
-        public static float GetLength(this Vector3 vect) => Mathf.Sqrt(vect.GetUnSqrtLength());
-
-        /// <inheritdoc cref="GetLength(Vector2)"/>
-        public static float GetLength(this Vector4 vect) => Mathf.Sqrt(vect.GetUnSqrtLength());
-
+        ///<summary>
+        ///Set's the magnitude / length of the <paramref name="vec"/> to the given length
+        ///</summary>
+        public static Vector3 SetMagnitude(this ref Vector3 vec, float len) => vec = vec.normalized * len;
 
         ///<summary>
-        ///Set's the magnitude / length of the <paramref name="vect"/> to the given length
+        ///Set's the magnitude / length of the <paramref name="vec"/> to the given length
         ///</summary>
-        public static Vector3 SetLength(this ref Vector3 vect, float len) => vect = vect.normalized * len;
+        public static Vector2 SetMagnitude(this ref Vector2 vec, float len) => vec = vec.normalized * len;
 
-        /// <inheritdoc cref="SetLength(ref Vector3, float)"/>
-        public static Vector2 SetLength(this ref Vector2 vect, float len) => vect = vect.normalized * len;
-
-        /// <inheritdoc cref="SetLength(ref Vector3, float)"/>
-        public static Vector4 SetLength(this ref Vector4 vect, float len) => vect = vect.normalized * len;
+        ///<summary>
+        ///Set's the magnitude / length of the <paramref name="vec"/> to the given length
+        ///</summary>
+        public static Vector4 SetMagnitude(this ref Vector4 vec, float len) => vec = vec.normalized * len;
 
 
         ///<summary> Clamps the vector by magnitude value </summary>
-        public static Vector3 Clamp(Vector3 vect, float minLen, float maxLen) => vect.magnitude > maxLen ? vect.SetLength(maxLen) : ( vect.magnitude < minLen ? vect.SetLength(minLen) : vect );
+        public static Vector3 Clamp(Vector3 vec, float minLen, float maxLen) =>
+            vec.magnitude > maxLen ? vec.SetMagnitude(maxLen) : ( vec.magnitude < minLen ? vec.SetMagnitude(minLen) : vec );
 
         #endregion
     }

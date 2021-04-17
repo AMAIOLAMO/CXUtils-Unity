@@ -3,7 +3,7 @@
 namespace CXUtils.CodeUtils
 {
     ///<summary> A simple noise helper class </summary>
-    public class NoiseUtils
+    public struct NoiseUtils
     {
         #region Perlin noise
 
