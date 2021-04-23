@@ -260,6 +260,12 @@ namespace CXUtils.CodeUtils
         public static Vector3 Clamp(Vector3 vec, float minLen, float maxLen) =>
             vec.magnitude > maxLen ? vec.SetMagnitude(maxLen) : ( vec.magnitude < minLen ? vec.SetMagnitude(minLen) : vec );
 
+        public static Vector2Int Mod(Vector2Int vec, int value) =>
+            new Vector2Int(vec.x % value, vec.y % value);
+        
+        public static void Mod(this ref Vector2Int vec, int value) =>
+            vec.Map(axis => axis % value);
+
         #endregion
     }
 }
