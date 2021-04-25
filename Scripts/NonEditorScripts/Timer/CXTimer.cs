@@ -49,7 +49,7 @@ namespace CXUtils.CodeUtils
         /// Updates / Counts the timer
         /// </summary>
         /// <returns>if the timer in this frame triggers a cycle reset</returns>
-        public bool TimerCount(float delta)
+        public bool Tick(float delta)
         {
             if ( !cycleReset && firstCycleCompleted )
                 return false;
@@ -73,9 +73,9 @@ namespace CXUtils.CodeUtils
         }
 
         /// <summary>
-        /// Same as <see cref="TimerCount(float)"/>, but will use <see cref="Time.deltaTime"/> as delta
+        /// Same as <see cref="Tick(float)"/>, but will use <see cref="Time.deltaTime"/> as delta
         /// </summary>
-        public bool TimerCount() => TimerCount(Time.deltaTime);
+        public bool Tick() => Tick(Time.deltaTime);
 
         /// <summary>
         /// manual reset of everything in the timer
