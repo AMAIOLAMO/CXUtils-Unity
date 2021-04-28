@@ -33,7 +33,7 @@ namespace CXUtils.CodeUtils
         /// <summary>
         /// this controls when timer counts, will it reset when the timer ended
         /// </summary>
-        public bool cycleReset;
+        public readonly bool cycleReset;
 
         public float currentTimer;
 
@@ -43,7 +43,7 @@ namespace CXUtils.CodeUtils
         public event Action OnTimerTriggered;
 
         public bool FirstCycleCompleted => firstCycleCompleted;
-        bool firstCycleCompleted;
+        private bool firstCycleCompleted;
 
         /// <summary>
         /// Updates / Counts the timer
@@ -55,21 +55,20 @@ namespace CXUtils.CodeUtils
                 return false;
 
             currentTimer += delta;
+            
+            if ( !( currentTimer >= MaxTimer ) )
+                return false;
 
-            if ( currentTimer >= MaxTimer )
-            {
-                OnTimerTriggered?.Invoke();
+            OnTimerTriggered?.Invoke();
 
-                currentTimer = 0;
+            currentTimer = 0;
 
-                //if this isn't the first cycle completed, then true it
-                if ( !firstCycleCompleted )
-                    firstCycleCompleted = true;
+            //if this isn't the first cycle completed, then true it
+            if ( !firstCycleCompleted )
+                firstCycleCompleted = true;
 
-                return true;
-            }
+            return true;
 
-            return false;
         }
 
         /// <summary>

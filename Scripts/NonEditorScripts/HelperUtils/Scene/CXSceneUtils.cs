@@ -88,8 +88,10 @@ namespace CXUtils.CodeUtils
         #endregion
 
         /// <summary> Load's the current scene </summary> 
-        public static void ReloadActiveScene(LoadSceneMode loadSceneMode = default) => SM.LoadScene(SM.GetActiveScene().buildIndex, loadSceneMode);
+        public static void ReloadActiveScene(LoadSceneMode loadSceneMode = LoadSceneMode.Single) => SM.LoadScene(SM.GetActiveScene().buildIndex, loadSceneMode);
 
+        public static AsyncOperation ReloadActiveSceneAsync(LoadSceneMode loadSceneMode = LoadSceneMode.Single) => SM.LoadSceneAsync( SM.GetActiveScene().buildIndex, loadSceneMode );
+        
         #endregion
 
         #region GettingScene
