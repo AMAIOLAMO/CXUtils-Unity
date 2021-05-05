@@ -31,7 +31,7 @@ namespace CXUtils.CodeUtils
         /// <summary>
         /// When one pool cycle happened, this will trigger
         /// </summary>
-        public event Action OnCycle;
+        event Action OnCycle;
     }
 
     /// <summary>
@@ -42,12 +42,12 @@ namespace CXUtils.CodeUtils
         /// <summary>
         /// Triggers when used
         /// </summary>
-        public event Action OnUse;
+        event Action OnUse;
 
         /// <summary>
         /// Triggers when finish using
         /// </summary>
-        public event Action OnDispose;
+        event Action OnDispose;
     }
 
     /// <summary>
