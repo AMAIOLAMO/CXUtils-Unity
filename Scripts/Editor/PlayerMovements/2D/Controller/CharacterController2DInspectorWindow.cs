@@ -12,7 +12,7 @@ public class CharacterController2DInspectorWindow : Editor
         base.OnInspectorGUI();
 
         
-        if(charControl2D.GamePerspecOptions == CharacterController2D.GamePerspectiveOptions.platformer)
+        if(charControl2D.GamePerspecOptions == CharacterController2D.GamePerspectiveOptions.Platformer)
         {
             EditorGUILayout.LabelField("Platformer Extra Content");
 
