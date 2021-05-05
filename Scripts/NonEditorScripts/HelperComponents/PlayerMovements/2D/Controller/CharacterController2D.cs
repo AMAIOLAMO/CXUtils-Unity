@@ -12,7 +12,7 @@ namespace CXUtils.HelperComponents
 
         /// <summary> How the Character controller works </summary>
         public enum GamePerspectiveOptions
-        { platformer, topDown }
+        { Platformer, TopDown }
 
         /// <summary> The options of how the movement will be updated in this character controller </summary>
         public enum MovementUpdateOptions
@@ -31,6 +31,7 @@ namespace CXUtils.HelperComponents
         #region Vars and fields
 
         #region Configurations
+        
         [Header("Configuration")]
         [Header("Requirements")]
         [SerializeField] private Rigidbody2D playerRigidBody;
@@ -38,7 +39,7 @@ namespace CXUtils.HelperComponents
         [SerializeField] private CharacterGroundCheck2D characterGroundCheck;
 
         [Header("Options")]
-        [SerializeField] private GamePerspectiveOptions gamePerspecOptions = GamePerspectiveOptions.platformer;
+        [SerializeField] private GamePerspectiveOptions gamePerspecOptions = GamePerspectiveOptions.Platformer;
         [SerializeField] private MovementUpdateOptions moveUpdateOptions = MovementUpdateOptions.Update;
         [SerializeField] private MovementDeltaTimeOptions moveDeltaTimeOptions = MovementDeltaTimeOptions.DeltaTime;
         [SerializeField] private MovementMode moveMode = MovementMode.Position;
@@ -52,8 +53,8 @@ namespace CXUtils.HelperComponents
         [SerializeField] private float playerCurrentJumpStrength = 5f;
 
         [SerializeField] private bool isMovementNormalized = false;
-        #endregion
 
+        #endregion
 
         protected Vector2 movementVector_Raw;
 
@@ -61,7 +62,7 @@ namespace CXUtils.HelperComponents
 
         public CharacterGroundCheck2D CharacterGroundCheck { get => characterGroundCheck; set => characterGroundCheck = value; }
 
-        public Action PlayerStartJump;
+        public event Action PlayerStartJump;
 
         #region Option Properties
         public GamePerspectiveOptions GamePerspecOptions { get => gamePerspecOptions; set => gamePerspecOptions = value; }
@@ -110,10 +111,10 @@ namespace CXUtils.HelperComponents
             if (moveUpdateOptions == moveUpdateOp)
             {
                 GetMovements();
-                if (gamePerspecOptions == GamePerspectiveOptions.platformer)
+                if (gamePerspecOptions == GamePerspectiveOptions.Platformer)
                     MovePlayerPlatformer();
 
-                else if (gamePerspecOptions == GamePerspectiveOptions.topDown)
+                else if (gamePerspecOptions == GamePerspectiveOptions.TopDown)
                     MovePlayerTopDown();
             }
         }
@@ -286,7 +287,7 @@ namespace CXUtils.HelperComponents
                 case MovementDeltaTimeOptions.UnscaledDeltaTime:      return Time.unscaledDeltaTime;
                 case MovementDeltaTimeOptions.FixedDeltaTime:         return Time.fixedDeltaTime;
                 case MovementDeltaTimeOptions.FixedUnscaledDeltaTime: return Time.fixedUnscaledDeltaTime;
-                
+
                 default:
                     throw ExceptionUtils.GetException(ErrorType.NotAccessible);
             }
