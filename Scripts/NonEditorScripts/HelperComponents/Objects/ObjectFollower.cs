@@ -1,7 +1,6 @@
-﻿using System;
+﻿using UnityEngine;
 using CXUtils.CodeUtils;
-using UnityEngine;
-using UnityEngine.Serialization;
+
 namespace CXUtils.HelperComponents
 {
     [AddComponentMenu( "CXUtils/Objects/ObjectFollower" )]

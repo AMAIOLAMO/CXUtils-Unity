@@ -282,14 +282,13 @@ namespace CXUtils.HelperComponents
         {
             switch (moveDeltaTimeOptions)
             {
-                case MovementDeltaTimeOptions.DeltaTime:
-                return Time.deltaTime;
-                case MovementDeltaTimeOptions.UnscaledDeltaTime:
-                return Time.unscaledDeltaTime;
-                case MovementDeltaTimeOptions.FixedDeltaTime:
-                return Time.fixedDeltaTime;
+                case MovementDeltaTimeOptions.DeltaTime:              return Time.deltaTime;
+                case MovementDeltaTimeOptions.UnscaledDeltaTime:      return Time.unscaledDeltaTime;
+                case MovementDeltaTimeOptions.FixedDeltaTime:         return Time.fixedDeltaTime;
+                case MovementDeltaTimeOptions.FixedUnscaledDeltaTime: return Time.fixedUnscaledDeltaTime;
+                
                 default:
-                return Time.fixedUnscaledDeltaTime;
+                    throw ExceptionUtils.GetException(ErrorType.NotAccessible);
             }
         }
 

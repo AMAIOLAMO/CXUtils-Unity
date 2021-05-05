@@ -25,6 +25,7 @@ namespace CXUtils.HelperComponents
 
         [Header("Others")]
         public bool enableDebugMode = false;
+        
         #endregion
 
         #region Script Methods

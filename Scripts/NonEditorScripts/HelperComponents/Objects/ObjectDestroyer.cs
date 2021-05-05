@@ -5,7 +5,7 @@ namespace CXUtils.HelperComponents
     /// <summary> Options fields to destoy objects </summary>
     public enum ObjectDestroyOptions
     {
-        NoTime_OnStart, Time_OnStart
+        InstantOnStart, TimerOnStart
     }
 
 #pragma warning disable IDE0044
@@ -33,11 +33,11 @@ namespace CXUtils.HelperComponents
         {
             switch (objectDestroyOption)
             {
-                case ObjectDestroyOptions.NoTime_OnStart:
+                case ObjectDestroyOptions.InstantOnStart:
                 Destroy(GetTarget());
                 break;
 
-                case ObjectDestroyOptions.Time_OnStart:
+                case ObjectDestroyOptions.TimerOnStart:
                 Destroy(GetTarget(), time);
                 break;
             }

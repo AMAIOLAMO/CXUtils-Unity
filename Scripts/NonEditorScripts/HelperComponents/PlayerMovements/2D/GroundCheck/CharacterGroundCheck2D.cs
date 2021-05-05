@@ -25,7 +25,7 @@ namespace CXUtils.HelperComponents
 
         //public
 
-        public Collider2D GroundCheckCollision { get => groundCheckCollision; set => groundCheckCollision = value; }
+        public Collider2D GroundCheckCollision => groundCheckCollision;
 
         public CollisionUpdateOptions CollideUpdateOption { get => collideUpdateOption; set => collideUpdateOption = value; }
 
@@ -63,9 +63,11 @@ namespace CXUtils.HelperComponents
 
         protected bool CheckGroundCollision()
         {
-            ContactPoint2D[] c = new ContactPoint2D[20];
+            var contactPoints = new ContactPoint2D[20];
             int len;
-            len = groundCheckCollision.GetContacts(c);
+            
+            len = groundCheckCollision.GetContacts(contactPoints);
+            
             if (len == 0 || tags.Length == 0)
                 return false;
 
@@ -78,7 +80,7 @@ namespace CXUtils.HelperComponents
                         {
                             if (i != null)
                             {
-                                if (c[index].collider.CompareTag(i))
+                                if (contactPoints[index].collider.CompareTag(i))
                                     return true;
                             }
                             else
