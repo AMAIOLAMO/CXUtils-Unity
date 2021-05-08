@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 namespace CXUtils.UsefulTypes
 {
@@ -42,8 +40,8 @@ namespace CXUtils.UsefulTypes
 
         public int RegisterModifier(in Func<T, T> modifier)
         {
-            int hash = modifier.GetHashCode();
-            ModifierDict.Add(hash, modifier);
+            int hash;
+            ModifierDict.Add(hash = modifier.GetHashCode(), modifier);
             return hash;
         }
 

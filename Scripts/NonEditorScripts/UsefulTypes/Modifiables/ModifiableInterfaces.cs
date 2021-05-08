@@ -19,4 +19,3 @@ namespace CXUtils.UsefulTypes
         T GetModified();
     }
 }
-
