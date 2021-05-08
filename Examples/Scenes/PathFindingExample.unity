@@ -421,6 +421,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 10
   height: 10
+  test: MainCamera
   GridBGColor: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
   debugText: {fileID: 1360860400}
   cutCornerText: {fileID: 381377866}

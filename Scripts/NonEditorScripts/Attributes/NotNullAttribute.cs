@@ -14,13 +14,26 @@ namespace UnityEngine.CXExtensions
         public NotNullAttribute() { }
 
 #if UNITY_EDITOR
+        private bool _errorShownOnce = false;
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo)
         {
             base.OnGUI(position, property, label, fieldInfo);
 
             //if property is not null and object refrence value is null then we show message
-            if ( property?.objectReferenceValue == null )
-                EditorGUILayout.HelpBox("Variable or Property: " + property.displayName + " cannot be null!", MessageType.Error);
+            if (property?.objectReferenceValue == null)
+            {
+                string resultMessage = "Variable or Property: " + property.displayName + " cannot be null!";
+
+                EditorGUILayout.HelpBox(resultMessage, MessageType.Error);
+
+                if (Application.isPlaying && !_errorShownOnce)
+                {
+                    _errorShownOnce = true;
+                    Debug.LogError(resultMessage);
+                }
+            }
+
         }
 #endif
     }

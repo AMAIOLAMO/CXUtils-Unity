@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using CXUtils.CodeUtils;
+using UnityEngine.CXExtensions;
 using System.Collections.Generic;
 using CXUtils.GridSystem.PathFinding;
 
@@ -10,15 +11,20 @@ namespace CXUtils.Test
     public class TestingScript_PathFindingExample : MonoBehaviour
     {
         #region Fields
+        [LimitMinInt(0)]
         [SerializeField] int width = default;
+        [LimitMinInt(0)]
         [SerializeField] int height = default;
 
         PathFinding pathFinder;
         readonly List<Vector3> debugVisuals = new List<Vector3>();
 
+        [SerializeField] string test;
+
         [SerializeField] Color GridBGColor = default;
         [SerializeField] Text debugText = default;
         [SerializeField] Text cutCornerText = default;
+
         [SerializeField] GameObject spawningEffect = default;
 
         [SerializeField] Vector2Int startGridPosition = default;

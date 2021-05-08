@@ -7,8 +7,10 @@
     {
         public BackgroundColorAttribute(string hexColor, bool onlyThisField = false) : base(hexColor, onlyThisField) { }
 
+#if UNITY_EDITOR
         public override Color GetColor() => GUI.backgroundColor;
 
         public override void SetColor(Color color) => GUI.backgroundColor = color;
+#endif
     }
 }

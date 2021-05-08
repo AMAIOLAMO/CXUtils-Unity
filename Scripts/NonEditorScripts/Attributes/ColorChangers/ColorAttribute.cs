@@ -17,10 +17,10 @@ namespace UnityEngine.CXExtensions
         string hexColor;
         bool onlyThisField;
 
+#if UNITY_EDITOR
         public abstract Color GetColor();
         public abstract void SetColor(Color color);
 
-#if UNITY_EDITOR
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo)
         {
             Color originColor = GetColor();
