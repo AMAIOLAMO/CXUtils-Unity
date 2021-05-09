@@ -1,12 +1,13 @@
-﻿using CXUtils.CodeUtils;
+﻿using System;
 using UnityEngine;
-using System;
+using CXUtils.CodeUtils;
+using UnityEngine.CXExtensions;
 
 namespace CXUtils.HelperComponents
 {
     /// <summary> A Character controller for 2Dimention games </summary>
-    [AddComponentMenu("CXUtils/Player/2D/CharacterController2D")]
-    public class CharacterController2D : MonoBehaviour, IDebugDescribable
+    [AddComponentMenu( "CXUtils/Player/2D/CharacterController2D" )]
+    public class CharacterController2D : MonoBehaviour
     {
         #region Enums
 
@@ -31,20 +32,22 @@ namespace CXUtils.HelperComponents
         #region Vars and fields
 
         #region Configurations
-        
-        [Header("Configuration")]
-        [Header("Requirements")]
+
+        [Header( "Configuration" )]
+        [Header( "Requirements" )]
+        [NotNull]
         [SerializeField] private Rigidbody2D playerRigidBody;
+
         [HideInInspector]
         [SerializeField] private CharacterGroundCheck2D characterGroundCheck;
 
-        [Header("Options")]
+        [Header( "Options" )]
         [SerializeField] private GamePerspectiveOptions gamePerspecOptions = GamePerspectiveOptions.Platformer;
         [SerializeField] private MovementUpdateOptions moveUpdateOptions = MovementUpdateOptions.Update;
         [SerializeField] private MovementDeltaTimeOptions moveDeltaTimeOptions = MovementDeltaTimeOptions.DeltaTime;
         [SerializeField] private MovementMode moveMode = MovementMode.Position;
 
-        [Header("Player Settings")]
+        [Header( "Player Settings" )]
         [SerializeField] private float playerCurrentSpeed = 5f;
 
         [SerializeField] private bool isLocalTransform = false;
@@ -71,12 +74,11 @@ namespace CXUtils.HelperComponents
         public MovementMode MoveMode { get => moveMode; set => moveMode = value; }
         #endregion
 
-        #region Field Properties
         public Vector2 MovementVector
         {
             get
             {
-                if (isMovementNormalized)
+                if ( isMovementNormalized )
                     return movementVector_Raw.normalized;
                 return movementVector_Raw;
             }
@@ -87,34 +89,33 @@ namespace CXUtils.HelperComponents
 
         public bool IsLocalTransform { get => isLocalTransform; set => isLocalTransform = value; }
         public bool IsMovementNormalized { get => isMovementNormalized; set => isMovementNormalized = value; }
-        #endregion
 
         #endregion
 
         #region MainThread
 
         private void Update() =>
-            CheckAndMove(MovementUpdateOptions.Update);
+            CheckAndMove( MovementUpdateOptions.Update );
 
         private void FixedUpdate() =>
-            CheckAndMove(MovementUpdateOptions.FixedUpdate);
+            CheckAndMove( MovementUpdateOptions.FixedUpdate );
 
         private void LateUpdate() =>
-            CheckAndMove(MovementUpdateOptions.LateUpdate);
+            CheckAndMove( MovementUpdateOptions.LateUpdate );
 
         #endregion
 
         #region ThreadMethods
 
-        private void CheckAndMove(MovementUpdateOptions moveUpdateOp)
+        private void CheckAndMove( MovementUpdateOptions moveUpdateOp )
         {
-            if (moveUpdateOptions == moveUpdateOp)
+            if ( moveUpdateOptions == moveUpdateOp )
             {
                 GetMovements();
-                if (gamePerspecOptions == GamePerspectiveOptions.Platformer)
+                if ( gamePerspecOptions == GamePerspectiveOptions.Platformer )
                     MovePlayerPlatformer();
 
-                else if (gamePerspecOptions == GamePerspectiveOptions.TopDown)
+                else if ( gamePerspecOptions == GamePerspectiveOptions.TopDown )
                     MovePlayerTopDown();
             }
         }
@@ -123,24 +124,23 @@ namespace CXUtils.HelperComponents
         #region MainMethods
 
         #region MovementInputs
+
         protected virtual void GetMovements() =>
-            movementVector_Raw = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            movementVector_Raw = new Vector2( Input.GetAxisRaw( "Horizontal" ), Input.GetAxisRaw( "Vertical" ) );
+
         #endregion
 
         #region Movements
+
         protected virtual void MovePlayerPlatformer()
         {
-            switch (moveMode)
+            switch ( moveMode )
             {
-                case MovementMode.Position:
-                Platformer_Position();
-                break;
-                case MovementMode.Force:
-                Platformer_Force();
-                break;
-                case MovementMode.Velocity:
-                Platformer_Velocity();
-                break;
+                case MovementMode.Position: Platformer_Position(); break;
+                case MovementMode.Force:    Platformer_Force(); break;
+                case MovementMode.Velocity: Platformer_Velocity(); break;
+
+                default: throw ExceptionUtils.GetException( ErrorType.NotAccessible );
             }
 
             JumpMovements();
@@ -148,45 +148,37 @@ namespace CXUtils.HelperComponents
 
         protected virtual void MovePlayerTopDown()
         {
-            switch (moveMode)
+            switch ( moveMode )
             {
-                case MovementMode.Position:
-                TopDown_Position();
-                break;
-                case MovementMode.Force:
-                TopDown_Force();
-                break;
-                case MovementMode.Velocity:
-                TopDown_Velocity();
-                break;
+                case MovementMode.Position: TopDown_Position(); break;
+                case MovementMode.Force:    TopDown_Force(); break;
+                case MovementMode.Velocity: TopDown_Velocity(); break;
+
+                default: throw ExceptionUtils.GetException( ErrorType.NotAccessible );
             }
         }
+
         #endregion
 
         #region PlatformerMovement
+
         protected virtual void Platformer_Position()
         {
-            Vector3 newOffset;
-            if (isLocalTransform)
-                newOffset = transform.right * MovementVector.x;
-            else
-                newOffset = Vector3.right * MovementVector.x;
+            Vector3 newOffset = (IsLocalTransform ? transform.right : Vector3.right) * MovementVector.x;
 
             newOffset *= playerCurrentSpeed * CurrentUsingDeltaTime();
             transform.position += newOffset;
         }
+
         protected virtual void Platformer_Force()
         {
-            Vector2 newForce;
+            Vector2 newForce = ( IsLocalTransform ? transform.right : Vector3.right ) * MovementVector.x;
 
-            if (isLocalTransform)
-                newForce = transform.right * MovementVector.x;
-            else
-                newForce = Vector2.right * MovementVector.x;
             newForce *= playerCurrentSpeed;
 
-            playerRigidBody.AddForce(newForce, ForceMode2D.Impulse);
+            playerRigidBody.AddForce( newForce, ForceMode2D.Impulse );
         }
+
         protected virtual void Platformer_Velocity()
         {
             Vector2 newVelocity = playerRigidBody.velocity;
@@ -195,15 +187,17 @@ namespace CXUtils.HelperComponents
 
             playerRigidBody.velocity = newVelocity;
         }
+
         #endregion
 
         #region TopDownMovement
+
         protected virtual void TopDown_Position()
         {
             // up down left right
             Vector3 newOffset;
 
-            if (IsLocalTransform)
+            if ( IsLocalTransform )
                 newOffset = transform.right * MovementVector.x + transform.up * MovementVector.y;
             else
                 newOffset = Vector3.right * MovementVector.x + Vector3.up * MovementVector.y;
@@ -211,21 +205,24 @@ namespace CXUtils.HelperComponents
             newOffset *= playerCurrentSpeed * CurrentUsingDeltaTime();
             transform.position += newOffset;
         }
+
         protected virtual void TopDown_Force()
         {
             Vector2 newForce;
 
-            if (isLocalTransform)
+            if ( isLocalTransform )
                 newForce = transform.right * MovementVector.x + transform.up * MovementVector.y;
             else
                 newForce = Vector2.right * MovementVector.x + Vector2.up * MovementVector.y;
+
             newForce *= playerCurrentSpeed;
 
-            playerRigidBody.AddForce(newForce, ForceMode2D.Impulse);
+            playerRigidBody.AddForce( newForce, ForceMode2D.Impulse );
         }
+
         protected virtual void TopDown_Velocity()
         {
-            Vector2 newVelocity = playerRigidBody.velocity;
+            Vector2 newVelocity;
 
             newVelocity = MovementVector * playerCurrentSpeed;
 
@@ -234,23 +231,28 @@ namespace CXUtils.HelperComponents
         #endregion
 
         #region Jump
+
         //Jump Variables
         //For more better jump
         protected bool canJump = true;
-        [Header("Jump Settings")]
-        [HideInInspector]
+        [Header( "Jump Settings" )]
+
+        [SerializeField] protected bool advancedSettings = false;
+
+        [DisableWhen("advancedSettings")]
         [SerializeField] protected float jumpDelta = .05f;
+
         protected float lastJumpTime = 0f;
         protected float currentJumpDelta = 0f;
 
         protected virtual void JumpMovements()
         {
             //Jump method
-            if (CharacterGroundCheck != null && playerRigidBody != null)
+            if ( CharacterGroundCheck != null && playerRigidBody != null )
             {
-                if (canJump)
+                if ( canJump )
                 {
-                    if (Input.GetKey(KeyCode.Space) && characterGroundCheck.IsOnGround)
+                    if ( Input.GetKey( KeyCode.Space ) && characterGroundCheck.IsOnGround )
                     {
                         lastJumpTime = Time.time;
                         canJump = false;
@@ -258,7 +260,7 @@ namespace CXUtils.HelperComponents
                         //Invokes the event when the player is jumping
                         PlayerStartJump?.Invoke();
 
-                        if (isLocalTransform)
+                        if ( isLocalTransform )
                             playerRigidBody.velocity += (Vector2)transform.up * playerCurrentJumpStrength;
                         else
                             playerRigidBody.velocity += Vector2.up * playerCurrentJumpStrength;
@@ -268,7 +270,7 @@ namespace CXUtils.HelperComponents
                 {
                     currentJumpDelta = Time.time - lastJumpTime;
 
-                    if (currentJumpDelta > jumpDelta)
+                    if ( currentJumpDelta > jumpDelta )
                         canJump = true;
                 }
             }
@@ -281,7 +283,7 @@ namespace CXUtils.HelperComponents
         /// <summary> This method will check all the delta times and returns the matched delta Time </summary>
         private float CurrentUsingDeltaTime()
         {
-            switch (moveDeltaTimeOptions)
+            switch ( moveDeltaTimeOptions )
             {
                 case MovementDeltaTimeOptions.DeltaTime:              return Time.deltaTime;
                 case MovementDeltaTimeOptions.UnscaledDeltaTime:      return Time.unscaledDeltaTime;
@@ -289,15 +291,9 @@ namespace CXUtils.HelperComponents
                 case MovementDeltaTimeOptions.FixedUnscaledDeltaTime: return Time.fixedUnscaledDeltaTime;
 
                 default:
-                    throw ExceptionUtils.GetException(ErrorType.NotAccessible);
+                throw ExceptionUtils.GetException( ErrorType.NotAccessible );
             }
         }
-
-        //the debug describe is for describing
-        public string DebugDescribe() =>
-            $"Vars and Fields:\n [GroundCheck] CharacterGroundCheck: {characterGroundCheck}" +
-            $"\n [Player Settings] PlayerCurrentSpeed: {playerCurrentSpeed}, PlayerMovementVector_Raw: {movementVector_Raw}, PlayerMovementVector: {MovementVector}" +
-            $"\n isLocalTransform: {isLocalTransform}, isMovementNormalized: {isMovementNormalized}";
         #endregion
 
         #endregion

@@ -17,17 +17,6 @@ namespace CXUtils.CodeUtils
 
     #endregion
 
-    #region interfaces
-
-    /// <summary> An interface that implements the debug describable for the debug helper </summary>
-    public interface IDebugDescribable
-    {
-        /// <summary> Describes an object </summary>
-        string DebugDescribe();
-    }
-
-    #endregion
-
     /// <summary> A class full of helper function for debugging </summary>
     public class DebugUtils
     {
@@ -92,9 +81,6 @@ namespace CXUtils.CodeUtils
         public static void LogError<T>(in object sender, in string msg) where T : Exception, new() => DLogError<T>(sender, msg);
 
         public static void LogWarning(in object sender, in string msg) => DLogWarning(sender, msg);
-        
-        /// <summary> Logs the description for this object </summary>
-        public static void LogDescription(object sender, IDebugDescribable debugDescribable) => Log(sender, debugDescribable.DebugDescribe());
 
         #endregion
 
