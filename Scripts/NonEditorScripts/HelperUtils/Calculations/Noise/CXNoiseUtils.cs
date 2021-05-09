@@ -17,19 +17,22 @@ namespace CXUtils.CodeUtils
 
         /// <summary> Procedural noise generation, Perlin noise (scale cannot be 0)
         /// <para>QUICK NOTE:seed will be default to 0</para></summary>
-        public static float PerlinNoise(Vector2Int position, float scale, float? seed = null) => PerlinNoise(position.x, position.y, scale, seed);
+        public static float PerlinNoise(Vector2Int position, float scale, float? seed = null) =>
+            PerlinNoise(position.x, position.y, scale, seed);
 
         /// <summary> Generates a boolean value that the threshHold gives.
-        /// <para>QUICK NOTEs:</para>
-        /// <para>clamps threshHold value between 0 ~ 1</para>
-        /// <para>seed will be default to 0</para></summary>
-        public static bool PerlinNoise_FlipCoin(int x, int y, float scale, float threshHold = .5f, float? seed = null) => PerlinNoise(x, y, scale, seed) > Mathf.Clamp01(threshHold);
+        /// QUICK NOTEs: <br/>
+        /// clamps threshHold value between 0 ~ 1 <br/>
+        /// seed will be default to 0</summary>
+        public static bool PerlinNoise_FlipCoin(int x, int y, float scale, float threshHold = .5f, float? seed = null) =>
+            PerlinNoise(x, y, scale, seed) > Mathf.Clamp01(threshHold);
 
         /// <summary> Generates a boolean value that the threshHold gives.
-        /// <para>QUICK NOTEs:</para>
-        /// <para>clamps threshHold value between 0 ~ 1</para>
-        /// <para>seed will be default to 0</para></summary>
-        public static bool PerlinNoise_FlipCoin(Vector2Int position, float scale, float threshHold = .5f, float? seed = null) => PerlinNoise_FlipCoin(position.x, position.y, scale, threshHold, seed);
+        /// QUICK NOTEs: <br/>
+        /// clamps threshHold value between 0 ~ 1 <br/>
+        /// seed will be default to 0</summary>
+        public static bool PerlinNoise_FlipCoin(Vector2Int position, float scale, float threshHold = .5f, float? seed = null) =>
+            PerlinNoise_FlipCoin(position.x, position.y, scale, threshHold, seed);
 
         #endregion
 

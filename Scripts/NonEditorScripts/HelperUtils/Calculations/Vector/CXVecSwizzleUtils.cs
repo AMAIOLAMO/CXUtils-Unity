@@ -2,7 +2,7 @@
 
 namespace CXUtils.CodeUtils
 {
-    public static class CXVecShaderUtils
+    public static class CXVecSwizzleUtils
     {
         #region XYZ
 

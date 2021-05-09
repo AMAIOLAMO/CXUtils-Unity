@@ -97,10 +97,6 @@ namespace CXUtils.CodeUtils
                     item = probabilityItemPair[i].Value;
                     return true;
                 }
-                /*if (MathUtils.InRange(rand, lastMin, total, RangeOptions.IncMax))
-                {
-                    
-                }*/
 
             item = default;
             return false;
