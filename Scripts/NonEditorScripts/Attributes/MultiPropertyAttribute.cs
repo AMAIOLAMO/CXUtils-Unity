@@ -15,7 +15,7 @@ namespace UnityEngine.CXExtensions
         /// The basic OnGUI Method from property drawers
         /// </summary>
         public virtual void OnGUI(Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo) =>
-            EditorGUI.PropertyField(position, property, label);
+            EditorGUI.PropertyField(position, property, label, true);
 
         /// <summary>
         /// Recieves a new position

@@ -13,7 +13,7 @@ namespace UnityEditor.CXExtentions
             //for all attributes that's on this field, we try to get all attributes
             for ( int i = 0; i < attributes.Length; i++ )
             {
-                MultiPropertyAttribute currentAttribute = attributes[i] as MultiPropertyAttribute;
+                var currentAttribute = attributes[i] as MultiPropertyAttribute;
 
                 if ( currentAttribute != null )
                 {

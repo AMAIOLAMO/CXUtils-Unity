@@ -7,11 +7,11 @@ using UnityEditor;
 namespace UnityEngine.CXExtensions
 {
     /// <summary>
-    /// This makes unity recognize a string value as a tag value
+    /// This makes unity recognize an integer value as a layer value
     /// </summary>
-    public class AsTagAttribute : MultiPropertyAttribute
+    public class AsLayerAttribute : MultiPropertyAttribute
     {
-        public AsTagAttribute(bool withLabel = true)
+        public AsLayerAttribute(bool withLabel = true)
         {
             _withLabel = withLabel;
         }
@@ -21,17 +21,17 @@ namespace UnityEngine.CXExtensions
 #if UNITY_EDITOR
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo)
         {
-            if(property.propertyType != SerializedPropertyType.String)
+            if(property.propertyType != SerializedPropertyType.Integer)
             {
                 base.OnGUI(position, property, label, fieldInfo);
-                EditorGUILayout.HelpBox("Cannot use as tag attribute in a non string field!", MessageType.Warning);
+                EditorGUILayout.HelpBox("Cannot use as layer attribute in a non int field!", MessageType.Warning);
                 return;
             }
 
             if(_withLabel)
-                property.stringValue = EditorGUI.TagField(position, label, property.stringValue);
+                property.intValue = EditorGUI.LayerField(position, label, property.intValue);
             else
-                property.stringValue = EditorGUI.TagField(position, property.stringValue);
+                property.intValue = EditorGUI.LayerField(position, property.intValue);
         }
 #endif
     }

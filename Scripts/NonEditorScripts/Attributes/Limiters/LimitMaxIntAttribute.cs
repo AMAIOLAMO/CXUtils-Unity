@@ -21,17 +21,17 @@ namespace UnityEngine.CXExtensions
         private int _maxValue;
 
 #if UNITY_EDITOR
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo)
-        {
-            base.OnGUI(position, property, label, fieldInfo);
 
+        public override SerializedProperty GetProperty(SerializedProperty property)
+        {
             if(property.propertyType == SerializedPropertyType.Integer)
             {
                 property.intValue = Mathf.Min(property.intValue, _maxValue);
-                return;
+                return property;
             }
 
             EditorGUILayout.HelpBox("Limit Max cannot be used on types other than int! if you want to limit float, use LimitMaxAttribute instead!", MessageType.Warning);
+            return property;
         }
 #endif
     }

@@ -419,9 +419,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00ed249e05a52f04888b3b0cf2ff072b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 10
+  width: 0
   height: 10
-  test: MainCamera
+  disableWhenBelow: 0
+  testBool: 1
+  hideWhenBelow: 0
+  testBool2: 1
   GridBGColor: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
   debugText: {fileID: 1360860400}
   cutCornerText: {fileID: 381377866}

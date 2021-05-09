@@ -13,13 +13,22 @@ namespace CXUtils.Test
         #region Fields
         [LimitMinInt(0)]
         [SerializeField] int width = default;
+
         [LimitMinInt(0)]
         [SerializeField] int height = default;
 
         PathFinding pathFinder;
         readonly List<Vector3> debugVisuals = new List<Vector3>();
 
-        [SerializeField] string test;
+        [DisableWhen("testBool")]
+        [SerializeField] bool disableWhenBelow;
+
+        [SerializeField] bool testBool;
+
+        [HideInInspectorWhen("testBool2")]
+        [SerializeField] bool hideWhenBelow;
+
+        [SerializeField] bool testBool2;
 
         [SerializeField] Color GridBGColor = default;
         [SerializeField] Text debugText = default;

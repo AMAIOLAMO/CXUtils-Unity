@@ -7,7 +7,7 @@ using UnityEditor;
 namespace UnityEngine.CXExtensions
 {
     /// <summary>
-    /// This shows a error box indicates that this field cannot be null
+    /// This censors all the content typed inside a string field (result will still be stored correctly without "*")
     /// </summary>
     public class PasswordAttribute : MultiPropertyAttribute
     {
