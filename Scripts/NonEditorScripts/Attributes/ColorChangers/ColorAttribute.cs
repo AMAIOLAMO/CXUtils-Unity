@@ -11,26 +11,29 @@ namespace UnityEngine.CXExtensions
     /// </summary>
     public abstract class ColorAttribute : MultiPropertyAttribute
     {
-        public ColorAttribute(string hexColor, bool onlyThisField = false) =>
-            (this.hexColor, this.onlyThisField) = (hexColor, onlyThisField);
+        public ColorAttribute( string hexColor, bool onlyThisField = false ) =>
+            (_hexColor, _onlyThisField) = (hexColor, onlyThisField);
 
-        string hexColor;
-        bool onlyThisField;
+        private readonly string _hexColor;
+        private readonly bool _onlyThisField;
 
 #if UNITY_EDITOR
         public abstract Color GetColor();
-        public abstract void SetColor(Color color);
+        public abstract void SetColor( Color color );
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo)
+        public override void OnGUI( Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo )
         {
             Color originColor = GetColor();
 
-            if ( ColorUtility.TryParseHtmlString(hexColor, out Color color) ) SetColor(color);
-            else EditorGUILayout.HelpBox("the given hexColor is invalid!", MessageType.Error);
+            if ( ColorUtility.TryParseHtmlString( _hexColor, out Color color ) )
+                SetColor( color );
+            else
+                EditorGUILayout.HelpBox( "the given hexColor is invalid!", MessageType.Error );
 
-            base.OnGUI(position, property, label, fieldInfo);
+            base.OnGUI( position, property, label, fieldInfo );
 
-            if ( onlyThisField ) SetColor(originColor);
+            if ( _onlyThisField )
+                SetColor( originColor );
         }
 #endif
     }

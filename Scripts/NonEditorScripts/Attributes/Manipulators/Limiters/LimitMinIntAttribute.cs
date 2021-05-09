@@ -9,10 +9,10 @@ namespace UnityEngine.CXExtensions
     /// <summary>
     /// This limits the target value above a certain threshold
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field)]
+    [AttributeUsage( AttributeTargets.Field )]
     public class LimitMinIntAttribute : MultiPropertyAttribute
     {
-        public LimitMinIntAttribute(int minValue)
+        public LimitMinIntAttribute( int minValue )
         {
             _minValue = minValue;
         }
@@ -21,15 +21,15 @@ namespace UnityEngine.CXExtensions
 
 #if UNITY_EDITOR
 
-        public override SerializedProperty GetProperty(SerializedProperty property)
+        public override SerializedProperty GetProperty( SerializedProperty property )
         {
-            if(property.propertyType == SerializedPropertyType.Integer)
+            if ( property.propertyType == SerializedPropertyType.Integer )
             {
-                property.intValue = Mathf.Max(property.intValue, _minValue);
+                property.intValue = Mathf.Max( property.intValue, _minValue );
                 return property;
             }
 
-            EditorGUILayout.HelpBox("Limit Min Int cannot be used on types other than int! if you want to limit float, use LimitMinAttribute instead!", MessageType.Warning);
+            EditorGUILayout.HelpBox( "Limit Min Int cannot be used on types other than int! if you want to limit float, use LimitMinAttribute instead!", MessageType.Warning );
             return property;
         }
 #endif
