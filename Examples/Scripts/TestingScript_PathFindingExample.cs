@@ -11,24 +11,16 @@ namespace CXUtils.Test
     public class TestingScript_PathFindingExample : MonoBehaviour
     {
         #region Fields
-        [LimitMinInt(0)]
+        [LimitMinInt( 0 )]
         [SerializeField] int width = default;
 
-        [LimitMinInt(0)]
+        [LimitMinInt( 0 )]
         [SerializeField] int height = default;
+
+        [SerializeField] string test;
 
         PathFinding pathFinder;
         readonly List<Vector3> debugVisuals = new List<Vector3>();
-
-        [DisableWhen("testBool")]
-        [SerializeField] bool disableWhenBelow;
-
-        [SerializeField] bool testBool;
-
-        [HideInInspectorWhen("testBool2")]
-        [SerializeField] bool hideWhenBelow;
-
-        [SerializeField] bool testBool2;
 
         [SerializeField] Color GridBGColor = default;
         [SerializeField] Text debugText = default;
@@ -38,10 +30,10 @@ namespace CXUtils.Test
 
         [SerializeField] Vector2Int startGridPosition = default;
 
-        [Range(0f, 1f)]
+        [Range( 0f, 1f )]
         [SerializeField] float scale = .4f;
 
-        [Range(0f, 1f)]
+        [Range( 0f, 1f )]
         [SerializeField] float threshHold = .5f;
         private bool usingDiagonal = true;
         private bool cuttingCorners = false;
@@ -56,15 +48,15 @@ namespace CXUtils.Test
         private void Start()
         {
             mainCam = Camera.main;
-            camShake = new CameraShake(mainCam.transform, 0.1f);
-            pathFinder = new PathFinding(width, height, 1, Vector3.zero);
+            camShake = new CameraShake( mainCam.transform, 0.1f );
+            pathFinder = new PathFinding( width, height, 1, Vector3.zero );
             debugVisuals.Clear();
 
             startGridPosition = Vector2Int.zero;
 
             //clear text
-            WriteUseDiagonalText($"UsingDiagonal: {usingDiagonal}");
-            WriteUseCutCornersText($"Cutting corners: {cuttingCorners}");
+            WriteUseDiagonalText( $"UsingDiagonal: {usingDiagonal}" );
+            WriteUseCutCornersText( $"Cutting corners: {cuttingCorners}" );
         }
 
         void Update() =>
@@ -73,17 +65,17 @@ namespace CXUtils.Test
         private void OnDrawGizmos()
         {
             if ( pathFinder == null )
-                pathFinder = new PathFinding(width, height, 1, Vector3.zero);
+                pathFinder = new PathFinding( width, height, 1, Vector3.zero );
 
             Gizmos.color = GridBGColor;
             Bounds worldBounds = pathFinder.Grid.GetWorldBounds();
 
-            Gizmos.DrawCube(worldBounds.center, worldBounds.size);
+            Gizmos.DrawCube( worldBounds.center, worldBounds.size );
 
             DrawUnWalkableDebugVisuals();
             DrawStartingPositionDebug();
 
-            pathFinder.Grid.DrawDebug(Color.red, Color.white, 0.1f);
+            pathFinder.Grid.DrawDebug( Color.red, Color.white, 0.1f );
         }
 
         #endregion
@@ -92,36 +84,36 @@ namespace CXUtils.Test
 
         private void CheckInputs()
         {
-            if ( Input.GetMouseButtonDown(0) )
+            if ( Input.GetMouseButtonDown( 0 ) )
                 DrawPathFinderDebug();
 
             //diagonal and cut corners
-            if ( Input.GetKeyDown(KeyCode.T) )
+            if ( Input.GetKeyDown( KeyCode.T ) )
             {
                 usingDiagonal = !usingDiagonal;
-                WriteUseDiagonalText($"UsingDiagonal: {usingDiagonal}");
+                WriteUseDiagonalText( $"UsingDiagonal: {usingDiagonal}" );
                 if ( usingDiagonal )
-                    WriteUseCutCornersText($"Cutting corners: {cuttingCorners}");
+                    WriteUseCutCornersText( $"Cutting corners: {cuttingCorners}" );
                 else
                     WriteUseCutCornersText();
             }
             //cut corners
-            if ( Input.GetKeyDown(KeyCode.C) && usingDiagonal )
+            if ( Input.GetKeyDown( KeyCode.C ) && usingDiagonal )
             {
                 cuttingCorners = !cuttingCorners;
-                WriteUseCutCornersText($"Cutting corners: {cuttingCorners}");
+                WriteUseCutCornersText( $"Cutting corners: {cuttingCorners}" );
             }
 
-            if ( debugVisuals.Count > 0 && Input.GetKeyDown(KeyCode.R) )
+            if ( debugVisuals.Count > 0 && Input.GetKeyDown( KeyCode.R ) )
                 RemoveAllBlock();
 
-            if ( Input.GetKeyDown(KeyCode.Y) )
-                ProceduralGenerateWalls(scale, threshHold);
+            if ( Input.GetKeyDown( KeyCode.Y ) )
+                ProceduralGenerateWalls( scale, threshHold );
 
-            if ( Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(1) )
+            if ( Input.GetKey( KeyCode.LeftShift ) && Input.GetMouseButtonDown( 1 ) )
                 SetStartingPosition();
 
-            else if ( Input.GetMouseButtonDown(1) )
+            else if ( Input.GetMouseButtonDown( 1 ) )
                 IsWalkable_Add_Remove();
         }
 
@@ -129,24 +121,24 @@ namespace CXUtils.Test
         {
             Vector3 mousePos = CameraUtils.GetMouseOnWorldPos();
 
-            if ( pathFinder.Grid.TryGetGridPosition(mousePos, out Vector2Int gridPos) )
+            if ( pathFinder.Grid.TryGetGridPosition( mousePos, out Vector2Int gridPos ) )
             {
                 List<PathNode> path;
 
                 if ( usingDiagonal )
-                    path = pathFinder.FindPath_Diagonal(startGridPosition, gridPos,
-                        cuttingCorners ? PathFindingOptions.Normal_CutCorners : PathFindingOptions.Normal);
+                    path = pathFinder.FindPath_Diagonal( startGridPosition, gridPos,
+                        cuttingCorners ? PathFindingOptions.Normal_CutCorners : PathFindingOptions.Normal );
 
                 else
-                    path = pathFinder.FindPath_Straight(startGridPosition, gridPos);
+                    path = pathFinder.FindPath_Straight( startGridPosition, gridPos );
 
                 //have path
                 if ( path != null )
                 {
                     //simplifying the path for less drawing lines (because it will be annoying)
-                    path = pathFinder.SimplifyPath(path);
+                    path = pathFinder.SimplifyPath( path );
 
-                    pathFinder.DrawLineDebug(path, 5f, Color.yellow);
+                    pathFinder.DrawLineDebug( path, 5f, Color.yellow );
                 }
 
             }
@@ -156,20 +148,20 @@ namespace CXUtils.Test
         {
             Vector3 mousePos = CameraUtils.GetMouseOnWorldPos();
 
-            if ( pathFinder.Grid.TryGetValue(mousePos, out PathNode pathNode) )
+            if ( pathFinder.Grid.TryGetValue( mousePos, out PathNode pathNode ) )
             {
-                if ( !pathNode.GridPosition.Equals(startGridPosition) )
+                if ( !pathNode.GridPosition.Equals( startGridPosition ) )
                 {
                     //and reverse it
                     pathNode.isWalkable = !pathNode.isWalkable;
 
-                    Vector3 currentPos = pathFinder.Grid.GetWorldPosition(pathNode.GridPosition) + pathFinder.Grid.CellCenterOffset;
+                    Vector3 currentPos = pathFinder.Grid.GetWorldPosition( pathNode.GridPosition ) + pathFinder.Grid.CellCenterOffset;
 
                     if ( !pathNode.isWalkable )
-                        debugVisuals.Add(currentPos);
+                        debugVisuals.Add( currentPos );
 
-                    else if ( debugVisuals.Contains(currentPos) )
-                        debugVisuals.Remove(currentPos);
+                    else if ( debugVisuals.Contains( currentPos ) )
+                        debugVisuals.Remove( currentPos );
                 }
             }
         }
@@ -183,7 +175,7 @@ namespace CXUtils.Test
             foreach ( var vector in debugVisuals )
             {
                 Gizmos.color = Color.green;
-                Gizmos.DrawCube(vector, Vector3.one * pathFinder.Grid.CellSize);
+                Gizmos.DrawCube( vector, Vector3.one * pathFinder.Grid.CellSize );
             }
         }
 
@@ -194,7 +186,7 @@ namespace CXUtils.Test
                 Gizmos.color = Color.red;
 
                 Gizmos.DrawCube(
-                    pathFinder.Grid.GetWorldPosition(startGridPosition) + pathFinder.Grid.CellCenterOffset,
+                    pathFinder.Grid.GetWorldPosition( startGridPosition ) + pathFinder.Grid.CellCenterOffset,
                     Vector3.one * pathFinder.Grid.CellSize
                     );
             }
@@ -203,37 +195,37 @@ namespace CXUtils.Test
         private void RemoveAllBlock()
         {
             foreach ( var vect in debugVisuals )
-                Instantiate(spawningEffect, vect, mainCam.transform.rotation, transform);
+                Instantiate( spawningEffect, vect, mainCam.transform.rotation, transform );
 
 
-            camShake.StartShake(this, mainCam.transform.position, .5f);
-            pathFinder.Grid.MapValues((x, y) => new PathNode(x, y));
+            camShake.StartShake( this, mainCam.transform.position, .5f );
+            pathFinder.Grid.MapValues( ( x, y ) => new PathNode( x, y ) );
 
             debugVisuals.Clear();
         }
 
-        private void ProceduralGenerateWalls(float scale = .4f, float threshHold = .6f, float? seed = null)
+        private void ProceduralGenerateWalls( float scale = .4f, float threshHold = .6f, float? seed = null )
         {
             //Reset the walls
             if ( debugVisuals.Count > 0 )
                 RemoveAllBlock();
 
-            threshHold = Mathf.Clamp01(threshHold);
+            threshHold = Mathf.Clamp01( threshHold );
 
-            float currentSeed = seed ?? Random.Range(-100f, 100f);
+            float currentSeed = seed ?? Random.Range( -100f, 100f );
 
             pathFinder.Grid.MapValues
             (
-                (x, y) =>
+                ( x, y ) =>
                 {
-                    bool isWalkable = !NoiseUtils.PerlinNoise_FlipCoin(new Vector2Int(x, y), scale, threshHold, currentSeed);
+                    bool isWalkable = !NoiseUtils.PerlinNoise_FlipCoin( new Vector2Int( x, y ), scale, threshHold, currentSeed );
 
-                    Vector3 currentPosition = pathFinder.Grid.GetWorldPosition(x, y) + pathFinder.Grid.CellCenterOffset;
+                    Vector3 currentPosition = pathFinder.Grid.GetWorldPosition( x, y ) + pathFinder.Grid.CellCenterOffset;
 
-                    if ( !isWalkable && !new Vector2Int(x, y).Equals(startGridPosition) )
-                        debugVisuals.Add(currentPosition);
+                    if ( !isWalkable && !new Vector2Int( x, y ).Equals( startGridPosition ) )
+                        debugVisuals.Add( currentPosition );
 
-                    return new PathNode(x, y, isWalkable);
+                    return new PathNode( x, y, isWalkable );
                 }
             );
         }
@@ -241,18 +233,18 @@ namespace CXUtils.Test
         private void SetStartingPosition()
         {
             Vector2 mousePosition = CameraUtils.GetMouseOnWorldPos();
-            if ( pathFinder.Grid.TryGetGridPosition(mousePosition, out Vector2Int gridPosition) )
+            if ( pathFinder.Grid.TryGetGridPosition( mousePosition, out Vector2Int gridPosition ) )
             {
                 //check if is walkable, then set
-                if ( pathFinder.GetIsWalkable(gridPosition) )
+                if ( pathFinder.GetIsWalkable( gridPosition ) )
                     startGridPosition = gridPosition;
             }
         }
 
-        private void WriteUseDiagonalText(string text = null) =>
+        private void WriteUseDiagonalText( string text = null ) =>
             debugText.text = text;
 
-        private void WriteUseCutCornersText(string text = null) =>
+        private void WriteUseCutCornersText( string text = null ) =>
             cutCornerText.text = text;
 
         #endregion

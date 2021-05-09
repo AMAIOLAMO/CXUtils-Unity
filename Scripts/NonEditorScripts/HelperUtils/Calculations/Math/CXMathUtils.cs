@@ -21,13 +21,13 @@ namespace CXUtils.CodeUtils
     {
         /// <summary> PI's Brother TAU: Represents PI * 2 </summary>
         public const float TAU = 6.28318530717958f;
-        
+
         public const float E = 2.71828182845905f;
 
         #region Range Manipulation
-        
+
         ///<summary> Returns if the float is in the given range </summary>
-        public static bool InRange(float x, float min, float max, RangeOptions checkRangeMode = RangeOptions.IncBoth)
+        public static bool InRange( float x, float min, float max, RangeOptions checkRangeMode = RangeOptions.IncBoth )
         {
             switch ( checkRangeMode )
             {
@@ -45,7 +45,7 @@ namespace CXUtils.CodeUtils
         ///<summary>
         ///Returns if the double is in the given range
         ///</summary>
-        public static bool InRange(double x, double min, double max, RangeOptions checkRangeMode = RangeOptions.IncBoth)
+        public static bool InRange( double x, double min, double max, RangeOptions checkRangeMode = RangeOptions.IncBoth )
         {
             switch ( checkRangeMode )
             {
@@ -61,7 +61,7 @@ namespace CXUtils.CodeUtils
         }
 
         ///<summary> Maps the given value from the given range to the another given range (no Safety Checks) </summary>
-        public static float Map(float val, float inMin, float inMax, float outMin, float outMax) =>
+        public static float Map( float val, float inMin, float inMax, float outMin, float outMax ) =>
             ( val - inMin ) * ( outMax - outMin ) / ( inMax - inMin ) + outMin;
 
         #endregion
@@ -69,8 +69,8 @@ namespace CXUtils.CodeUtils
         #region Lines
 
         ///<summary> Returns if the two lines will collide with each other </summary>
-        public static bool LineIntersection2D(float x1, float x2, float x3, float x4,
-        float y1, float y2, float y3, float y4, out float t, out float u)
+        public static bool LineIntersection2D( float x1, float x2, float x3, float x4,
+        float y1, float y2, float y3, float y4, out float t, out float u )
         {
             //write the line intersection
             float tUp = ( x1 - x3 ) * ( y3 - y4 ) - ( y1 - y3 ) * ( x3 - x4 );
@@ -82,16 +82,16 @@ namespace CXUtils.CodeUtils
 
             //make boolean and check
             bool tBool, uBool;
-            (tBool, uBool) = (InRange(t, 0f, 1f), InRange(u, 0f, 1f));
+            (tBool, uBool) = (InRange( t, 0f, 1f ), InRange( u, 0f, 1f ));
 
             //making the bool to the things
             return tBool && uBool;
         }
 
         ///<summary> Checks if the two lines in 2D will collide with each other </summary>
-        public static bool LineIntersection2D(float x1, float x2, float x3, float x4,
-        float y1, float y2, float y3, float y4) =>
-            LineIntersection2D(x1, x2, x3, x4, y1, y2, y3, y4, out _, out _);
+        public static bool LineIntersection2D( float x1, float x2, float x3, float x4,
+        float y1, float y2, float y3, float y4 ) =>
+            LineIntersection2D( x1, x2, x3, x4, y1, y2, y3, y4, out _, out _ );
 
         #endregion
 
@@ -99,11 +99,11 @@ namespace CXUtils.CodeUtils
 
         ///<summary> This will map the whole real Number line into the range of 0 - 1
         /// <para>using calculation 1f / (Math.Pow(Math.E, -x)); </para> </summary>
-        public static float Sigmoid_1(float x) => 1f / Mathf.Pow(E, -x);
+        public static float Sigmoid_1( float x ) => 1f / Mathf.Pow( E, -x );
 
         ///<summary> This will map the whole real Number line into the range of 0 - 1
         /// <para>using calculation Math.Pow(Math.E, x) / (Math.Pow(Math.E, x) + 1f);</para> </summary>
-        public static float Sigmoid_2(float x) => Mathf.Pow(E, x) / ( Mathf.Pow(E, x) + 1f );
+        public static float Sigmoid_2( float x ) => Mathf.Pow( E, x ) / ( Mathf.Pow( E, x ) + 1f );
 
         #endregion
 
@@ -113,11 +113,11 @@ namespace CXUtils.CodeUtils
 
         ///<summary> Convert's a given degree angle into radians </summary>
         ///<param name="deg"> The converting Degrees </param>
-        public static float DegToRad(float deg) => deg * Mathf.Deg2Rad;
+        public static float DegToRad( float deg ) => deg * Mathf.Deg2Rad;
 
         ///<summary> Convert's a given radiant angle to degree </summary>
         ///<param name="rad"> The converting Radians </param>
-        public static float RadToDeg(float rad) => rad * Mathf.Rad2Deg;
+        public static float RadToDeg( float rad ) => rad * Mathf.Rad2Deg;
 
         #endregion
 
@@ -125,30 +125,33 @@ namespace CXUtils.CodeUtils
 
         #region Other useful methods
 
+        public static float RoundOnStep( float value, float step ) =>
+            Mathf.Round( value / step ) * step;
+
         /// <summary> The summifying function </summary>
-        public static int SumI(int startI, int endI, Func<int, int> function)
+        public static int SumI( int startI, int endI, Func<int, int> function )
         {
             int ans = 0;
             for ( int i = startI; i <= endI; i++ )
-                ans += function(i);
+                ans += function( i );
             return ans;
         }
 
         /// <inheritdoc cref="SumI"/>
-        public static double SumD(int startI, int endI, Func<int, double> function)
+        public static double SumD( int startI, int endI, Func<int, double> function )
         {
             double ans = 0;
             for ( int i = startI; i <= endI; i++ )
-                ans += function(i);
+                ans += function( i );
             return ans;
         }
 
         /// <inheritdoc cref="SumI"/>
-        public static float SumF(int startI, int endI, Func<int, float> function)
+        public static float SumF( int startI, int endI, Func<int, float> function )
         {
             float ans = 0;
             for ( int i = startI; i <= endI; i++ )
-                ans += function(i);
+                ans += function( i );
             return ans;
         }
 
@@ -164,7 +167,7 @@ namespace CXUtils.CodeUtils
         /// Checks if two floats are approximately equal
         /// </summary>
         /// <returns>If two float values are approximately equal together</returns>
-        public static bool IsApproximately(this float value, float other) =>
-            Mathf.Approximately(value, other);
+        public static bool IsApproximately( this float value, float other ) =>
+            Mathf.Approximately( value, other );
     }
 }

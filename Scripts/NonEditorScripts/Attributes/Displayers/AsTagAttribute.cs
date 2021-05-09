@@ -16,7 +16,7 @@ namespace UnityEngine.CXExtensions
             _withLabel = withLabel;
         }
 
-        bool _withLabel;
+        readonly bool _withLabel;
 
 #if UNITY_EDITOR
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo)

@@ -421,10 +421,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 0
   height: 10
-  disableWhenBelow: 0
-  testBool: 1
-  hideWhenBelow: 0
-  testBool2: 1
+  test: 
   GridBGColor: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
   debugText: {fileID: 1360860400}
   cutCornerText: {fileID: 381377866}
