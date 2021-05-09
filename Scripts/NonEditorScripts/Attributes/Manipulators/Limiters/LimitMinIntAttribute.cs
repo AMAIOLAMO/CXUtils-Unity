@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -8,7 +7,7 @@ using UnityEditor;
 namespace UnityEngine.CXExtensions
 {
     /// <summary>
-    /// This shows a error box indicates that this field cannot be null
+    /// This limits the target value above a certain threshold
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public class LimitMinIntAttribute : MultiPropertyAttribute
