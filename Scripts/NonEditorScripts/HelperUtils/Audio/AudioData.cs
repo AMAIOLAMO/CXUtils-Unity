@@ -6,27 +6,34 @@ using Random = UnityEngine.Random;
 namespace CXUtils.HelperComponents
 {
     [Serializable]
-    [CreateAssetMenu(fileName = "audioData", menuName = "CXUtils/Audio/AudioData")]
+    [CreateAssetMenu( fileName = "audioData", menuName = "CXUtils/Audio/AudioData" )]
     public class AudioData : ScriptableObject
     {
-        public AudioClip[] AudioClips => audioClips;
+        [Header("Audio Clips")]
         [SerializeField] private AudioClip[] audioClips;
 
+        public AudioClip[] AudioClips => audioClips;
+
         /// <summary>
-        /// Does this audio data have no audio clips?
+        /// Does this audio data have no audio clips
         /// </summary>
-        public bool HasNoAudioClips => audioClips.Length == 0;
-        
+        public bool HasAudioClip => audioClips.Length > 0;
+
         /// <summary>
         /// Gets a audio clip from the audio clips
         /// </summary>
-        public AudioClip GetAudioClip(int index = 0) =>
+        public AudioClip GetAudioClip( int index = 0 ) =>
             audioClips[index];
 
         /// <summary>
         /// Get's a random audio clip from the audio clips
         /// </summary>
-        public AudioClip GetRandomAudioClip() =>
-            audioClips[Random.Range(0, audioClips.Length)];
+        public AudioClip GetRandomAudioClip()
+        {
+            if ( !HasAudioClip )
+                return null;
+
+            return audioClips[Random.Range( 0, audioClips.Length )];
+        }
     }
 }
