@@ -131,21 +131,14 @@ namespace CXUtils.CodeUtils
         /// </summary>
         public static float Modulo( float a, float b )
         {
-            //if a is negative then convert the number to the wrapped number
-            if ( a < 0 )
-                return Math.Abs( b - Math.Abs( a ) % b ) % b; // since a is negative we just add to b to get the value we want
-
-            return a % b;
+            //my own wrapping algorithm for C#
+            return ( b + a % b ) % b;
         }
 
         /// <inheritdoc cref="Modulo(float, float)"/>
         public static int Modulo( int a, int b )
         {
-            //if a is negative then convert the number to the wrapped number
-            if ( a < 0 )
-                return Math.Abs( b - Math.Abs( a ) % b ) % b;
-
-            return a % b;
+            return ( b + a % b ) % b;
         }
 
         public static float RoundOnStep( float value, float step ) =>
