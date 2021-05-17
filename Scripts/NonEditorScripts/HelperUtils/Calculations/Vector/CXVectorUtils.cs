@@ -15,10 +15,10 @@ namespace CXUtils.CodeUtils
         /// <summary>
         /// Maps a function to every axis of the <paramref name="vec2"/>
         /// </summary>
-        public static Vector2 Map(this ref Vector2 vec2, Func<float, float> mapFunc)
+        public static Vector2 Map( this ref Vector2 vec2, Func<float, float> mapFunc )
         {
-            vec2.x = mapFunc(vec2.x);
-            vec2.y = mapFunc(vec2.y);
+            vec2.x = mapFunc( vec2.x );
+            vec2.y = mapFunc( vec2.y );
 
             return vec2;
         }
@@ -26,10 +26,10 @@ namespace CXUtils.CodeUtils
         /// <summary>
         /// Maps a function to every axis of the <paramref name="vec2"/>
         /// </summary>
-        public static Vector2Int Map(this ref Vector2Int vec2, Func<int, int> mapFunc)
+        public static Vector2Int Map( this ref Vector2Int vec2, Func<int, int> mapFunc )
         {
-            vec2.x = mapFunc(vec2.x);
-            vec2.y = mapFunc(vec2.y);
+            vec2.x = mapFunc( vec2.x );
+            vec2.y = mapFunc( vec2.y );
 
             return vec2;
         }
@@ -38,11 +38,11 @@ namespace CXUtils.CodeUtils
         /// <summary>
         /// Maps a function to every axis of the <paramref name="vec3"/>
         /// </summary>
-        public static Vector3 Map(this ref Vector3 vec3, Func<float, float> mapFunc)
+        public static Vector3 Map( this ref Vector3 vec3, Func<float, float> mapFunc )
         {
-            vec3.x = mapFunc(vec3.x);
-            vec3.y = mapFunc(vec3.y);
-            vec3.z = mapFunc(vec3.z);
+            vec3.x = mapFunc( vec3.x );
+            vec3.y = mapFunc( vec3.y );
+            vec3.z = mapFunc( vec3.z );
 
             return vec3;
         }
@@ -50,11 +50,11 @@ namespace CXUtils.CodeUtils
         /// <summary>
         /// Maps a function to every axis of the <paramref name="vec3"/>
         /// </summary>
-        public static Vector3Int Map(this ref Vector3Int vec3, Func<int, int> mapFunc)
+        public static Vector3Int Map( this ref Vector3Int vec3, Func<int, int> mapFunc )
         {
-            vec3.x = mapFunc(vec3.x);
-            vec3.y = mapFunc(vec3.y);
-            vec3.z = mapFunc(vec3.z);
+            vec3.x = mapFunc( vec3.x );
+            vec3.y = mapFunc( vec3.y );
+            vec3.z = mapFunc( vec3.z );
 
             return vec3;
         }
@@ -63,12 +63,12 @@ namespace CXUtils.CodeUtils
         /// <summary>
         /// Maps a function to every axis of the <paramref name="vec4"/>
         /// </summary>
-        public static Vector4 Map(this ref Vector4 vec4, Func<float, float> mapFunc)
+        public static Vector4 Map( this ref Vector4 vec4, Func<float, float> mapFunc )
         {
-            vec4.x = mapFunc(vec4.x);
-            vec4.y = mapFunc(vec4.y);
-            vec4.z = mapFunc(vec4.z);
-            vec4.w = mapFunc(vec4.w);
+            vec4.x = mapFunc( vec4.x );
+            vec4.y = mapFunc( vec4.y );
+            vec4.z = mapFunc( vec4.z );
+            vec4.w = mapFunc( vec4.w );
 
             return vec4;
         }
@@ -76,12 +76,12 @@ namespace CXUtils.CodeUtils
         /// <summary>
         /// Maps a function to every axis of the <paramref name="vec4"/>
         /// </summary>
-        public static Vector4 Map(this ref Vector4 vec4, Func<float, int> mapFunc)
+        public static Vector4 Map( this ref Vector4 vec4, Func<float, int> mapFunc )
         {
-            vec4.x = mapFunc(vec4.x);
-            vec4.y = mapFunc(vec4.y);
-            vec4.z = mapFunc(vec4.z);
-            vec4.w = mapFunc(vec4.w);
+            vec4.x = mapFunc( vec4.x );
+            vec4.y = mapFunc( vec4.y );
+            vec4.z = mapFunc( vec4.z );
+            vec4.w = mapFunc( vec4.w );
 
             return vec4;
         }
@@ -91,58 +91,58 @@ namespace CXUtils.CodeUtils
         #region Random
 
         /// <summary> Generates a random vector2 </summary>
-        public static Vector2 RandomVec2(float min, float max) => new Vector2(Random.Range(min, max), Random.Range(min, max));
+        public static Vector2 RandomVec2( float min, float max ) => new Vector2( Random.Range( min, max ), Random.Range( min, max ) );
 
         /// <summary> Generates a random vector2Int in a square </summary>
-        public static Vector2Int RandomVec2Int(int min, int max) => new Vector2Int(Random.Range(min, max), Random.Range(min, max));
+        public static Vector2Int RandomVec2Int( int min, int max ) => new Vector2Int( Random.Range( min, max ), Random.Range( min, max ) );
 
         /// <summary>
         /// Generates a random vector2 inside a circle
         /// </summary>
-        public static Vector2 RandomVecCircle(float maxLength) => Random.insideUnitCircle * maxLength;
+        public static Vector2 RandomVecCircle( float maxLength ) => Random.insideUnitCircle * maxLength;
 
         /// <summary>
         /// Generates a random vector2 inside a circle
         /// </summary>
-        public static Vector2 RandomVec2InCircle(float min, float max) =>
-            Clamp(Random.insideUnitCircle * max, min, max);
+        public static Vector2 RandomVec2InCircle( float min, float max ) =>
+            Clamp( Random.insideUnitCircle * max, min, max );
 
         /// <summary> Generates a random vector3 </summary>
-        public static Vector3 RandomVec3(float min, float max) => new Vector3(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));
+        public static Vector3 RandomVec3( float min, float max ) => new Vector3( Random.Range( min, max ), Random.Range( min, max ), Random.Range( min, max ) );
 
         /// <summary> Generates a random vector3Int </summary>
-        public static Vector3Int RandomVec3Int(int min, int max) => new Vector3Int(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));
+        public static Vector3Int RandomVec3Int( int min, int max ) => new Vector3Int( Random.Range( min, max ), Random.Range( min, max ), Random.Range( min, max ) );
 
         /// <summary>
         /// Generates a random vector3 inside a Sphere
         /// </summary>
-        public static Vector3 RandomVecSphere(float maxLength) => Random.insideUnitSphere * maxLength;
+        public static Vector3 RandomVecSphere( float maxLength ) => Random.insideUnitSphere * maxLength;
 
         /// <summary>
         /// Generates a random vector3 inside a Sphere
         /// </summary>
-        public static Vector3 RandomVec3InSphere(float min, float max) => Clamp(Random.insideUnitSphere * max, min, max);
+        public static Vector3 RandomVec3InSphere( float min, float max ) => Clamp( Random.insideUnitSphere * max, min, max );
 
         /// <summary> Generates a random vector4 </summary>
-        public static Vector4 RandomVec4(float min, float max) => new Vector4(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));
+        public static Vector4 RandomVec4( float min, float max ) => new Vector4( Random.Range( min, max ), Random.Range( min, max ), Random.Range( min, max ), Random.Range( min, max ) );
 
         /// <summary> Generates a random vector4Int
         /// <para>QUICK NOTE: there is no Vector4Int, so becareful of using it as an integer</para></summary>
-        public static Vector4 RandomVec4Int(int min, int max) => new Vector4(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max), Random.Range(min, max));
+        public static Vector4 RandomVec4Int( int min, int max ) => new Vector4( Random.Range( min, max ), Random.Range( min, max ), Random.Range( min, max ), Random.Range( min, max ) );
 
         /// <summary>
         /// Generates a random direction based on the given direction
         /// <para>QUICK NOTE: this method offsets the current vector</para>
         /// </summary>
-        public static Vector3 RandomDirection(Vector3 direction)
+        public static Vector3 RandomDirection( Vector3 direction )
         {
             //get's the original magnitude
             float originMagnitude = direction.magnitude;
 
             direction = direction.normalized;
             //adding a new direction on to the original direction
-            direction += RandomVec3(0f, 1f);
-            direction.SetMagnitude(originMagnitude);
+            direction += RandomVec3( 0f, 1f );
+            direction.SetMagnitude( originMagnitude );
 
             return direction;
         }
@@ -155,16 +155,16 @@ namespace CXUtils.CodeUtils
         /// Checks if two vectors are approximately equal to each other
         /// (for floating points natural problem at comparing in each other)
         /// </summary>
-        public static bool IsApproximately(this Vector2 vect, Vector2 other) =>
-            vect.x.IsApproximately(other.x) && vect.y.IsApproximately(other.y);
+        public static bool IsApproximately( this Vector2 vect, Vector2 other ) =>
+            vect.x.IsApproximately( other.x ) && vect.y.IsApproximately( other.y );
 
         /// <inheritdoc cref="IsApproximately(Vector2, Vector2)"/>
-        public static bool IsApproximately(this Vector3 vect, Vector3 other) =>
-            vect.x.IsApproximately(other.x) && vect.y.IsApproximately(other.y) && vect.z.IsApproximately(other.z);
+        public static bool IsApproximately( this Vector3 vect, Vector3 other ) =>
+            vect.x.IsApproximately( other.x ) && vect.y.IsApproximately( other.y ) && vect.z.IsApproximately( other.z );
 
         /// <inheritdoc cref="IsApproximately(Vector2, Vector2)"/>
-        public static bool IsApproximately(this Vector4 vect, Vector4 other) =>
-            vect.x.IsApproximately(other.x) && vect.y.IsApproximately(other.y) && vect.z.IsApproximately(other.z) && vect.w.IsApproximately(other.w);
+        public static bool IsApproximately( this Vector4 vect, Vector4 other ) =>
+            vect.x.IsApproximately( other.x ) && vect.y.IsApproximately( other.y ) && vect.z.IsApproximately( other.z ) && vect.w.IsApproximately( other.w );
 
         #endregion
 
@@ -173,68 +173,68 @@ namespace CXUtils.CodeUtils
         ///<summary>
         ///Round the Given vector 
         ///</summary>
-        public static Vector2 Round(this Vector2 vec2) => vec2.Map(Mathf.Round);
+        public static Vector2 Round( this Vector2 vec2 ) => vec2.Map( Mathf.Round );
 
         ///<summary>
         ///Round the Given vector 
         ///</summary>
-        public static Vector3 Round(this Vector3 vec3) => vec3.Map(Mathf.Round);
+        public static Vector3 Round( this Vector3 vec3 ) => vec3.Map( Mathf.Round );
 
         ///<summary>
         ///Round the Given vector
         ///</summary>
-        public static Vector4 Round(this Vector4 vec4) => vec4.Map(Mathf.Round);
+        public static Vector4 Round( this Vector4 vec4 ) => vec4.Map( Mathf.Round );
 
         ///<summary>
         ///Round the Given vector to their int version
         ///</summary>
-        public static Vector2Int GetRoundToInt(this Vector2 vec2) =>
-            new Vector2Int(Mathf.RoundToInt(vec2.x), Mathf.RoundToInt(vec2.y));
+        public static Vector2Int GetRoundToInt( this Vector2 vec2 ) =>
+            new Vector2Int( Mathf.RoundToInt( vec2.x ), Mathf.RoundToInt( vec2.y ) );
 
         ///<summary>
         ///Round the Given vector to their int version
         ///<para>Returns the new version, but does not override the original version</para>
         ///</summary>
-        public static Vector3Int GetRoundToInt(this Vector3 vec3)
+        public static Vector3Int GetRoundToInt( this Vector3 vec3 )
         {
-            return new Vector3Int(Mathf.RoundToInt(vec3.x), Mathf.RoundToInt(vec3.y), Mathf.RoundToInt(vec3.z));
+            return new Vector3Int( Mathf.RoundToInt( vec3.x ), Mathf.RoundToInt( vec3.y ), Mathf.RoundToInt( vec3.z ) );
         }
 
         ///<summary>
         ///Round the Given vector to their int version
         ///<para>Returns the new version, but does not override the original version</para>
         ///</summary>
-        public static Vector4 GetRoundToInt(this Vector4 vec4) => vec4.Map(Mathf.RoundToInt);
+        public static Vector4 GetRoundToInt( this Vector4 vec4 ) => vec4.Map( Mathf.RoundToInt );
 
         #endregion
 
         #region Floor & Ceil Extensions
 
         //flooring
-        public static Vector2 Floor(this Vector2 vec2) => vec2.Map(Mathf.Floor);
+        public static Vector2 Floor( this Vector2 vec2 ) => vec2.Map( Mathf.Floor );
 
-        public static Vector3 Floor(this Vector3 vec3) => vec3.Map(Mathf.Floor);
+        public static Vector3 Floor( this Vector3 vec3 ) => vec3.Map( Mathf.Floor );
 
-        public static Vector4 Floor(this Vector4 vec4) => vec4.Map(Mathf.Floor);
+        public static Vector4 Floor( this Vector4 vec4 ) => vec4.Map( Mathf.Floor );
 
-        public static Vector2Int FloorToInt(this Vector2 vec2) =>
-            new Vector2Int(Mathf.FloorToInt(vec2.x), Mathf.FloorToInt(vec2.y));
+        public static Vector2Int FloorToInt( this Vector2 vec2 ) =>
+             Vector2Int.FloorToInt( vec2 );
 
-        public static Vector3Int FloorToInt(this Vector3 vec3) =>
-            new Vector3Int(Mathf.FloorToInt(vec3.x), Mathf.FloorToInt(vec3.y), Mathf.FloorToInt(vec3.z));
+        public static Vector3Int FloorToInt( this Vector3 vec3 ) =>
+            Vector3Int.FloorToInt( vec3 );
 
         //ceiling
-        public static Vector2 Ceil(this Vector2 vec2) => vec2.Map(Mathf.Ceil);
+        public static Vector2 Ceil( this Vector2 vec2 ) => vec2.Map( Mathf.Ceil );
 
-        public static Vector3 Ceil(this Vector3 vec3) => vec3.Map(Mathf.Ceil);
+        public static Vector3 Ceil( this Vector3 vec3 ) => vec3.Map( Mathf.Ceil );
 
-        public static Vector4 Ceil(this Vector4 vec4) => vec4.Map(Mathf.Ceil);
+        public static Vector4 Ceil( this Vector4 vec4 ) => vec4.Map( Mathf.Ceil );
 
-        public static Vector2Int CeilToInt(this Vector2 vec2) =>
-            new Vector2Int(Mathf.CeilToInt(vec2.x), Mathf.CeilToInt(vec2.y));
+        public static Vector2Int CeilToInt( this Vector2 vec2 ) =>
+            Vector2Int.CeilToInt( vec2 );
 
-        public static Vector3Int CeilToInt(this Vector3 vec3) =>
-            new Vector3Int(Mathf.CeilToInt(vec3.x), Mathf.CeilToInt(vec3.y), Mathf.CeilToInt(vec3.z));
+        public static Vector3Int CeilToInt( this Vector3 vec3 ) =>
+            Vector3Int.CeilToInt( vec3 );
 
         #endregion
 
@@ -243,28 +243,28 @@ namespace CXUtils.CodeUtils
         ///<summary>
         ///Set's the magnitude / length of the <paramref name="vec"/> to the given length
         ///</summary>
-        public static Vector3 SetMagnitude(this ref Vector3 vec, float len) => vec = vec.normalized * len;
+        public static Vector3 SetMagnitude( this ref Vector3 vec, float len ) => vec = vec.normalized * len;
 
         ///<summary>
         ///Set's the magnitude / length of the <paramref name="vec"/> to the given length
         ///</summary>
-        public static Vector2 SetMagnitude(this ref Vector2 vec, float len) => vec = vec.normalized * len;
+        public static Vector2 SetMagnitude( this ref Vector2 vec, float len ) => vec = vec.normalized * len;
 
         ///<summary>
         ///Set's the magnitude / length of the <paramref name="vec"/> to the given length
         ///</summary>
-        public static Vector4 SetMagnitude(this ref Vector4 vec, float len) => vec = vec.normalized * len;
+        public static Vector4 SetMagnitude( this ref Vector4 vec, float len ) => vec = vec.normalized * len;
 
 
         ///<summary> Clamps the vector by magnitude value </summary>
-        public static Vector3 Clamp(Vector3 vec, float minLen, float maxLen) =>
-            vec.magnitude > maxLen ? vec.SetMagnitude(maxLen) : ( vec.magnitude < minLen ? vec.SetMagnitude(minLen) : vec );
+        public static Vector3 Clamp( Vector3 vec, float minLen, float maxLen ) =>
+            vec.magnitude > maxLen ? vec.SetMagnitude( maxLen ) : ( vec.magnitude < minLen ? vec.SetMagnitude( minLen ) : vec );
 
-        public static Vector2Int Mod(Vector2Int vec, int value) =>
-            new Vector2Int(vec.x % value, vec.y % value);
-        
-        public static void Mod(this ref Vector2Int vec, int value) =>
-            vec.Map(axis => axis % value);
+        public static Vector2Int Mod( Vector2Int vec, int value ) =>
+            new Vector2Int( vec.x % value, vec.y % value );
+
+        public static void Mod( this ref Vector2Int vec, int value ) =>
+            vec.Map( axis => axis % value );
 
         #endregion
     }

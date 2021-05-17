@@ -125,6 +125,29 @@ namespace CXUtils.CodeUtils
 
         #region Other useful methods
 
+        /// <summary>
+        /// I've written this because C#'s % isn't really modulo arithmetic</br>
+        /// this wraps the number back to the target one
+        /// </summary>
+        public static float Modulo( float a, float b )
+        {
+            //if a is negative then convert the number to the wrapped number
+            if ( a < 0 )
+                a = Math.Abs( b + a ); // since a is negative we just add to b to get the value we want
+
+            return a % b;
+        }
+
+        /// <inheritdoc cref="Modulo(float, float)"/>
+        public static int Modulo( int a, int b )
+        {
+            //if a is negative then convert the number to the wrapped number
+            if ( a < 0 )
+                a = Math.Abs( b + a );
+
+            return a % b;
+        }
+
         public static float RoundOnStep( float value, float step ) =>
             Mathf.Round( value / step ) * step;
 
