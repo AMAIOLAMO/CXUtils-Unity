@@ -141,6 +141,9 @@ namespace CXUtils.CodeUtils
             return ( b + a % b ) % b;
         }
 
+        public static int RoundOnStep( int value, int step ) =>
+            (int)Mathf.Round( (float)value / step ) * step;
+
         public static float RoundOnStep( float value, float step ) =>
             Mathf.Round( value / step ) * step;
 

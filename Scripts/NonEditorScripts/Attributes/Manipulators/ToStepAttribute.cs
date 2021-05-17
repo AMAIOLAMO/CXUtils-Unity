@@ -19,7 +19,7 @@ namespace UnityEngine.CXExtensions
         private readonly float _step;
 
 #if UNITY_EDITOR
-        public override SerializedProperty GetProperty( SerializedProperty property )
+        public override SerializedProperty BuildProperty( SerializedProperty property )
         {
             if ( _step <= 0 )
             {

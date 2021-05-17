@@ -21,7 +21,7 @@ namespace UnityEngine.CXExtensions
 
 #if UNITY_EDITOR
 
-        public override SerializedProperty GetProperty( SerializedProperty property )
+        public override SerializedProperty BuildProperty( SerializedProperty property )
         {
             if ( property.propertyType == SerializedPropertyType.Integer )
             {

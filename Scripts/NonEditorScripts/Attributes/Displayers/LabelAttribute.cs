@@ -5,13 +5,13 @@
     /// </summary>
     public class LabelAttribute : MultiPropertyAttribute
     {
-        public LabelAttribute(string label) => this.label = label;
+        public LabelAttribute( string label ) => _label = label;
 
-        public string label;
+        private readonly string _label;
 #if UNITY_EDITOR
-        public override GUIContent GetLabel(GUIContent label)
+        public override GUIContent BuildLabel( GUIContent label )
         {
-            label.text = this.label;
+            label.text = _label;
             return label;
         }
 #endif
