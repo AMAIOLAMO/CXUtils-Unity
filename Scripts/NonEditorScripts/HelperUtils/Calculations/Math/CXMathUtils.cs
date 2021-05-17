@@ -133,7 +133,7 @@ namespace CXUtils.CodeUtils
         {
             //if a is negative then convert the number to the wrapped number
             if ( a < 0 )
-                a = Math.Abs( b + a ); // since a is negative we just add to b to get the value we want
+                return Math.Abs( b - Math.Abs( a ) % b ) % b; // since a is negative we just add to b to get the value we want
 
             return a % b;
         }
@@ -143,7 +143,7 @@ namespace CXUtils.CodeUtils
         {
             //if a is negative then convert the number to the wrapped number
             if ( a < 0 )
-                a = Math.Abs( b + a );
+                return Math.Abs( b - Math.Abs( a ) % b ) % b;
 
             return a % b;
         }
