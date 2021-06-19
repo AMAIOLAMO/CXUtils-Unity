@@ -1,21 +1,21 @@
 using System;
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace CXUtils.HelperComponents
 {
     public class AudioManager : MonoBehaviour
     {
-        [SerializeField] private int audioSourceAmount = 10;
-
+        [SerializeField] int audioSourceAmount = 10;
         [Range( 0f, 1f )]
-        [SerializeField] private float mainVolume = 1;
+        [SerializeField]
+        float mainVolume = 1;
 
-        public readonly List<AudioSource> MultiUseAudioSources = new List<AudioSource>();
+        public readonly List<AudioSource> multiUseAudioSources = new List<AudioSource>();
 
-        private readonly object threadLock = new object();
+        readonly object _threadLock = new object();
 
-        private int currentAudioIndex;
+        int currentAudioIndex;
 
         public float MainVolume
         {
@@ -23,32 +23,32 @@ namespace CXUtils.HelperComponents
             set
             {
                 mainVolume = value;
+                AudioListener.volume = value;
+                
                 OnMainVolumeChanged?.Invoke( value );
             }
         }
 
-        private void Awake()
+        void Awake()
         {
-            OnMainVolumeChanged += newValue => AudioListener.volume = newValue;
-
             AudioListener.volume = mainVolume;
 
             //initialize audio sources
             InstantiateAudioSources( audioSourceAmount );
         }
 
-        private void OnValidate()
+        void OnValidate()
         {
             audioSourceAmount = Mathf.Max( audioSourceAmount, 1 );
         }
 
-        private void InstantiateAudioSources( int amount )
+        void InstantiateAudioSources( int amount )
         {
-            for ( var i = 0; i < amount; i++ )
+            for ( int i = 0; i < amount; i++ )
             {
                 var source = gameObject.AddComponent<AudioSource>();
                 source.playOnAwake = false;
-                MultiUseAudioSources.Add( source );
+                multiUseAudioSources.Add( source );
             }
         }
 
@@ -73,16 +73,16 @@ namespace CXUtils.HelperComponents
         }
 
         /// <summary>
-        /// Request an audio source from the list
+        ///     Request an audio source from the list
         /// </summary>
         public AudioSource RequestSource()
         {
-            lock ( threadLock )
+            lock ( _threadLock )
             {
-                if ( currentAudioIndex >= MultiUseAudioSources.Count )
+                if ( currentAudioIndex >= multiUseAudioSources.Count )
                     currentAudioIndex = 0;
 
-                var receivedAudioSource = MultiUseAudioSources[currentAudioIndex];
+                var receivedAudioSource = multiUseAudioSources[currentAudioIndex];
 
                 // we lock this because we don't want to get different indexes at the same time
 
