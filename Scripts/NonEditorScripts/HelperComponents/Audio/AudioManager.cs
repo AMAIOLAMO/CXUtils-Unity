@@ -9,11 +9,11 @@ namespace CXUtils.HelperComponents
         [SerializeField] int audioSourceAmount = 10;
         [Range( 0f, 1f )]
         [SerializeField]
-        float mainVolume = 1;
-
-        public readonly List<AudioSource> multiUseAudioSources = new List<AudioSource>();
+        float mainVolume = 1f;
 
         readonly object _threadLock = new object();
+
+        public readonly List<AudioSource> multiUseAudioSources = new List<AudioSource>();
 
         int currentAudioIndex;
 
@@ -24,7 +24,7 @@ namespace CXUtils.HelperComponents
             {
                 mainVolume = value;
                 AudioListener.volume = value;
-                
+
                 OnMainVolumeChanged?.Invoke( value );
             }
         }
