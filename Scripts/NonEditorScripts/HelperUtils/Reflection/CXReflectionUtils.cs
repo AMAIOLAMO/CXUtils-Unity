@@ -1,6 +1,6 @@
 using System;
-using System.Reflection;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace CXUtils.CodeUtils
 {
@@ -12,15 +12,17 @@ namespace CXUtils.CodeUtils
         #region MethodInfo
 
         ///<summary> Get's a method according to the method that is given </summary>
-        public static MethodInfo GetMethodInfo<T>(Expression<Action<T>> exp) => GetMethodInfo<Action<T>>(exp);
-
-        public static MethodInfo GetMethodInfo<T>(Expression<T> exp) where T : Delegate
+        public static MethodInfo GetMethodInfo<T>( Expression<Action<T>> exp )
         {
-            var memb = exp.Body as MethodCallExpression;
+            return GetMethodInfo<Action<T>>( exp );
+        }
 
-            if (memb.Equals(null)) new ArgumentException().ThrowInUnity("The given expression is not a method!");
+        public static MethodInfo GetMethodInfo<T>( Expression<T> exp ) where T : Delegate
+        {
+            if ( !( exp.Body is MethodCallExpression member ) )
+                throw new ArgumentException( "The given expression is not a method!" );
 
-            return memb.Method;
+            return member.Method;
         }
 
         #endregion

@@ -124,9 +124,7 @@ namespace CXUtils.HelperComponents
                 case ObjectDeltaTimeOptions.Normal:   return Time.deltaTime;
                 case ObjectDeltaTimeOptions.Fixed:    return Time.fixedDeltaTime;
                 
-                default:
-                    ExceptionUtils.GetException( ErrorType.NotAccessible );
-                    return float.NaN;
+                default: throw ExceptionUtils.Error.NotAccessible;
             }
         }
         

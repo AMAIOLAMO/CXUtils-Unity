@@ -5,7 +5,7 @@ using CXUtils.CodeUtils;
 namespace CXUtils.PlaneSystem
 {
     /// <summary> Options for Plane Dimentions </summary>
-    public enum PlaneDimentionOptions : byte
+    public enum PlaneDimensionOptions : byte
     {
         XY = 0,
         XZ = 1,
@@ -18,34 +18,34 @@ namespace CXUtils.PlaneSystem
     /// </summary>
     public struct CXPlane : IEquatable<CXPlane>
     {
-        public CXPlane(PlaneDimentionOptions planeDimention) => PlaneDimention = planeDimention;
+        public CXPlane(PlaneDimensionOptions planeDimension) => PlaneDimension = planeDimension;
 
-        public PlaneDimentionOptions PlaneDimention { get; set; }
+        public PlaneDimensionOptions PlaneDimension { get; set; }
 
-        /// <inheritdoc cref="GetNormal(PlaneDimentionOptions)"/>
-        public Vector3 GetNormal() => GetNormal(PlaneDimention);
+        /// <inheritdoc cref="GetNormal(PlaneDimensionOptions)"/>
+        public Vector3 GetNormal() => GetNormal(PlaneDimension);
 
         /// <summary>
         /// Get's the normal that the plane is facing
         /// </summary>
-        public static Vector3 GetNormal(PlaneDimentionOptions planeDimentionOptions)
+        public static Vector3 GetNormal(PlaneDimensionOptions planeDimensionOptions)
         {
-            switch ( planeDimentionOptions )
+            switch ( planeDimensionOptions )
             {
-                case PlaneDimentionOptions.XY:
+                case PlaneDimensionOptions.XY:
                 return -Vector3.forward;
 
-                case PlaneDimentionOptions.XZ:
+                case PlaneDimensionOptions.XZ:
                 return Vector3.up;
 
-                case PlaneDimentionOptions.YZ:
+                case PlaneDimensionOptions.YZ:
                 return Vector3.right;
 
                 default:
-                throw ExceptionUtils.GetException(ErrorType.NotAccessible);
+                throw ExceptionUtils.Error.NotAccessible;
             }
         }
 
-        public bool Equals(CXPlane other) => other.PlaneDimention.Equals(PlaneDimention);
+        public bool Equals(CXPlane other) => other.PlaneDimension.Equals(PlaneDimension);
     }
 }

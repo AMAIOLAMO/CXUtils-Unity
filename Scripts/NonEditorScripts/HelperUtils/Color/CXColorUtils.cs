@@ -85,7 +85,7 @@ namespace CXUtils.CodeUtils
                 case LumaConvertOptions.Luminosity_STD:         return GetBrightness_Luma( color );
                 case LumaConvertOptions.Luminosity_Performance: return GetBrightness_Luma2( color );
 
-                default: throw ExceptionUtils.GetException( ErrorType.NotAccessible );
+                default: throw ExceptionUtils.Error.NotAccessible;
             }
         }
 

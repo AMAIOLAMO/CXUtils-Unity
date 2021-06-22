@@ -82,7 +82,8 @@ namespace CXUtils.CodeUtils
                 return camera.ViewportToScreenPoint( MiddleCenter );
             }
 
-            throw ExceptionUtils.GetException( ErrorType.NotAccessible );
+            throw ExceptionUtils.Error.NotAccessible;
+            //throw ExceptionUtils.GetException( ErrorType.NotAccessible );
         }
 
         ///<summary> Get's the Vector2 border in world space </summary>

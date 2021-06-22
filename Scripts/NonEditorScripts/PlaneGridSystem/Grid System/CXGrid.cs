@@ -301,7 +301,7 @@ namespace CXUtils.GridSystem
                 case GridDimentionOptions.YZ: return new Vector3(0, x, y);
             }
 
-            throw ExceptionUtils.GetException(ErrorType.NotAccessible);
+            throw ExceptionUtils.Error.NotAccessible;
         }
 
         private Vector2 PlanePosToXY(Vector3 PlaneCoords)
@@ -313,7 +313,7 @@ namespace CXUtils.GridSystem
                 case GridDimentionOptions.YZ: return new Vector2(PlaneCoords.y, PlaneCoords.z);
             }
 
-            throw ExceptionUtils.GetException(ErrorType.NotAccessible);
+            throw ExceptionUtils.Error.NotAccessible;
         }
 
         private void InitGrid(int width, int height, float cellSize, Vector3 origin, GridDimentionOptions gridDimentionOptions)
