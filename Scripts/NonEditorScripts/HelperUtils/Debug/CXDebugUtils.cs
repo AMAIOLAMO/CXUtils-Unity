@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
 
@@ -21,6 +22,25 @@ namespace CXUtils.CodeUtils
     /// <summary> A class full of helper function for debugging </summary>
     public static class DebugUtils
     {
+        /// <summary>
+        ///     the base of all loggers
+        /// </summary>
+        public interface ILoggerBase
+        {
+            /// <summary>
+            ///     Logs a message to the logger
+            /// </summary>
+            public void Log( in string message );
+            /// <summary>
+            ///     Logs a warning message to the logger
+            /// </summary>
+            public void LogWarn( in string message );
+            /// <summary>
+            ///     Logs an error message to the logger
+            /// </summary>
+            public void LogError( in string message );
+        }
+
         #region Logs
 
         /// <summary> Logs a single message </summary>
@@ -35,8 +55,7 @@ namespace CXUtils.CodeUtils
             switch ( listT.Length )
             {
                 case 0:
-                    DLog( sender, "Ïtems(0): List: " + nameof( listT ) + "'s length is 0" );
-                    //DLog( sender, $"Items(0): List: {nameof( listT )}'s length is 0" );
+                    DLog( sender, $"Items(0): List: {nameof( listT )}'s length is 0" );
                     return;
 
                 case 1:
@@ -55,7 +74,7 @@ namespace CXUtils.CodeUtils
                     }
             }
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
             int i;
             int listIndexMax = listT.Length - 1;
@@ -140,6 +159,7 @@ namespace CXUtils.CodeUtils
 
         /// <summary> Get's the current FPS (Frames per second) </summary>
         [Pure]
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static int GetFPS()
         {
             return ( int )( 1f / Time.unscaledDeltaTime );
@@ -151,11 +171,13 @@ namespace CXUtils.CodeUtils
 
         #region Logs
 
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
         static void DLog( object sender, object msg )
         {
-            Debug.Log( "[" + sender + "]" + msg );
+            Debug.Log( LogArgToString( sender, msg ) );
         }
 
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
         static void DLogError( object sender, object msg )
         {
             Debug.LogError( LogArgToString( sender, msg ) );
@@ -167,6 +189,7 @@ namespace CXUtils.CodeUtils
             throw new T();
         }
 
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
         static void DLogWarning( object sender, string msg )
         {
             Debug.LogWarning( LogArgToString( sender, msg ) );
@@ -176,9 +199,11 @@ namespace CXUtils.CodeUtils
 
         #region Helper Utils
 
-        static string LogArgToString( in object sender, in object msg )
+        [Pure]
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        static string LogArgToString( object sender, object msg )
         {
-            return "[" + sender + "]" + msg;
+            return "[" + sender + "] " + msg;
         }
 
         #endregion
