@@ -12,7 +12,6 @@ namespace CXUtils.HelperComponents
         [SerializeField]
         float mainVolume = 1f;
 
-        //readonly List<AudioSource> multiUseAudioSources = new List<AudioSource>();
         readonly Queue<AudioSource> freeAudioSources = new Queue<AudioSource>();
         readonly List<AudioSource> occupiedAudioSources = new List<AudioSource>();
 
