@@ -73,6 +73,12 @@ namespace CXUtils.HelperComponents
             return receivedAudioSource;
         }
 
+        public bool TryRequestSource( out AudioSource audioSource )
+        {
+            audioSource = RequestSource();
+            return audioSource != null;
+        }
+        
         /// <summary>
         ///     Request an audio source from the list
         /// </summary>
