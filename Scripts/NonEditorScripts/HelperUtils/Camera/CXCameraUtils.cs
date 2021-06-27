@@ -52,7 +52,7 @@ namespace CXUtils.CodeUtils
         private static readonly Vector2 MiddleCenter = new Vector2( .5f, .5f );
 
         ///<summary> This method will get the edges of the camera and return the edge camera pos (only for ortho) </summary>
-        public static Vector3 GetCameraPortPosOnWorldPos_Ortho( this Camera camera, PortOptions port )
+        public static Vector3 GetCameraPortPosOnWorldPosOrtho( this Camera camera, PortOptions port )
         {
             switch ( port )
             {
@@ -93,7 +93,7 @@ namespace CXUtils.CodeUtils
                 throw new ArgumentException( $"{camera.name} is not orthographic! please turn on orthographic in order to use this method!", nameof( camera.orthographic ) );
 
             //getting the border of the real world space
-            var BorderPositive = new Vector2( GetCameraPortPosOnWorldPos_Ortho( camera, PortOptions.RightMiddle ).x, GetCameraPortPosOnWorldPos_Ortho( camera, PortOptions.UpMiddle ).y );
+            var BorderPositive = new Vector2( GetCameraPortPosOnWorldPosOrtho( camera, PortOptions.RightMiddle ).x, GetCameraPortPosOnWorldPosOrtho( camera, PortOptions.UpMiddle ).y );
 
             return new Bounds( camera.transform.position, BorderPositive );
         }

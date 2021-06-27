@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,11 +12,11 @@ namespace CXUtils.HelperComponents
         [SerializeField]
         float mainVolume = 1f;
 
-        readonly object _threadLock = new object();
+        //readonly List<AudioSource> multiUseAudioSources = new List<AudioSource>();
+        readonly Queue<AudioSource> freeAudioSources = new Queue<AudioSource>();
+        readonly List<AudioSource> occupiedAudioSources = new List<AudioSource>();
 
-        public readonly List<AudioSource> multiUseAudioSources = new List<AudioSource>();
-
-        int currentAudioIndex;
+        Coroutine _audioSourceCheckerCoroutine;
 
         public float MainVolume
         {
@@ -34,7 +35,7 @@ namespace CXUtils.HelperComponents
             AudioListener.volume = mainVolume;
 
             //initialize audio sources
-            InstantiateAudioSources( audioSourceAmount );
+            InitializeAudioSources( audioSourceAmount );
         }
 
         void OnValidate()
@@ -42,13 +43,14 @@ namespace CXUtils.HelperComponents
             audioSourceAmount = Mathf.Max( audioSourceAmount, 1 );
         }
 
-        void InstantiateAudioSources( int amount )
+        void InitializeAudioSources( int amount )
         {
             for ( int i = 0; i < amount; i++ )
             {
                 var source = gameObject.AddComponent<AudioSource>();
                 source.playOnAwake = false;
-                multiUseAudioSources.Add( source );
+
+                freeAudioSources.Enqueue( source );
             }
         }
 
@@ -59,7 +61,7 @@ namespace CXUtils.HelperComponents
             audioSourceAmount += addCount;
 
             //then generate more
-            InstantiateAudioSources( addCount );
+            InitializeAudioSources( addCount );
         }
 
         public AudioSource PlayAudioClip( AudioClip audioClip )
@@ -77,18 +79,41 @@ namespace CXUtils.HelperComponents
         /// </summary>
         public AudioSource RequestSource()
         {
-            lock ( _threadLock )
+            //if no free audio sources
+            if ( freeAudioSources.Count == 0 )
+                return null;
+
+            AudioSource audioSource;
+
+            MakeOccupied( audioSource = freeAudioSources.Dequeue() );
+
+            return audioSource;
+        }
+
+        void MakeOccupied( AudioSource source )
+        {
+            occupiedAudioSources.Add( source );
+
+            //if this is the first occupied audio source
+            if ( occupiedAudioSources.Count == 1 )
+                _audioSourceCheckerCoroutine = StartCoroutine( AudioSourceChecker() );
+        }
+
+        IEnumerator AudioSourceChecker()
+        {
+            while ( occupiedAudioSources.Count > 0 )
             {
-                if ( currentAudioIndex >= multiUseAudioSources.Count )
-                    currentAudioIndex = 0;
+                //check
+                for ( int i = 0; i < occupiedAudioSources.Count; i++ )
+                {
+                    if ( occupiedAudioSources[i].isPlaying ) continue;
 
-                var receivedAudioSource = multiUseAudioSources[currentAudioIndex];
+                    //else finished playing
+                    freeAudioSources.Enqueue( occupiedAudioSources[i] );
+                    occupiedAudioSources.RemoveAt( i );
+                }
 
-                // we lock this because we don't want to get different indexes at the same time
-
-                currentAudioIndex++;
-
-                return receivedAudioSource;
+                yield return null;
             }
         }
     }

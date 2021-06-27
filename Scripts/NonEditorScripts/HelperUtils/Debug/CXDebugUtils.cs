@@ -62,7 +62,7 @@ namespace CXUtils.CodeUtils
                     switch ( logListMode )
                     {
                         case LogListOptions.Single:
-                            DLog( sender, "Items(" + listT.Length + "): {" + listT[0] + "}" );
+                            DLog( sender,  $"Items({listT.Length}): {{{listT[0]}}}" );
                             return;
 
                         case LogListOptions.Multiple:
@@ -74,7 +74,7 @@ namespace CXUtils.CodeUtils
                     }
             }
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             int i;
             int listIndexMax = listT.Length - 1;
@@ -96,6 +96,9 @@ namespace CXUtils.CodeUtils
 
                     sb.Append( $"\nItem {listIndexMax} : {listT[i]}" );
                     break;
+                
+                default:
+                    throw ExceptionUtils.Error.NotAccessible;
             }
 
             DLog( sender, sb.ToString() );
