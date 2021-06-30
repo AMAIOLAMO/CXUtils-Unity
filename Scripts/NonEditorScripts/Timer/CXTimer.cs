@@ -1,88 +1,92 @@
 using System;
-using UnityEngine;
+using System.Runtime.CompilerServices;
 
 namespace CXUtils.CodeUtils
 {
     /// <summary>
-    /// A helper timer that will auto count for you
+    ///     A timer that ticks using delta
     /// </summary>
-    public struct CXTimer
+    public class CXTimer : ICloneable
     {
-        public CXTimer(CXTimer other)
-        {
-            MaxTimer = other.MaxTimer;
-            cycleReset = other.cycleReset;
-
-            currentTimer = 0;
-            firstCycleCompleted = false;
-            OnTimerTriggered = null;
-        }
-
-        public CXTimer(float maxTimer, bool cycleReset = true)
+        public CXTimer( float maxTimer, bool cycleReset = true )
         {
             MaxTimer = maxTimer;
-            this.cycleReset = cycleReset;
-
-            currentTimer = 0;
-            firstCycleCompleted = false;
-            OnTimerTriggered = null;
+            CycleReset = cycleReset;
+            FirstCycleCompleted = false;
         }
 
-        public float MaxTimer { get; private set; }
-
         /// <summary>
-        /// this controls when timer counts, will it reset when the timer ended
+        ///     Deep copies (everything, even the current state) the whole timer
         /// </summary>
-        public readonly bool cycleReset;
-
-        public float currentTimer;
-
-        /// <summary>
-        /// This event will fire / invoke when the timer ended
-        /// </summary>
-        public event Action OnTimerTriggered;
-
-        public bool FirstCycleCompleted => firstCycleCompleted;
-        private bool firstCycleCompleted;
-
-        /// <summary>
-        /// Updates / Counts the timer
-        /// </summary>
-        /// <returns>if the timer in this frame triggers a cycle reset</returns>
-        public bool Tick(float delta)
+        public CXTimer( CXTimer other )
         {
-            if ( !cycleReset && firstCycleCompleted )
+            MaxTimer = other.MaxTimer;
+            CurrentTimer = other.CurrentTimer;
+            CycleReset = other.CycleReset;
+            FirstCycleCompleted = other.FirstCycleCompleted;
+        }
+
+        public float MaxTimer { get; }
+
+        public float CurrentTimer { get; private set; }
+        public bool CycleReset { get; }
+
+        public bool FirstCycleCompleted { get; private set; }
+
+        /// <summary>
+        ///     Deep clones the timer
+        /// </summary>
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        public object Clone()
+        {
+            return new CXTimer( this );
+        }
+        
+        /// <summary>
+        ///     Ticks the timer using the <see cref="delta" />
+        /// </summary>
+        public bool Tick( float delta )
+        {
+            //if not gonna cycle reset and the first cycle is already completed
+            if ( !CycleReset && FirstCycleCompleted )
                 return false;
 
-            currentTimer += delta;
-            
-            if ( !( currentTimer >= MaxTimer ) )
+            CurrentTimer += delta;
+
+            //if current Timer is not over max timer
+            if ( !( CurrentTimer >= MaxTimer ) )
                 return false;
 
-            OnTimerTriggered?.Invoke();
-
-            currentTimer = 0;
-
-            //if this isn't the first cycle completed, then true it
-            if ( !firstCycleCompleted )
-                firstCycleCompleted = true;
+            DoCycleCompleted();
 
             return true;
-
         }
 
-        /// <summary>
-        /// Same as <see cref="Tick(float)"/>, but will use <see cref="Time.deltaTime"/> as delta
-        /// </summary>
-        public bool Tick() => Tick(Time.deltaTime);
-
-        /// <summary>
-        /// manual reset of everything in the timer
-        /// </summary>
-        public void ResetTimer()
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
+        void Reset()
         {
-            currentTimer = 0;
-            firstCycleCompleted = false;
+            CurrentTimer = 0;
         }
+
+        /// <summary>
+        ///     set's the <see cref="CurrentTimer" /> back to initial value and resets the <see cref="FirstCycleCompleted" />
+        /// </summary>
+        void FullReset()
+        {
+            CurrentTimer = 0;
+            FirstCycleCompleted = false;
+        }
+
+        void DoCycleCompleted()
+        {
+            CurrentTimer = 0;
+
+            OnCycleComplete?.Invoke();
+
+            if ( !FirstCycleCompleted )
+                FirstCycleCompleted = true;
+        }
+
+        public event Action OnCycleComplete;
     }
 }

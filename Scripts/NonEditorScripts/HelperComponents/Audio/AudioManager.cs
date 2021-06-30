@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace CXUtils.HelperComponents
@@ -9,13 +10,10 @@ namespace CXUtils.HelperComponents
     {
         [SerializeField] int audioSourceAmount = 10;
         [Range( 0f, 1f )]
-        [SerializeField]
-        float mainVolume = 1f;
+        [SerializeField] float mainVolume = 1f;
 
-        readonly Queue<AudioSource> freeAudioSources = new Queue<AudioSource>();
-        readonly List<AudioSource> occupiedAudioSources = new List<AudioSource>();
-
-        Coroutine _audioSourceCheckerCoroutine;
+        readonly Queue<AudioSource> _freeAudioSources = new Queue<AudioSource>();
+        readonly List<AudioSource> _occupiedAudioSources = new List<AudioSource>();
 
         public float MainVolume
         {
@@ -49,12 +47,15 @@ namespace CXUtils.HelperComponents
                 var source = gameObject.AddComponent<AudioSource>();
                 source.playOnAwake = false;
 
-                freeAudioSources.Enqueue( source );
+                _freeAudioSources.Enqueue( source );
             }
         }
 
         public event Action<float> OnMainVolumeChanged;
 
+        /// <summary>
+        ///     Expands the audio buffers with extra <paramref name="addCount" />
+        /// </summary>
         public void ExpandBufferCount( int addCount )
         {
             audioSourceAmount += addCount;
@@ -73,49 +74,56 @@ namespace CXUtils.HelperComponents
             return receivedAudioSource;
         }
 
+        /// <summary>
+        /// Tries to request a, <see cref="AudioSource"/>
+        /// </summary>
+        /// <param name="audioSource"></param>
+        /// <returns></returns>
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public bool TryRequestSource( out AudioSource audioSource )
         {
-            audioSource = RequestSource();
-            return audioSource != null;
+            return ( audioSource = RequestSource() ) != null;
         }
-        
+
         /// <summary>
-        ///     Request an audio source from the list
+        ///     Request an audio source from the free queue
         /// </summary>
         public AudioSource RequestSource()
         {
             //if no free audio sources
-            if ( freeAudioSources.Count == 0 )
+            if ( _freeAudioSources.Count == 0 )
                 return null;
 
             AudioSource audioSource;
 
-            MakeOccupied( audioSource = freeAudioSources.Dequeue() );
+            MakeOccupied( audioSource = _freeAudioSources.Dequeue() );
 
             return audioSource;
         }
 
+        // == Helper ==
+
         void MakeOccupied( AudioSource source )
         {
-            occupiedAudioSources.Add( source );
+            _occupiedAudioSources.Add( source );
 
             //if this is the first occupied audio source
-            if ( occupiedAudioSources.Count == 1 )
-                _audioSourceCheckerCoroutine = StartCoroutine( AudioSourceChecker() );
+            if ( _occupiedAudioSources.Count == 1 )
+                StartCoroutine( AudioSourceChecker() );
         }
 
         IEnumerator AudioSourceChecker()
         {
-            while ( occupiedAudioSources.Count > 0 )
+            while ( _occupiedAudioSources.Count > 0 )
             {
                 //check
-                for ( int i = 0; i < occupiedAudioSources.Count; i++ )
+                for ( int i = 0; i < _occupiedAudioSources.Count; i++ )
                 {
-                    if ( occupiedAudioSources[i].isPlaying ) continue;
+                    if ( _occupiedAudioSources[i].isPlaying ) continue;
 
                     //else finished playing
-                    freeAudioSources.Enqueue( occupiedAudioSources[i] );
-                    occupiedAudioSources.RemoveAt( i );
+                    _freeAudioSources.Enqueue( _occupiedAudioSources[i] );
+                    _occupiedAudioSources.RemoveAt( i );
                 }
 
                 yield return null;
