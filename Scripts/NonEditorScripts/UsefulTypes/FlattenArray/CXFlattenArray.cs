@@ -20,27 +20,44 @@ namespace CXUtils.UsefulTypes
             _bufferArray = new T[resultSize];
         }
 
+        /// <summary>
+        ///     Clones the other array
+        /// </summary>
+        public CXFlattenArray( CXFlattenArray<T> other )
+        {
+            _bufferArray = new T[other.Length];
+
+            for ( int i = 0; i < other.Length; i++ )
+                _bufferArray[i] = other[i];
+        }
+
         public int Length => _bufferArray.Length;
+
+        public T this[ int index ]
+        {
+            get => _bufferArray[index];
+            set => _bufferArray[index] = value;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         public T[] GetBufferArray()
         {
             return _bufferArray;
         }
-        
+
         public void ForEach( Action<T> action )
         {
             foreach ( var item in _bufferArray )
-                action.Invoke(item);
+                action.Invoke( item );
         }
-        
+
         public IEnumerator GetEnumerator()
         {
             return _bufferArray.GetEnumerator();
-        }
-        
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }
