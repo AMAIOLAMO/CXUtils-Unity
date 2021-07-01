@@ -18,23 +18,23 @@ namespace UnityEngine.CXExtensions
         /// The basic OnGUI Method from property drawers
         /// </summary>
         // /// <returns>should the current on gui block other on gui's below?</returns>
-        public virtual void OnGUI( Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo ) =>
+        public virtual void OnGUI( in Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo ) =>
             EditorGUI.PropertyField( position, property, label, true );
 
         /// <summary>
-        /// Recieves a new position
+        /// Receives a new position
         /// </summary>
         /// <returns>New position that will be changed</returns>
-        public virtual Rect BuildPosition( Rect position ) => position;
+        public virtual Rect BuildPosition( in Rect position ) => position;
 
         /// <summary>
-        /// Recieves a new property
+        /// Receives a new property
         /// </summary>
         /// <returns>New property that will be changed</returns>
         public virtual SerializedProperty BuildProperty( SerializedProperty property ) => property;
 
         /// <summary>
-        /// Recieves a new label
+        /// Receives a new label
         /// </summary>
         /// <returns>New label that will be changed</returns>
         public virtual GUIContent BuildLabel( GUIContent label ) => label;

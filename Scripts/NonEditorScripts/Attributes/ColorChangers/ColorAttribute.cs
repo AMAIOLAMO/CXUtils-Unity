@@ -1,31 +1,33 @@
 ﻿using System.Reflection;
-
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 
 namespace UnityEngine.CXExtensions
 {
     /// <summary>
-    /// Base class of all Color Multi Property Attributes
+    ///     Base class of all Color Multi Property Attributes
     /// </summary>
     public abstract class ColorAttribute : MultiPropertyAttribute
     {
-        public ColorAttribute( string hexColor, bool onlyThisField = false ) =>
-            (_hexColor, _onlyThisField) = (hexColor, onlyThisField);
+        readonly string _hexColor;
+        readonly bool _onlyThisField;
 
-        private readonly string _hexColor;
-        private readonly bool _onlyThisField;
+        public ColorAttribute( string hexColor, bool onlyThisField = false )
+        {
+            ( _hexColor, _onlyThisField ) = ( hexColor, onlyThisField );
+        }
 
 #if UNITY_EDITOR
-        public abstract Color GetColor();
-        public abstract void SetColor( Color color );
+        public abstract Color GetOriginColor();
+        public abstract void SetColor( in Color color );
 
-        public override void OnGUI( Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo )
+        public override void OnGUI( in Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo )
         {
-            Color originColor = GetColor();
+            var originColor = GetOriginColor();
 
-            if ( ColorUtility.TryParseHtmlString( _hexColor, out Color color ) )
+            if ( ColorUtility.TryParseHtmlString( _hexColor, out var color ) )
                 SetColor( color );
             else
                 EditorGUILayout.HelpBox( "the given hexColor is invalid!", MessageType.Error );

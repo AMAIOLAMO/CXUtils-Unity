@@ -1,26 +1,26 @@
 using System.Reflection;
-
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 
 namespace UnityEngine.CXExtensions
 {
     /// <summary>
-    /// This will disable a field whenever the given field name's condition is false
+    ///     This will disable a field whenever the given field name's condition is false
     /// </summary>
     public class DisableWhenAttribute : MultiPropertyAttribute
     {
+
+        readonly string _fieldName;
         public DisableWhenAttribute( string fieldName )
         {
             _fieldName = fieldName;
         }
 
-        private readonly string _fieldName;
-
 
 #if UNITY_EDITOR
-        public override void OnGUI( Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo )
+        public override void OnGUI( in Rect position, SerializedProperty property, GUIContent label, FieldInfo fieldInfo )
         {
             //todo: get a disable variable from the target attribute's scope and get a boolean from the target field name, if not send a help box, else use it for the disable group scope
 
@@ -43,7 +43,9 @@ namespace UnityEngine.CXExtensions
             }
 
             using ( new EditorGUI.DisabledGroupScope( !conditionalSP.boolValue ) )
+            {
                 base.OnGUI( position, property, label, fieldInfo );
+            }
         }
 #endif
     }

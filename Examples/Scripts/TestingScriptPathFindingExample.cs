@@ -4,11 +4,12 @@ using CXUtils.CodeUtils;
 using UnityEngine.CXExtensions;
 using System.Collections.Generic;
 using CXUtils.GridSystem.PathFinding;
+using UnityEngine.Assertions;
 
 namespace CXUtils.Test
 {
     //Note: Disables the annoying warning for the MonoBehaviour
-    public class TestingScript_PathFindingExample : MonoBehaviour
+    public class TestingScriptPathFindingExample : MonoBehaviour
     {
         #region Fields
         [LimitMinInt( 0 )]
@@ -48,6 +49,7 @@ namespace CXUtils.Test
         private void Start()
         {
             mainCam = Camera.main;
+            
             camShake = new CameraShake( mainCam.transform, 0.1f );
             pathFinder = new PathFinding( width, height, 1, Vector3.zero );
             debugVisuals.Clear();

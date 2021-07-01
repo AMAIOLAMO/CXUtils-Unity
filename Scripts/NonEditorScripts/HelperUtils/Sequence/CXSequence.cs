@@ -7,7 +7,7 @@ namespace CXUtils.CodeUtils
     {
         readonly List<Action> _sequenceTriggerList;
 
-        int _sequenceIndex = 0;
+        int _sequenceIndex;
 
         public CXSequence()
         {
