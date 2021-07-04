@@ -25,6 +25,17 @@ namespace CXUtils.HelperComponents
         public event Action<int> OnTicked;
 
         /// <summary>
+        /// Set's the <see cref="CurrentTick"/> to 0 and returns the last tick
+        /// </summary>
+        /// <returns></returns>
+        public int ResetTick()
+        {
+            int lastTick = CurrentTick;
+            CurrentTick = 0;
+            return lastTick;
+        }
+
+        /// <summary>
         ///     Ticks the Tick manager using <paramref name="delta" />
         /// </summary>
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
