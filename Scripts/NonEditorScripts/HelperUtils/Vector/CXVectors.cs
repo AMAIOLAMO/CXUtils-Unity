@@ -12,9 +12,9 @@ namespace CXUtils.UsefulTypes
         public Float2( float x, float y ) => ( this.x, this.y ) = ( x, y );
         public Float2( Float2 other ) => ( x, y ) = ( other.x, other.y );
 
-        public static Float2 MinValue => new Float2( float.MinValue, float.MinValue );
-        public static Float2 MaxValue => new Float2( float.MaxValue, float.MaxValue );
-        public static Float2 Epsilon => new Float2( float.Epsilon, float.Epsilon );
+        public static Float2 MinValue => (Float2)float.MinValue;
+        public static Float2 MaxValue => (Float2)float.MaxValue;
+        public static Float2 Epsilon => (Float2)float.Epsilon;
 
         public static Float2 One => (Float2)1f;
         public static Float2 Half => (Float2).5f;
@@ -56,6 +56,7 @@ namespace CXUtils.UsefulTypes
         public static Float2 operator /( float value, Float2 a ) => new Float2( a.x / value, a.y / value );
 
         public static explicit operator Float2( float value ) => new Float2( value, value );
+        public static explicit operator Float2( Float3 value ) => new Float2( value.x, value.y );
 
         #endregion
 
@@ -75,6 +76,75 @@ namespace CXUtils.UsefulTypes
         #endregion
     }
 
+    /// <summary>
+    ///     represents three floats
+    /// </summary>
+    [Serializable]
+    public readonly struct Float3 : IEquatable<Float3>, IFormattable
+    {
+        public readonly float x, y, z;
+        public Float3( float x, float y, float z ) => ( this.x, this.y, this.z ) = ( x, y, z );
+        public Float3( Float3 other ) => ( x, y, z ) = ( other.x, other.y, other.z );
+
+        public float SqrMagnitude => x * x + y * y + z * z;
+        public float Magnitude => (float)Math.Sqrt( SqrMagnitude );
+
+        public Float3 Normalized => this / Magnitude;
+
+        public Float3 Floor => new Float3( (float)Math.Floor( x ), (float)Math.Floor( y ), (float)Math.Floor( z ) );
+        public Float3 Ceil => new Float3( (float)Math.Ceiling( x ), (float)Math.Ceiling( y ), (float)Math.Ceiling( z ) );
+
+        public Int3 FloorInt => new Int3( (int)Math.Floor( x ), (int)Math.Floor( y ), (int)Math.Floor( z ) );
+        public Int3 CeilInt => new Int3( (int)Math.Ceiling( x ), (int)Math.Ceiling( y ), (int)Math.Ceiling( z ) );
+
+        public bool Equals( Float3 other ) => x.Equals( other.x ) && y.Equals( other.y ) && z.Equals( other.z );
+
+        public override bool Equals( object obj ) => obj is Float3 other && Equals( other );
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = x.GetHashCode();
+                hashCode = ( hashCode * 397 ) ^ y.GetHashCode();
+                hashCode = ( hashCode * 397 ) ^ z.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        #region Operator overloading
+
+        public static Float3 operator +( Float3 a, Float3 b ) => new Float3( a.x + b.x, a.y + b.y, a.z + b.z );
+        public static Float3 operator -( Float3 a, Float3 b ) => new Float3( a.x - b.x, a.y - b.y, a.z - b.z );
+        public static Float3 operator *( Float3 a, Float3 b ) => new Float3( a.x * b.x, a.y * b.y, a.z * b.z );
+        public static Float3 operator /( Float3 a, Float3 b ) => new Float3( a.x / b.x, a.y / b.y, a.x / b.x );
+
+        public static Float3 operator *( Float3 a, float value ) => new Float3( a.x * value, a.y * value, a.z * value );
+        public static Float3 operator /( Float3 a, float value ) => new Float3( a.x / value, a.y / value, a.z / value );
+        public static Float3 operator *( float value, Float3 a ) => a * value;
+        public static Float3 operator /( float value, Float3 a ) => a / value;
+
+        public static explicit operator Float3( float value ) => new Float3( value, value, value );
+        public static explicit operator Float3( Float2 value ) => new Float3( value.x, value.y, 0f );
+
+        #endregion
+
+        #region Utility
+
+        public float Dot( Float3 other ) => x * other.x + y * other.y + other.z * other.z;
+
+        public Float3 Cross( Float3 other ) => new Float3( y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x );
+
+        public string ToString( string format, IFormatProvider formatProvider ) =>
+            "(" + x.ToString( format, formatProvider ) + ", " + y.ToString( format, formatProvider ) + ", " + z.ToString( format, formatProvider ) + ")";
+        public override string ToString() => "(" + x + ", " + y + ", " + z + ")";
+        public string ToString( string format ) => "(" + x.ToString( format ) + ", " + y.ToString( format ) + ", " + z.ToString( format ) + ")";
+
+        #endregion
+    }
+
+    /// <summary>
+    ///     represents two integers
+    /// </summary>
     [Serializable]
     public readonly struct Int2 : IEquatable<Int2>, IFormattable
     {
@@ -83,8 +153,8 @@ namespace CXUtils.UsefulTypes
         public Int2( int x, int y ) => ( this.x, this.y ) = ( x, y );
         public Int2( Int2 other ) => ( x, y ) = ( other.x, other.y );
 
-        public static Int2 MinValue => new Int2( int.MinValue, int.MinValue );
-        public static Int2 MaxValue => new Int2( int.MaxValue, int.MaxValue );
+        public static Int2 MinValue => (Int2)int.MinValue;
+        public static Int2 MaxValue => (Int2)int.MaxValue;
 
         public static Int2 One => (Int2)1;
 
@@ -113,8 +183,8 @@ namespace CXUtils.UsefulTypes
 
         public static Int2 operator *( Int2 a, int value ) => new Int2( a.x * value, a.y * value );
         public static Int2 operator /( Int2 a, int value ) => new Int2( a.x / value, a.y / value );
-        public static Int2 operator *( int value, Int2 a ) => new Int2( a.x * value, a.y * value );
-        public static Int2 operator /( int value, Int2 a ) => new Int2( a.x / value, a.y / value );
+        public static Int2 operator *( int value, Int2 a ) => a * value;
+        public static Int2 operator /( int value, Int2 a ) => a / value;
 
         public static explicit operator Int2( int value ) => new Int2( value, value );
 
@@ -124,6 +194,69 @@ namespace CXUtils.UsefulTypes
 
         public Int2 Min( Int2 other ) => new Int2( Math.Min( x, other.x ), Math.Min( y, other.y ) );
         public Int2 Max( Int2 other ) => new Int2( Math.Max( x, other.x ), Math.Max( y, other.y ) );
+
+        #endregion
+    }
+
+    /// <summary>
+    ///     represents three integers
+    /// </summary>
+    [Serializable]
+    public readonly struct Int3 : IEquatable<Int3>, IFormattable
+    {
+        public readonly int x, y, z;
+
+        public Int3( int x, int y, int z ) => ( this.x, this.y, this.z ) = ( x, y, z );
+        public Int3( Int3 other ) => ( x, y, z ) = ( other.x, other.y, other.z );
+
+        public static Int3 MinValue => (Int3)int.MinValue;
+        public static Int3 MaxValue => (Int3)int.MaxValue;
+
+        public static Int3 One => (Int3)1;
+
+        public static Int3 Up => new Int3( 0, 1, 0 );
+        public static Int3 Down => new Int3( 0, -1, 0 );
+        public static Int3 Left => new Int3( -1, 0, 0 );
+        public static Int3 Right => new Int3( 1, 0, 0 );
+        public bool Equals( Int3 other ) => x == other.x && y == other.y && z == other.z;
+        public override bool Equals( object obj ) => obj is Int3 other && Equals( other );
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = x.GetHashCode();
+                hashCode = ( hashCode * 397 ) ^ y.GetHashCode();
+                hashCode = ( hashCode * 397 ) ^ z.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        #region Operator overloading
+
+        public static Int3 operator +( Int3 a, Int3 b ) => new Int3( a.x + b.x, a.y + b.y, a.z + b.z );
+        public static Int3 operator -( Int3 a, Int3 b ) => new Int3( a.x - b.x, a.y - b.y, a.z - b.z );
+        public static Int3 operator *( Int3 a, Int3 b ) => new Int3( a.x * b.x, a.y * b.y, a.z * b.z );
+        public static Int3 operator /( Int3 a, Int3 b ) => new Int3( a.x / b.x, a.y / b.y, a.x / b.x );
+
+        public static Int3 operator *( Int3 a, int value ) => new Int3( a.x * value, a.y * value, a.z * value );
+        public static Int3 operator /( Int3 a, int value ) => new Int3( a.x / value, a.y / value, a.z / value );
+        public static Int3 operator *( int value, Int3 a ) => a * value;
+        public static Int3 operator /( int value, Int3 a ) => a / value;
+
+        public static explicit operator Int3( int value ) => new Int3( value, value, value );
+        public static explicit operator Int3( Int2 value ) => new Int3( value.x, value.y, 0 );
+
+        #endregion
+
+        #region Utility
+
+        public Int3 Min( Int3 other ) => new Int3( Math.Min( x, other.x ), Math.Min( y, other.y ), Math.Min( z, other.z ) );
+        public Int3 Max( Int3 other ) => new Int3( Math.Max( x, other.x ), Math.Max( y, other.y ), Math.Max( z, other.z ) );
+
+        public string ToString( string format, IFormatProvider formatProvider ) =>
+            "(" + x.ToString( format, formatProvider ) + ", " + y.ToString( format, formatProvider ) + ", " + z.ToString( format, formatProvider ) + ")";
+        public override string ToString() => "(" + x + ", " + y + ", " + z + ")";
+        public string ToString( string format ) => "(" + x.ToString( format ) + ", " + y.ToString( format ) + ", " + z.ToString( format ) + ")";
 
         #endregion
     }
