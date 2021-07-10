@@ -69,6 +69,11 @@ namespace CXUtils.UsefulTypes
         public Float2 Min( Float2 other ) => new Float2( Math.Min( x, other.x ), Math.Min( y, other.y ) );
         public Float2 Max( Float2 other ) => new Float2( Math.Max( x, other.x ), Math.Max( y, other.y ) );
 
+        /// <summary>
+        ///     returns a new Float2 with a direction of this and a specified target magnitude
+        /// </summary>
+        public Float2 MagnitudeOf( float magnitude ) => Normalized * magnitude;
+
         public override string ToString() => "(" + x + ", " + y + ")";
         public string ToString( string format ) => "(" + x.ToString( format ) + ", " + y.ToString( format ) + ")";
         public string ToString( string format, IFormatProvider formatProvider ) =>
@@ -126,7 +131,8 @@ namespace CXUtils.UsefulTypes
 
         public static explicit operator Float3( float value ) => new Float3( value, value, value );
         public static explicit operator Float3( Float2 value ) => new Float3( value.x, value.y, 0f );
-
+        public static explicit operator Float3( Int3 value ) => new Float3( value.x, value.y, value.z );
+        
         #endregion
 
         #region Utility
@@ -134,6 +140,11 @@ namespace CXUtils.UsefulTypes
         public float Dot( Float3 other ) => x * other.x + y * other.y + other.z * other.z;
 
         public Float3 Cross( Float3 other ) => new Float3( y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x );
+        
+        /// <summary>
+        ///     returns a new Float3 with a direction of this and a specified target magnitude
+        /// </summary>
+        public Float3 MagnitudeOf( float magnitude ) => Normalized * magnitude;
 
         public string ToString( string format, IFormatProvider formatProvider ) =>
             "(" + x.ToString( format, formatProvider ) + ", " + y.ToString( format, formatProvider ) + ", " + z.ToString( format, formatProvider ) + ")";
