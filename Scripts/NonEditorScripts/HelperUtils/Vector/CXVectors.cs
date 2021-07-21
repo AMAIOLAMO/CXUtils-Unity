@@ -55,8 +55,11 @@ namespace CXUtils.UsefulTypes
         public static Float2 operator *( float value, Float2 a ) => new Float2( a.x * value, a.y * value );
         public static Float2 operator /( float value, Float2 a ) => new Float2( a.x / value, a.y / value );
 
+        public static Float2 operator -( Float2 a ) => new Float2( -a.x, -a.y );
+
+        public static implicit operator Float2( Float3 value ) => new Float2( value.x, value.y );
+
         public static explicit operator Float2( float value ) => new Float2( value, value );
-        public static explicit operator Float2( Float3 value ) => new Float2( value.x, value.y );
         public static explicit operator Float2( Int2 value ) => new Float2( value.x, value.y );
 
         #endregion
@@ -91,6 +94,21 @@ namespace CXUtils.UsefulTypes
         public readonly float x, y, z;
         public Float3( float x, float y, float z ) => ( this.x, this.y, this.z ) = ( x, y, z );
         public Float3( Float3 other ) => ( x, y, z ) = ( other.x, other.y, other.z );
+
+        public static Float3 MinValue => (Float3)float.MinValue;
+        public static Float3 MaxValue => (Float3)float.MaxValue;
+        public static Float3 Epsilon => (Float3)float.Epsilon;
+
+        public static Float3 One => (Float3)1f;
+        public static Float3 Half => (Float3).5f;
+        public static Float3 Quarter => (Float3).25f;
+
+        public static Float3 Up => new Float3( 0f, 1f, 0f );
+        public static Float3 Down => new Float3( 0f, -1f, 0f );
+        public static Float3 Left => new Float3( -1f, 0f, 0f );
+        public static Float3 Right => new Float3( 1f, 0f, 0f );
+        public static Float3 Forward => new Float3( 0f, 0f, 1f );
+        public static Float3 Backward => new Float3( 0f, 0f, -1f );
 
         public float SqrMagnitude => x * x + y * y + z * z;
         public float Magnitude => (float)Math.Sqrt( SqrMagnitude );
@@ -129,10 +147,12 @@ namespace CXUtils.UsefulTypes
         public static Float3 operator *( float value, Float3 a ) => a * value;
         public static Float3 operator /( float value, Float3 a ) => a / value;
 
+        public static Float3 operator -( Float3 a ) => new Float3( -a.x, -a.y, -a.z );
+
         public static explicit operator Float3( float value ) => new Float3( value, value, value );
         public static explicit operator Float3( Float2 value ) => new Float3( value.x, value.y, 0f );
         public static explicit operator Float3( Int3 value ) => new Float3( value.x, value.y, value.z );
-        
+
         #endregion
 
         #region Utility
@@ -140,7 +160,7 @@ namespace CXUtils.UsefulTypes
         public float Dot( Float3 other ) => x * other.x + y * other.y + other.z * other.z;
 
         public Float3 Cross( Float3 other ) => new Float3( y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x );
-        
+
         /// <summary>
         ///     returns a new Float3 with a direction of this and a specified target magnitude
         /// </summary>
@@ -188,11 +208,12 @@ namespace CXUtils.UsefulTypes
 
         #region Operator overloading
 
+        // == Integer == //
+
         public static Int2 operator +( Int2 a, Int2 b ) => new Int2( a.x + b.x, a.y + b.y );
         public static Int2 operator -( Int2 a, Int2 b ) => new Int2( a.x - b.x, a.y - b.y );
         public static Int2 operator *( Int2 a, Int2 b ) => new Int2( a.x * b.x, a.y * b.y );
         public static Int2 operator /( Int2 a, Int2 b ) => new Int2( a.x / b.x, a.y / b.y );
-
 
         public static Int2 operator *( Int2 a, int value ) => new Int2( a.x * value, a.y * value );
         public static Int2 operator /( Int2 a, int value ) => new Int2( a.x / value, a.y / value );
@@ -200,8 +221,13 @@ namespace CXUtils.UsefulTypes
         public static Int2 operator *( int value, Int2 a ) => a * value;
         public static Int2 operator /( int value, Int2 a ) => a / value;
 
+        public static Int2 operator -( Int2 a ) => new Int2( -a.x, -a.y );
+
+        // == Conversion == //
+
+        public static implicit operator Int2( Int3 value ) => new Int2( value.x, value.y );
+
         public static explicit operator Int2( int value ) => new Int2( value, value );
-        public static explicit operator Int2( Int3 value ) => new Int2( value.x, value.y );
 
         #endregion
 
@@ -258,6 +284,8 @@ namespace CXUtils.UsefulTypes
         public static Int3 operator %( Int3 a, int value ) => new Int3( a.x % value, a.y % value, a.z % value );
         public static Int3 operator *( int value, Int3 a ) => a * value;
         public static Int3 operator /( int value, Int3 a ) => a / value;
+
+        public static Int3 operator -( Int3 a ) => new Int3( -a.x, -a.y, -a.z );
 
         public static explicit operator Int3( int value ) => new Int3( value, value, value );
         public static explicit operator Int3( Int2 value ) => new Int3( value.x, value.y, 0 );
