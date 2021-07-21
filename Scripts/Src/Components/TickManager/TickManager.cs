@@ -7,17 +7,17 @@ namespace CXUtils.HelperComponents
     /// <summary>
     ///     A simple time ticking system for accounting time objects
     /// </summary>
-    public class CXTickManager
+    public class TickManager
     {
-        readonly Timer _baseTimer;
+        readonly Timer baseTimer;
 
         public readonly float tickTime;
 
-        public CXTickManager( float tickTime )
+        public TickManager( float tickTime )
         {
             this.tickTime = tickTime;
 
-            _baseTimer = new Timer( tickTime );
+            baseTimer = new Timer( tickTime );
         }
 
         public int CurrentTick { get; private set; }
@@ -25,9 +25,8 @@ namespace CXUtils.HelperComponents
         public event Action<int> OnTicked;
 
         /// <summary>
-        /// Set's the <see cref="CurrentTick"/> to 0 and returns the last tick
+        ///     Set's the <see cref="CurrentTick" /> to 0 and returns the last tick
         /// </summary>
-        /// <returns></returns>
         public int ResetTick()
         {
             int lastTick = CurrentTick;
@@ -41,7 +40,7 @@ namespace CXUtils.HelperComponents
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public bool Tick( float delta )
         {
-            if ( !_baseTimer.Tick( delta ) )
+            if ( !baseTimer.Tick( delta ) )
                 return false;
 
             CurrentTick++;

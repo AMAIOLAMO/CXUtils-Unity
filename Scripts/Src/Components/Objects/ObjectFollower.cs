@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using CXUtils.CodeUtils;
+﻿using CXUtils.CodeUtils;
+using UnityEngine;
 
 namespace CXUtils.HelperComponents
 {
@@ -55,42 +55,39 @@ namespace CXUtils.HelperComponents
 
         #region Main Thread
 
-        private void Update()
+        void Update()
         {
-            if ( updateOptions == ObjectUpdateOptions.Update )
-                FollowObject();
+            if ( updateOptions == ObjectUpdateOptions.Update ) FollowObject();
         }
 
-        private void FixedUpdate()
+        void FixedUpdate()
         {
-            if ( updateOptions == ObjectUpdateOptions.FixedUpdate )
-                FollowObject();
+            if ( updateOptions == ObjectUpdateOptions.FixedUpdate ) FollowObject();
         }
 
-        private void LateUpdate()
+        void LateUpdate()
         {
-            if ( updateOptions == ObjectUpdateOptions.LateUpdate )
-                FollowObject();
+            if ( updateOptions == ObjectUpdateOptions.LateUpdate ) FollowObject();
         }
 
         #endregion
 
         #region Main Methods
 
-        private void FollowObject()
+        void FollowObject()
         {
             FollowPos();
             FollowRotation();
         }
 
-        private void FollowPos()
+        void FollowPos()
         {
             var newPos = transformTo.position;
 
             //check the has off set (if has then add)
             if ( positionOptions == ObjectFollowPositionOptions.All || positionOptions == ObjectFollowPositionOptions.HasOffsetOnly )
                 newPos += offSet;
-            
+
             if ( positionOptions == ObjectFollowPositionOptions.All || positionOptions == ObjectFollowPositionOptions.HasLerpOnly )
                 newPos = Vector3.Lerp( transform.position, newPos, GetDeltaTime() * movingSpeed );
 
@@ -98,7 +95,7 @@ namespace CXUtils.HelperComponents
             transform.position = newPos;
         }
 
-        private void FollowRotation()
+        void FollowRotation()
         {
             //if none then just don't do anything
             if ( rotationOptions == ObjectFollowRotationOptions.None )
@@ -116,18 +113,18 @@ namespace CXUtils.HelperComponents
                 transform.rotation = newRot;
         }
 
-        private float GetDeltaTime()
+        float GetDeltaTime()
         {
-            switch (deltaTimeOptions)
+            switch ( deltaTimeOptions )
             {
-                case ObjectDeltaTimeOptions.None:     return 1f;
-                case ObjectDeltaTimeOptions.Normal:   return Time.deltaTime;
-                case ObjectDeltaTimeOptions.Fixed:    return Time.fixedDeltaTime;
-                
+                case ObjectDeltaTimeOptions.None: return 1f;
+                case ObjectDeltaTimeOptions.Normal: return Time.deltaTime;
+                case ObjectDeltaTimeOptions.Fixed: return Time.fixedDeltaTime;
+
                 default: throw ExceptionUtils.Error.NotAccessible;
             }
         }
-        
+
         #endregion
     }
 }

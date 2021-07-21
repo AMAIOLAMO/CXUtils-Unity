@@ -1,46 +1,47 @@
-﻿using UnityEngine;
-using CXUtils.CodeUtils;
+﻿using CXUtils.CodeUtils;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace CXUtils.HelperComponents
 {
-    /// <summary> Options fields to destoy objects </summary>
+    /// <summary>
+    /// Options fields to destroy objects
+    /// </summary>
     public enum ObjectDestroyOptions { InstantOnStart, TimerOnStart }
 
     /// <summary>
-    /// A simple helper component for destroying an object
+    ///     A simple helper component for destroying an object
     /// </summary>
     [AddComponentMenu( "CXUtils/Objects/ObjectDestroyer" )]
     public class ObjectDestroyer : MonoBehaviour
     {
         [Header( "Configuration" )]
-        [SerializeField] private bool otherTargets;
-        [SerializeField] private GameObject target = default;
+        [SerializeField] bool useOtherTargets;
+        [SerializeField] GameObject target;
 
-        [SerializeField] private ObjectDestroyOptions objectDestroyOption = default;
+        [SerializeField] ObjectDestroyOptions destroyOption;
 
         //show if object destroy option
-        [SerializeField] private float time;
+        [SerializeField] float time;
 
-
-        public bool OtherTargets { get => otherTargets; set => otherTargets = value; }
+        public bool OtherTargets { get => useOtherTargets; set => useOtherTargets = value; }
         public GameObject Target { get => target; set => target = value; }
 
-        public ObjectDestroyOptions ObjectDestroyOption => objectDestroyOption;
+        public ObjectDestroyOptions DestroyOption => destroyOption;
 
         public float Time { get => time; set => time = value; }
 
         void Start()
         {
-            switch ( objectDestroyOption )
+            switch ( destroyOption )
             {
                 case ObjectDestroyOptions.InstantOnStart: Destroy( GetTarget() ); break;
-                case ObjectDestroyOptions.TimerOnStart:   Destroy( GetTarget(), time ); break;
+                case ObjectDestroyOptions.TimerOnStart: Destroy( GetTarget(), time ); break;
 
                 default: throw ExceptionUtils.Error.NotAccessible;
             }
         }
 
-        private GameObject GetTarget() =>
-            otherTargets ? target : gameObject;
+        GameObject GetTarget() => useOtherTargets ? target : gameObject;
     }
 }
