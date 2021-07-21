@@ -9,7 +9,7 @@ namespace CXUtils.HelperComponents
     /// </summary>
     public class CXTickManager
     {
-        readonly CXTimer _baseTimer;
+        readonly Timer _baseTimer;
 
         public readonly float tickTime;
 
@@ -17,7 +17,7 @@ namespace CXUtils.HelperComponents
         {
             this.tickTime = tickTime;
 
-            _baseTimer = new CXTimer( tickTime );
+            _baseTimer = new Timer( tickTime );
         }
 
         public int CurrentTick { get; private set; }

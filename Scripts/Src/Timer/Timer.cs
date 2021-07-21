@@ -1,16 +1,15 @@
 using System;
-using System.Runtime.CompilerServices;
 
 namespace CXUtils.CodeUtils
 {
     /// <summary>
-    ///     A timer that ticks using delta
+    ///     A timer that ticks by manual control
     /// </summary>
-    public class CXTimer : ICloneable
+    public class Timer : ICloneable, IFormattable
     {
-        public CXTimer( float maxTimer, bool cycleReset = true )
+        public Timer( float maxSpan, bool cycleReset = true )
         {
-            MaxTimer = maxTimer;
+            MaxSpan = maxSpan;
             CycleReset = cycleReset;
             FirstCycleCompleted = false;
         }
@@ -18,17 +17,17 @@ namespace CXUtils.CodeUtils
         /// <summary>
         ///     Deep copies (everything, even the current state) the whole timer
         /// </summary>
-        public CXTimer( CXTimer other )
+        public Timer( Timer other )
         {
-            MaxTimer = other.MaxTimer;
-            CurrentTimer = other.CurrentTimer;
+            MaxSpan = other.MaxSpan;
+            CurrentSpan = other.CurrentSpan;
             CycleReset = other.CycleReset;
             FirstCycleCompleted = other.FirstCycleCompleted;
         }
 
-        public float MaxTimer { get; }
+        public float MaxSpan { get; }
 
-        public float CurrentTimer { get; private set; }
+        public float CurrentSpan { get; private set; }
         public bool CycleReset { get; }
 
         public bool FirstCycleCompleted { get; private set; }
@@ -36,12 +35,11 @@ namespace CXUtils.CodeUtils
         /// <summary>
         ///     Deep clones the timer
         /// </summary>
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public object Clone()
-        {
-            return new CXTimer( this );
-        }
-        
+        public object Clone() => new Timer( this );
+
+        public string ToString( string format, IFormatProvider formatProvider ) =>
+            "Current Span: " + CurrentSpan.ToString( format, formatProvider ) + ", Max Span: " + MaxSpan.ToString( format, formatProvider );
+
         /// <summary>
         ///     Ticks the timer using the <see cref="delta" />
         /// </summary>
@@ -51,10 +49,10 @@ namespace CXUtils.CodeUtils
             if ( !CycleReset && FirstCycleCompleted )
                 return false;
 
-            CurrentTimer += delta;
+            CurrentSpan += delta;
 
             //if current Timer is not over max timer
-            if ( !( CurrentTimer >= MaxTimer ) )
+            if ( !( CurrentSpan >= MaxSpan ) )
                 return false;
 
             DoCycleCompleted();
@@ -62,24 +60,23 @@ namespace CXUtils.CodeUtils
             return true;
         }
 
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        void Reset()
-        {
-            CurrentTimer = 0;
-        }
+        /// <summary>
+        ///     reset's the <see cref="CurrentSpan" /> back to initial value, but doesn't count for first cycle
+        /// </summary>
+        void Reset() => CurrentSpan = 0;
 
         /// <summary>
-        ///     set's the <see cref="CurrentTimer" /> back to initial value and resets the <see cref="FirstCycleCompleted" />
+        ///     set's the <see cref="CurrentSpan" /> back to initial value and resets the <see cref="FirstCycleCompleted" />
         /// </summary>
         void FullReset()
         {
-            CurrentTimer = 0;
+            CurrentSpan = 0;
             FirstCycleCompleted = false;
         }
 
         void DoCycleCompleted()
         {
-            CurrentTimer = 0;
+            CurrentSpan = 0;
 
             OnCycleComplete?.Invoke();
 
@@ -88,5 +85,7 @@ namespace CXUtils.CodeUtils
         }
 
         public event Action OnCycleComplete;
+
+        public override string ToString() => "Current Span: " + CurrentSpan + ", Max Span: " + MaxSpan;
     }
 }
