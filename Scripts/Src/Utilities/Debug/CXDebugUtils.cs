@@ -22,25 +22,6 @@ namespace CXUtils.CodeUtils
     /// <summary> A class full of helper function for debugging </summary>
     public static class DebugUtils
     {
-        /// <summary>
-        ///     the base of all loggers
-        /// </summary>
-        public interface ILoggerBase
-        {
-            /// <summary>
-            ///     Logs a message to the logger
-            /// </summary>
-            public void Log( in string message );
-            /// <summary>
-            ///     Logs a warning message to the logger
-            /// </summary>
-            public void LogWarn( in string message );
-            /// <summary>
-            ///     Logs an error message to the logger
-            /// </summary>
-            public void LogError( in string message );
-        }
-
         #region Logs
 
         /// <summary> Logs a single message </summary>
