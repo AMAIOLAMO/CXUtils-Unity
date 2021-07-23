@@ -34,6 +34,20 @@ namespace CXUtils.UsefulTypes
         public static Float2 Left => new Float2( -1f, 0f );
         public static Float2 Right => new Float2( 1f, 0f );
 
+        public float this[ int index ]
+        {
+            get
+            {
+                switch ( index )
+                {
+                    case 0: return x;
+                    case 1: return y;
+                    
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
+        
         public float SqrMagnitude => x * x + y * y;
         public float Magnitude => (float)Math.Sqrt( SqrMagnitude );
 
@@ -103,6 +117,21 @@ namespace CXUtils.UsefulTypes
         public readonly float x, y, z;
         public Float3( float x, float y, float z ) => ( this.x, this.y, this.z ) = ( x, y, z );
         public Float3( Float3 other ) => ( x, y, z ) = ( other.x, other.y, other.z );
+        
+        public float this[ int index ]
+        {
+            get
+            {
+                switch ( index )
+                {
+                    case 0: return x;
+                    case 1: return y;
+                    case 2: return z;
+
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
 
         public static Float3 MinValue => (Float3)float.MinValue;
         public static Float3 MaxValue => (Float3)float.MaxValue;
@@ -191,6 +220,22 @@ namespace CXUtils.UsefulTypes
         public readonly float x, y, z, w;
         public Float4( float x, float y, float z, float w ) => ( this.x, this.y, this.z, this.w ) = ( x, y, z, w );
         public Float4( Float4 other ) => ( x, y, z, w ) = ( other.x, other.y, other.z, other.w );
+        
+        public float this[ int index ]
+        {
+            get
+            {
+                switch ( index )
+                {
+                    case 0: return x;
+                    case 1: return y;
+                    case 2: return z;
+                    case 3: return w;
+
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
 
         public static Float4 MinValue => (Float4)float.MinValue;
         public static Float4 MaxValue => (Float4)float.MaxValue;
@@ -278,6 +323,20 @@ namespace CXUtils.UsefulTypes
 
         public Int2( int x, int y ) => ( this.x, this.y ) = ( x, y );
         public Int2( Int2 other ) => ( x, y ) = ( other.x, other.y );
+        
+        public float this[ int index ]
+        {
+            get
+            {
+                switch ( index )
+                {
+                    case 0: return x;
+                    case 1: return y;
+                    
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
 
         public static Int2 MinValue => (Int2)int.MinValue;
         public static Int2 MaxValue => (Int2)int.MaxValue;
@@ -338,6 +397,21 @@ namespace CXUtils.UsefulTypes
 
         public Int3( int x, int y, int z ) => ( this.x, this.y, this.z ) = ( x, y, z );
         public Int3( Int3 other ) => ( x, y, z ) = ( other.x, other.y, other.z );
+        
+        public float this[ int index ]
+        {
+            get
+            {
+                switch ( index )
+                {
+                    case 0: return x;
+                    case 1: return y;
+                    case 2: return z;
+
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
 
         public static Int3 MinValue => (Int3)int.MinValue;
         public static Int3 MaxValue => (Int3)int.MaxValue;
@@ -402,6 +476,22 @@ namespace CXUtils.UsefulTypes
 
         public Int4( int x, int y, int z, int w ) => ( this.x, this.y, this.z, this.w ) = ( x, y, z, w );
         public Int4( Int4 other ) => ( x, y, z, w ) = ( other.x, other.y, other.z, other.w );
+        
+        public float this[ int index ]
+        {
+            get
+            {
+                switch ( index )
+                {
+                    case 0: return x;
+                    case 1: return y;
+                    case 2: return z;
+                    case 3: return w;
+
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
 
         public static Int4 MinValue => (Int4)int.MinValue;
         public static Int4 MaxValue => (Int4)int.MaxValue;
