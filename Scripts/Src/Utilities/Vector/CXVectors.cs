@@ -1,6 +1,6 @@
 using System;
 
-namespace CXUtils.UsefulTypes
+namespace CXUtils.Types
 {
     public interface ITypeFloat<T> : IEquatable<T>, IFormattable
     {

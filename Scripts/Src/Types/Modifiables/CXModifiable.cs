@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CXUtils.UsefulTypes
+namespace CXUtils.Types
 {
     ///<summary>
     /// A modifiable value that could register values on it to modify the out come

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CXUtils.UsefulTypes
+namespace CXUtils.Types
 {
     /// <summary>
     /// Implements a modifiable for a target value

@@ -1,4 +1,5 @@
 ﻿using System;
+using CXUtils.Types;
 
 namespace CXUtils.CodeUtils
 {
@@ -18,7 +19,7 @@ namespace CXUtils.CodeUtils
 
         public static float LerpClamp( float a, float b, float t ) => Lerp( a, b, MathUtils.Clamp01( t ) );
 
-        #region Tweens
+        #region Easing
 
         public static float EaseInSine( float t ) => 1f - (float)Math.Cos( t * MathUtils.PI * .5f );
         public static float EaseOutSine( float t ) => (float)Math.Sin( t * MathUtils.PI * .5f );
@@ -94,6 +95,22 @@ namespace CXUtils.CodeUtils
         public static float EaseInOutBounce( float t ) => t < .5f
             ? ( 1f - EaseOutBounce( 1f - 2f * t ) ) / 2f
             : ( 1f + EaseOutBounce( 2f * t - 1f ) ) / 2f;
+
+        #endregion
+
+        #region BezierCurves
+
+        public static Float2 QuadBezier( Float2 p1, Float2 p2, Float2 p3, float t )
+        {
+            float inverse = 1f - t;
+            return inverse * inverse * p1 + 2f * inverse * t * p2 + t * t * p3;
+        }
+
+        public static Float2 CubicBezier( Float2 p1, Float2 p2, Float2 p3, Float2 p4, float t )
+        {
+            float inverse = 1f - t;
+            return inverse * inverse * inverse * p1 + 3f * inverse * inverse * t * p2 + 3 * inverse * t * t * p3 + t * t * t * p4;
+        }
 
         #endregion
     }

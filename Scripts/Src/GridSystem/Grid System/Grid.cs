@@ -1,5 +1,5 @@
 ﻿using System;
-using CXUtils.UsefulTypes;
+using CXUtils.Types;
 
 namespace CXUtils.GridSystem
 {

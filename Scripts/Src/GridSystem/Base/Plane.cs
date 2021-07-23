@@ -1,6 +1,6 @@
 ﻿using System;
 using CXUtils.CodeUtils;
-using CXUtils.UsefulTypes;
+using CXUtils.Types;
 
 namespace CXUtils.PlaneSystem
 {
