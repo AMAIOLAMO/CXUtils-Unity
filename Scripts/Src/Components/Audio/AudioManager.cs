@@ -27,6 +27,10 @@ namespace CXUtils.HelperComponents
             }
         }
 
+        public bool UseAudioCheckDelay { get; set; } = false;
+
+        public float AudioCheckDelay { get; set; }
+
         void Awake()
         {
             AudioListener.volume = mainVolume;
@@ -75,13 +79,12 @@ namespace CXUtils.HelperComponents
         }
 
         /// <summary>
-        /// Tries to request a, <see cref="AudioSource"/>
+        ///     Tries to request a, <see cref="AudioSource" />
         /// </summary>
         /// <param name="audioSource"></param>
         /// <returns></returns>
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public bool TryRequestSource( out AudioSource audioSource ) =>
-            ( audioSource = RequestSource() ) != null;
+        public bool TryRequestSource( out AudioSource audioSource ) => ( audioSource = RequestSource() ) != null;
 
         /// <summary>
         ///     Request an audio source from the free queue
@@ -123,8 +126,8 @@ namespace CXUtils.HelperComponents
                     freeAudioSources.Enqueue( occupiedAudioSources[i] );
                     occupiedAudioSources.RemoveAt( i );
                 }
-
-                yield return null;
+                
+                yield return UseAudioCheckDelay ? new WaitForSecondsRealtime( AudioCheckDelay ) : null;
             }
         }
     }

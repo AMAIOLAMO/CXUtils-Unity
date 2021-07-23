@@ -3,10 +3,14 @@ using UnityEngine;
 
 namespace CXUtils.CodeUtils
 {
-    /// <summary> A helper for controlling texts </summary>
+    /// <summary>
+    ///     A helper for text debugging
+    /// </summary>
     public struct TextUtils
     {
-        /// <summary> Instantiates a text on the world </summary>
+        /// <summary>
+        ///     Instantiates a text on the scene world
+        /// </summary>
         public static TextMesh SpawnTextOnWorld( Transform parent, Vector3 position,
             Func<TextMesh, TextMesh> modifier, int sortingOrder = 0, bool usingLocalPosition = false )
         {
@@ -33,19 +37,18 @@ namespace CXUtils.CodeUtils
             return txtMesh;
         }
 
-        /// <summary> Instantiates a text on the world </summary>
+        /// <inheritdoc cref="SpawnTextOnWorld(UnityEngine.Transform,UnityEngine.Vector3,System.Func{UnityEngine.TextMesh,UnityEngine.TextMesh},int,bool)"/>
         public static TextMesh SpawnTextOnWorld( Vector3 position, string text, int fontSize,
             Color color, TextAnchor textAnchor = TextAnchor.MiddleCenter, TextAlignment textAlignment = TextAlignment.Center,
             bool usingLocalPosition = false ) => SpawnTextOnWorld( null, position, text, fontSize, color, textAnchor, textAlignment, 0, usingLocalPosition );
 
-        /// <summary> Instantiates a text on the world </summary>
+        /// <inheritdoc cref="SpawnTextOnWorld(UnityEngine.Transform,UnityEngine.Vector3,System.Func{UnityEngine.TextMesh,UnityEngine.TextMesh},int,bool)"/>
         public static TextMesh SpawnTextOnWorld( Transform parent,
             Vector3 position, string text, int fontSize = 30, Color color = default, TextAnchor textAnchor = TextAnchor.MiddleCenter,
             TextAlignment textAlignment = TextAlignment.Center, int sortingOrder = 0, bool usingLocalPosition = false ) =>
             SpawnTextOnWorld( parent, position,
                 txtMesh => SetTextMesh( txtMesh, text, fontSize, color, textAnchor, textAlignment ), sortingOrder, usingLocalPosition );
 
-        //Just a simplifier for setting the text mesh obj
         static TextMesh SetTextMesh( TextMesh txtMesh, string text, int fontSize, Color color, TextAnchor textAnchor, TextAlignment textAlignment )
         {
             txtMesh.text = text;

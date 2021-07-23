@@ -2,11 +2,19 @@ using System;
 
 namespace CXUtils.UsefulTypes
 {
+    public interface ITypeFloat<T> : IEquatable<T>, IFormattable
+    {
+        /// <summary>
+        ///     returns a new vector with a new magnitude of value
+        /// </summary>
+        T MagnitudeOf( float value );
+    }
+    
     /// <summary>
     ///     represents two floats
     /// </summary>
     [Serializable]
-    public readonly struct Float2 : IEquatable<Float2>, IFormattable
+    public readonly struct Float2 : ITypeFloat<Float2>
     {
         public readonly float x, y;
         public Float2( float x, float y ) => ( this.x, this.y ) = ( x, y );
@@ -90,7 +98,7 @@ namespace CXUtils.UsefulTypes
     ///     represents three floats
     /// </summary>
     [Serializable]
-    public readonly struct Float3 : IEquatable<Float3>, IFormattable
+    public readonly struct Float3 : ITypeFloat<Float3>
     {
         public readonly float x, y, z;
         public Float3( float x, float y, float z ) => ( this.x, this.y, this.z ) = ( x, y, z );
@@ -163,9 +171,7 @@ namespace CXUtils.UsefulTypes
 
         public Float3 Cross( Float3 other ) => new Float3( y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x );
 
-        /// <summary>
-        ///     returns a new Float3 with a direction of this and a specified target magnitude
-        /// </summary>
+        
         public Float3 MagnitudeOf( float magnitude ) => Normalized * magnitude;
 
         public string ToString( string format, IFormatProvider formatProvider ) =>
@@ -177,10 +183,10 @@ namespace CXUtils.UsefulTypes
     }
 
     /// <summary>
-    ///     represents three floats
+    ///     represents four floats
     /// </summary>
     [Serializable]
-    public readonly struct Float4 : IEquatable<Float4>, IFormattable
+    public readonly struct Float4 : ITypeFloat<Float4>
     {
         public readonly float x, y, z, w;
         public Float4( float x, float y, float z, float w ) => ( this.x, this.y, this.z, this.w ) = ( x, y, z, w );
@@ -210,13 +216,13 @@ namespace CXUtils.UsefulTypes
         public Float4 Floor => new Float4( (float)Math.Floor( x ), (float)Math.Floor( y ), (float)Math.Floor( z ), (float)Math.Floor( w ) );
         public Float4 Ceil => new Float4( (float)Math.Ceiling( x ), (float)Math.Ceiling( y ), (float)Math.Ceiling( z ), (float)Math.Floor( w ) );
 
-        /*public Int3 FloorInt => new Int3( (int)Math.Floor( x ), (int)Math.Floor( y ), (int)Math.Floor( z ) );
-        public Int3 CeilInt => new Int3( (int)Math.Ceiling( x ), (int)Math.Ceiling( y ), (int)Math.Ceiling( z ) );*/
+        public Int4 FloorInt => new Int4( (int)Math.Floor( x ), (int)Math.Floor( y ), (int)Math.Floor( z ), (int)Math.Floor( w ) );
+        public Int4 CeilInt => new Int4( (int)Math.Ceiling( x ), (int)Math.Ceiling( y ), (int)Math.Ceiling( z ), (int)Math.Ceiling( w ) );
 
         public bool Equals( Float4 other ) => x.Equals( other.x ) && y.Equals( other.y ) && z.Equals( other.z );
 
         public override bool Equals( object obj ) => obj is Float3 other && Equals( other );
-        
+
         public override int GetHashCode()
         {
             unchecked
@@ -235,14 +241,11 @@ namespace CXUtils.UsefulTypes
         public static Float4 operator -( Float4 a, Float4 b ) => new Float4( a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w );
         public static Float4 operator *( Float4 a, Float4 b ) => new Float4( a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w );
         public static Float4 operator /( Float4 a, Float4 b ) => new Float4( a.x / b.x, a.y / b.y, a.x / b.x, a.w / b.w );
-
         public static Float4 operator *( Float4 a, float value ) => new Float4( a.x * value, a.y * value, a.z * value, a.w * value );
         public static Float4 operator /( Float4 a, float value ) => new Float4( a.x / value, a.y / value, a.z / value, a.w / value );
         public static Float4 operator *( float value, Float4 a ) => a * value;
         public static Float4 operator /( float value, Float4 a ) => a / value;
-
         public static Float4 operator -( Float4 a ) => new Float4( -a.x, -a.y, -a.z, -a.w );
-
         public static explicit operator Float4( float value ) => new Float4( value, value, value, value );
         public static explicit operator Float4( Float3 value ) => new Float4( value.x, value.y, value.z, 0f );
 
@@ -302,25 +305,17 @@ namespace CXUtils.UsefulTypes
 
         #region Operator overloading
 
-        // == Integer == //
-
         public static Int2 operator +( Int2 a, Int2 b ) => new Int2( a.x + b.x, a.y + b.y );
         public static Int2 operator -( Int2 a, Int2 b ) => new Int2( a.x - b.x, a.y - b.y );
         public static Int2 operator *( Int2 a, Int2 b ) => new Int2( a.x * b.x, a.y * b.y );
         public static Int2 operator /( Int2 a, Int2 b ) => new Int2( a.x / b.x, a.y / b.y );
-
         public static Int2 operator *( Int2 a, int value ) => new Int2( a.x * value, a.y * value );
         public static Int2 operator /( Int2 a, int value ) => new Int2( a.x / value, a.y / value );
         public static Int2 operator %( Int2 a, int value ) => new Int2( a.x % value, a.y % value );
         public static Int2 operator *( int value, Int2 a ) => a * value;
         public static Int2 operator /( int value, Int2 a ) => a / value;
-
         public static Int2 operator -( Int2 a ) => new Int2( -a.x, -a.y );
-
-        // == Conversion == //
-
         public static explicit operator Int2( Int3 value ) => new Int2( value.x, value.y );
-
         public static explicit operator Int2( int value ) => new Int2( value, value );
 
         #endregion
@@ -372,16 +367,13 @@ namespace CXUtils.UsefulTypes
         public static Int3 operator +( Int3 a, Int3 b ) => new Int3( a.x + b.x, a.y + b.y, a.z + b.z );
         public static Int3 operator -( Int3 a, Int3 b ) => new Int3( a.x - b.x, a.y - b.y, a.z - b.z );
         public static Int3 operator *( Int3 a, Int3 b ) => new Int3( a.x * b.x, a.y * b.y, a.z * b.z );
-        public static Int3 operator /( Int3 a, Int3 b ) => new Int3( a.x / b.x, a.y / b.y, a.x / b.x );
-
+        public static Int3 operator /( Int3 a, Int3 b ) => new Int3( a.x / b.x, a.y / b.y, a.z / b.z );
         public static Int3 operator *( Int3 a, int value ) => new Int3( a.x * value, a.y * value, a.z * value );
         public static Int3 operator /( Int3 a, int value ) => new Int3( a.x / value, a.y / value, a.z / value );
         public static Int3 operator %( Int3 a, int value ) => new Int3( a.x % value, a.y % value, a.z % value );
         public static Int3 operator *( int value, Int3 a ) => a * value;
         public static Int3 operator /( int value, Int3 a ) => a / value;
-
         public static Int3 operator -( Int3 a ) => new Int3( -a.x, -a.y, -a.z );
-
         public static explicit operator Int3( Int2 value ) => new Int3( value.x, value.y, 0 );
         public static explicit operator Int3( int value ) => new Int3( value, value, value );
 
@@ -396,6 +388,74 @@ namespace CXUtils.UsefulTypes
             "(" + x.ToString( format, formatProvider ) + ", " + y.ToString( format, formatProvider ) + ", " + z.ToString( format, formatProvider ) + ")";
         public override string ToString() => "(" + x + ", " + y + ", " + z + ")";
         public string ToString( string format ) => "(" + x.ToString( format ) + ", " + y.ToString( format ) + ", " + z.ToString( format ) + ")";
+
+        #endregion
+    }
+
+    /// <summary>
+    ///     represents four integers
+    /// </summary>
+    [Serializable]
+    public readonly struct Int4 : IEquatable<Int4>, IFormattable
+    {
+        public readonly int x, y, z, w;
+
+        public Int4( int x, int y, int z, int w ) => ( this.x, this.y, this.z, this.w ) = ( x, y, z, w );
+        public Int4( Int4 other ) => ( x, y, z, w ) = ( other.x, other.y, other.z, other.w );
+
+        public static Int4 MinValue => (Int4)int.MinValue;
+        public static Int4 MaxValue => (Int4)int.MaxValue;
+
+        public static Int4 Zero => (Int4)0;
+        public static Int4 One => (Int4)1;
+
+        public static Int4 Up => new Int4( 0, 1, 0, 0 );
+        public static Int4 Down => new Int4( 0, -1, 0, 0 );
+        public static Int4 Left => new Int4( -1, 0, 0, 0 );
+        public static Int4 Right => new Int4( 1, 0, 0, 0 );
+        public bool Equals( Int4 other ) => x == other.x && y == other.y && z == other.z && w == other.w;
+        public override bool Equals( object obj ) => obj is Int4 other && Equals( other );
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = x;
+                hashCode = ( hashCode * 397 ) ^ y;
+                hashCode = ( hashCode * 397 ) ^ z;
+                hashCode = ( hashCode * 397 ) ^ w;
+                return hashCode;
+            }
+        }
+
+        #region Operator overloading
+
+        public static Int4 operator +( Int4 a, Int4 b ) => new Int4( a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w );
+        public static Int4 operator -( Int4 a, Int4 b ) => new Int4( a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w );
+        public static Int4 operator *( Int4 a, Int4 b ) => new Int4( a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w );
+        public static Int4 operator /( Int4 a, Int4 b ) => new Int4( a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w );
+        public static Int4 operator *( Int4 a, int value ) => new Int4( a.x * value, a.y * value, a.z * value, a.w * value );
+        public static Int4 operator /( Int4 a, int value ) => new Int4( a.x / value, a.y / value, a.z / value, a.w / value );
+        public static Int4 operator %( Int4 a, int value ) => new Int4( a.x % value, a.y % value, a.z % value, a.w % value );
+        public static Int4 operator *( int value, Int4 a ) => a * value;
+        public static Int4 operator /( int value, Int4 a ) => a / value;
+        public static Int4 operator -( Int4 a ) => new Int4( -a.x, -a.y, -a.z, -a.w );
+        public static explicit operator Int4( Int2 value ) => new Int4( value.x, value.y, 0, 0 );
+        public static explicit operator Int4( Int3 value ) => new Int4( value.x, value.y, value.z, 0 );
+        public static explicit operator Int4( int value ) => new Int4( value, value, value, value );
+
+        #endregion
+
+        #region Utility
+
+        public Int4 Min( Int4 other ) => new Int4( Math.Min( x, other.x ), Math.Min( y, other.y ), Math.Min( z, other.z ), Math.Min( w, other.w ) );
+        public Int4 Max( Int4 other ) => new Int4( Math.Max( x, other.x ), Math.Max( y, other.y ), Math.Max( z, other.z ), Math.Min( w, other.w ) );
+
+        public string ToString( string format, IFormatProvider formatProvider ) =>
+            "(" + x.ToString( format, formatProvider ) + ", " + y.ToString( format, formatProvider ) + ", " +
+            z.ToString( format, formatProvider ) + ", " + w.ToString( format, formatProvider ) + ")";
+        public override string ToString() => "(" + x + ", " + y + ", " + z + ", " + w + ")";
+        public string ToString( string format ) => "(" + x.ToString( format ) + ", " + y.ToString( format ) + ", " + z.ToString( format ) + ", " + w.ToString( format ) + ")";
 
         #endregion
     }
