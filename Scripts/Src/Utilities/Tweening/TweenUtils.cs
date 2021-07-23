@@ -100,16 +100,16 @@ namespace CXUtils.CodeUtils
 
         #region BezierCurves
 
-        public static Float2 QuadBezier( Float2 p1, Float2 p2, Float2 p3, float t )
+        public static Float2 QuadBezier( Float2 p0, Float2 p1, Float2 p2, float t )
         {
             float inverse = 1f - t;
-            return inverse * inverse * p1 + 2f * inverse * t * p2 + t * t * p3;
+            return inverse * inverse * p0 + 2f * inverse * t * p1 + t * t * p2;
         }
 
-        public static Float2 CubicBezier( Float2 p1, Float2 p2, Float2 p3, Float2 p4, float t )
+        public static Float2 CubicBezier( Float2 p0, Float2 p1, Float2 p2, Float2 p3, float t )
         {
             float inverse = 1f - t;
-            return inverse * inverse * inverse * p1 + 3f * inverse * inverse * t * p2 + 3 * inverse * t * t * p3 + t * t * t * p4;
+            return inverse * inverse * inverse * p0 + 3f * inverse * inverse * t * p1 + 3 * inverse * t * t * p2 + t * t * t * p3;
         }
 
         #endregion
