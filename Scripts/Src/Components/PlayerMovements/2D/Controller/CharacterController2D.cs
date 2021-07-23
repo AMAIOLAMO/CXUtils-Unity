@@ -9,44 +9,55 @@ namespace CXUtils.HelperComponents
     [AddComponentMenu( "CXUtils/Player/2D/CharacterController2D" )]
     public class CharacterController2D : MonoBehaviour
     {
-
-        #region ThreadMethods
-
         void CheckAndMove( MovementUpdateOptions moveUpdateOp )
         {
-            if ( moveUpdateOptions == moveUpdateOp )
-            {
-                GetMovements();
-                if ( gamePerspecOptions == GamePerspectiveOptions.Platformer )
-                    MovePlayerPlatformer();
+            if ( moveUpdateOptions != moveUpdateOp ) return;
 
-                else if ( gamePerspecOptions == GamePerspectiveOptions.TopDown )
+            GetMovements();
+
+            switch ( gamePerspecOptions )
+            {
+                case GamePerspectiveOptions.Platformer:
+                    MovePlayerPlatformer();
+                    break;
+
+                case GamePerspectiveOptions.TopDown:
                     MovePlayerTopDown();
+                    break;
+
+                default: throw ExceptionUtils.Error.NotAccessible;
             }
         }
 
-        #endregion
         #region Enums
 
-        /// <summary> How the Character controller works </summary>
+        /// <summary>
+        ///     How the Character controller works
+        /// </summary>
         public enum GamePerspectiveOptions
         {
             Platformer, TopDown
         }
 
-        /// <summary> The options of how the movement will be updated in this character controller </summary>
+        /// <summary>
+        ///     The options of how the movement will be updated in this character controller
+        /// </summary>
         public enum MovementUpdateOptions
         {
             Update, FixedUpdate, LateUpdate
         }
 
-        /// <summary> The options of how the movement will be updated using the Time frame delta </summary>
+        /// <summary>
+        ///     The options of how the movement will be updated using the Time frame delta
+        /// </summary>
         public enum MovementDeltaTimeOptions
         {
             DeltaTime, UnscaledDeltaTime, FixedDeltaTime, FixedUnscaledDeltaTime
         }
 
-        /// <summary> The modes of how the movmement will be calculated </summary>
+        /// <summary>
+        ///     The modes of how the movement will be calculated
+        /// </summary>
         public enum MovementMode
         {
             Position, Velocity, Force
@@ -185,10 +196,10 @@ namespace CXUtils.HelperComponents
                     TopDown_Position();
                     break;
                 case MovementMode.Force:
-                    TopDown_Force();
+                    TopDownForce();
                     break;
                 case MovementMode.Velocity:
-                    TopDown_Velocity();
+                    TopDownVelocity();
                     break;
 
                 default: throw ExceptionUtils.Error.NotAccessible;
@@ -231,40 +242,31 @@ namespace CXUtils.HelperComponents
 
         protected virtual void TopDown_Position()
         {
-            // up down left right
-            Vector3 newOffset;
+            var thisTransform = transform;
 
-            if ( IsLocalTransform )
-                newOffset = transform.right * MovementVector.x + transform.up * MovementVector.y;
-            else
-                newOffset = Vector3.right * MovementVector.x + Vector3.up * MovementVector.y;
+            var newOffset = isLocalTransform ?
+                thisTransform.right * MovementVector.x + thisTransform.up * MovementVector.y :
+                Vector3.right * MovementVector.x + Vector3.up * MovementVector.y;
 
             newOffset *= playerCurrentSpeed * CurrentUsingDeltaTime();
             transform.position += newOffset;
         }
 
-        protected virtual void TopDown_Force()
+        protected virtual void TopDownForce()
         {
-            Vector2 newForce;
+            var thisTransform = transform;
 
-            if ( isLocalTransform )
-                newForce = transform.right * MovementVector.x + transform.up * MovementVector.y;
-            else
-                newForce = Vector2.right * MovementVector.x + Vector2.up * MovementVector.y;
+            var newForce = isLocalTransform ?
+                (Vector2)( thisTransform.right * MovementVector.x + thisTransform.up * MovementVector.y ) :
+                Vector2.right * MovementVector.x + Vector2.up * MovementVector.y;
 
             newForce *= playerCurrentSpeed;
 
             playerRigidBody.AddForce( newForce, ForceMode2D.Impulse );
         }
 
-        protected virtual void TopDown_Velocity()
-        {
-            Vector2 newVelocity;
-
-            newVelocity = MovementVector * playerCurrentSpeed;
-
-            playerRigidBody.velocity = newVelocity;
-        }
+        protected virtual void TopDownVelocity() =>
+            playerRigidBody.velocity = MovementVector * playerCurrentSpeed;
 
         #endregion
 
@@ -285,31 +287,30 @@ namespace CXUtils.HelperComponents
         protected virtual void JumpMovements()
         {
             //Jump method
-            if ( CharacterGroundCheck != null && playerRigidBody != null )
+            if ( CharacterGroundCheck == null || playerRigidBody == null )
+                return;
+
+            if ( canJump )
             {
-                if ( canJump )
-                {
-                    if ( Input.GetKey( KeyCode.Space ) && characterGroundCheck.IsOnGround )
-                    {
-                        lastJumpTime = Time.time;
-                        canJump = false;
+                if ( !Input.GetKey( KeyCode.Space ) || !characterGroundCheck.IsOnGround )
+                    return;
 
-                        //Invokes the event when the player is jumping
-                        PlayerStartJump?.Invoke();
+                lastJumpTime = Time.time;
+                canJump = false;
 
-                        if ( isLocalTransform )
-                            playerRigidBody.velocity += ( Vector2 )transform.up * playerCurrentJumpStrength;
-                        else
-                            playerRigidBody.velocity += Vector2.up * playerCurrentJumpStrength;
-                    }
-                }
-                else
-                {
-                    currentJumpDelta = Time.time - lastJumpTime;
+                //Invokes the event when the player is jumping
+                PlayerStartJump?.Invoke();
 
-                    if ( currentJumpDelta > jumpDelta )
-                        canJump = true;
-                }
+                playerRigidBody.velocity += isLocalTransform ?
+                    (Vector2)transform.up * playerCurrentJumpStrength :
+                    Vector2.up * playerCurrentJumpStrength;
+            }
+            else
+            {
+                currentJumpDelta = Time.time - lastJumpTime;
+
+                if ( currentJumpDelta > jumpDelta )
+                    canJump = true;
             }
         }
 
@@ -327,8 +328,7 @@ namespace CXUtils.HelperComponents
                 case MovementDeltaTimeOptions.FixedDeltaTime: return Time.fixedDeltaTime;
                 case MovementDeltaTimeOptions.FixedUnscaledDeltaTime: return Time.fixedUnscaledDeltaTime;
 
-                default:
-                    throw ExceptionUtils.Error.NotAccessible;
+                default: throw ExceptionUtils.Error.NotAccessible;
             }
         }
 

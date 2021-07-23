@@ -2,10 +2,11 @@
 
 namespace CXUtils.HelperComponents
 {
-    [AddComponentMenu("CXUtils/Player/2D/CharacterGroundCheck2D")]
+    [AddComponentMenu( "CXUtils/Player/2D/CharacterGroundCheck2D" )]
     public class CharacterGroundCheck2D : MonoBehaviour
     {
         #region Vars and fields
+
         /// <summary> The Colliding mode </summary>
         public enum CollideMode { Collision, Trigger }
 
@@ -14,14 +15,14 @@ namespace CXUtils.HelperComponents
 
         //private
 
-        [SerializeField] private Collider2D groundCheckCollision;
+        [SerializeField] Collider2D groundCheckCollision;
 
-        [SerializeField] private string[] tags = default;
+        [SerializeField] string[] tags;
 
-        [SerializeField] private bool usingTags = false;
-        [SerializeField] private bool isOnGround = false;
+        [SerializeField] bool usingTags;
+        [SerializeField] bool isOnGround;
 
-        [SerializeField] private CollisionUpdateOptions collideUpdateOption;
+        [SerializeField] CollisionUpdateOptions collideUpdateOption;
 
         //public
 
@@ -31,69 +32,63 @@ namespace CXUtils.HelperComponents
 
         public string[] Tags { get => tags; set => tags = value; }
 
-        public bool IsOnGround { get => isOnGround; set => isOnGround = value; }
+        public bool IsOnGround { get => isOnGround; private set => isOnGround = value; }
         public bool UsingTags { get => usingTags; set => usingTags = value; }
+
         #endregion
 
         #region MainThread
-        private void Update()
+
+        void Update()
         {
-            if (collideUpdateOption == CollisionUpdateOptions.Update)
+            if ( collideUpdateOption == CollisionUpdateOptions.Update )
                 CollisionCheck();
         }
 
-        private void FixedUpdate()
+        void FixedUpdate()
         {
-            if (collideUpdateOption == CollisionUpdateOptions.FixedUpdate)
+            if ( collideUpdateOption == CollisionUpdateOptions.FixedUpdate )
                 CollisionCheck();
         }
 
-        private void LateUpdate()
+        void LateUpdate()
         {
-            if (collideUpdateOption == CollisionUpdateOptions.LateUpdate)
+            if ( collideUpdateOption == CollisionUpdateOptions.LateUpdate )
                 CollisionCheck();
         }
+
         #endregion
 
         #region Main Methods
-        protected void CollisionCheck()
+
+        void CollisionCheck()
         {
             IsOnGround = CheckGroundCollision();
         }
 
-        protected bool CheckGroundCollision()
+        bool CheckGroundCollision()
         {
             var contactPoints = new ContactPoint2D[20];
-            int len;
-            
-            len = groundCheckCollision.GetContacts(contactPoints);
-            
-            if (len == 0 || tags.Length == 0)
-                return false;
 
-            else
-            {
-                if (usingTags)
-                {
-                    for (int index = 0; index < len; index++)
-                        foreach (var i in tags)
-                        {
-                            if (i != null)
-                            {
-                                if (contactPoints[index].collider.CompareTag(i))
-                                    return true;
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                        }
-                    return false;
-                }
-                //else
-                return true;
-            }
+            int length = groundCheckCollision.GetContacts( contactPoints );
+
+            if ( length == 0 || tags.Length == 0 || !usingTags ) return false;
+
+            for ( int index = 0; index < length; index++ )
+                foreach ( string i in tags )
+                    if ( i != null )
+                    {
+                        if ( contactPoints[index].collider.CompareTag( i ) )
+                            return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+            return false;
         }
+
         #endregion
     }
 }
