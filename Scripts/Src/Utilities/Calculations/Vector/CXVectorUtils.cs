@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 namespace CXUtils.CodeUtils
 {
     /// <summary>
-    ///     CX's Vector class
+    ///    Vector extension methods
     /// </summary>
     public static class VectorUtils
     {
@@ -175,31 +175,6 @@ namespace CXUtils.CodeUtils
             direction.SetMagnitude( originMagnitude );
 
             return direction;
-        }
-
-        #endregion
-
-        #region Approximation
-
-        /// <summary>
-        ///     Checks if two vectors are approximately equal to each other
-        ///     (for floating points natural problem at comparing in each other)
-        /// </summary>
-        public static bool IsApproximately( this Vector2 vect, Vector2 other )
-        {
-            return vect.x.IsApproximately( other.x ) && vect.y.IsApproximately( other.y );
-        }
-
-        /// <inheritdoc cref="IsApproximately(Vector2, Vector2)" />
-        public static bool IsApproximately( this Vector3 vect, Vector3 other )
-        {
-            return vect.x.IsApproximately( other.x ) && vect.y.IsApproximately( other.y ) && vect.z.IsApproximately( other.z );
-        }
-
-        /// <inheritdoc cref="IsApproximately(Vector2, Vector2)" />
-        public static bool IsApproximately( this Vector4 vect, Vector4 other )
-        {
-            return vect.x.IsApproximately( other.x ) && vect.y.IsApproximately( other.y ) && vect.z.IsApproximately( other.z ) && vect.w.IsApproximately( other.w );
         }
 
         #endregion
