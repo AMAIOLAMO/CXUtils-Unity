@@ -11,6 +11,7 @@ namespace CXUtils.GridSystem
     public readonly struct AABBFloat2
     {
         public AABBFloat2( Float2 origin, Float2 size ) => ( this.origin, this.size ) = ( origin, size );
+        public AABBFloat2( AABBFloat2 other ) => ( origin, size ) = ( other.origin, other.size );
 
         public readonly Float2 origin, size;
 
@@ -27,30 +28,60 @@ namespace CXUtils.GridSystem
         public Float2 MaxBound => origin + HalfSize;
     }
 
-    /// <summary> A 2D Grid system </summary>
+    public abstract class GridBase<T>
+    {
+        public GridBase( float cellSize, Float2 origin = default ) =>
+            ( Origin, CellSize ) = ( origin, cellSize );
+        public float CellSize { get; }
+        public Float2 Origin { get; }
+
+        public abstract T this[ int x, int y ] { get; set; }
+        public abstract T this[ Int2 gridPosition ] { get; set; }
+
+        public float HalfCellSize => CellSize * .5f;
+        public Float2 CellCenterOffset => (Float2)HalfCellSize;
+
+        #region Utilities
+
+        public Float2 CellToWorld( int x, int y ) => new Float2( x, y ) * CellSize + Origin;
+        public Float2 CellToWorld( Int2 gridPosition ) => (Float2)gridPosition * CellSize + Origin;
+
+        public Int2 WorldToCell( float x, float y ) => ( ( new Float2( x, y ) - Origin ) / CellSize ).FloorInt;
+        public Int2 WorldToCell( Float2 worldPosition ) => WorldToLocal(worldPosition).FloorInt;
+
+        public Float2 LocalToWorld( float x, float y ) => new Float2( x, y ) * CellSize + Origin;
+        public Float2 LocalToWorld( Float2 localPosition ) => localPosition * CellSize + Origin;
+
+        public Float2 WorldToLocal( float x, float y ) => ( new Float2( x, y ) - Origin ) / CellSize;
+        public Float2 WorldToLocal( Float2 worldPosition ) => ( worldPosition - Origin ) / CellSize;
+
+        #endregion
+    }
+
+    /// <summary> A 2D Limited grid system </summary>
     /// <typeparam name="T">The type of the things to store inside each grid</typeparam>
     [Serializable]
-    public class Grid<T>
+    public class LimitedGrid<T>
     {
         #region Fields
 
+        T[,] _gridArray;
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        public T[,] GridArray { get; private set; }
         public float CellSize { get; private set; }
         public Float2 Origin { get; private set; }
 
         public T this[ int x, int y ]
         {
-            get => GridArray[x, y];
-            set => GridArray[x, y] = value;
+            get => _gridArray[x, y];
+            set => _gridArray[x, y] = value;
         }
 
         public T this[ Int2 gridPosition ]
         {
-            get => GridArray[gridPosition.x, gridPosition.y];
-            set => GridArray[gridPosition.x, gridPosition.y] = value;
+            get => _gridArray[gridPosition.x, gridPosition.y];
+            set => _gridArray[gridPosition.x, gridPosition.y] = value;
         }
 
         /// <summary> A half length of the cell size </summary>
@@ -60,7 +91,7 @@ namespace CXUtils.GridSystem
         public int CellCount => Width * Height;
 
         /// <summary> Gets the offset to the cell center from the left down bottom </summary>
-        public Float2 CellCenterOffset => Float2.One * HalfCellSize;
+        public Float2 CellCenterOffset => (Float2)HalfCellSize;
 
         /// <summary> the whole Grid size </summary>
         public Int2 GridSize => new Int2( Width, Height );
@@ -69,7 +100,7 @@ namespace CXUtils.GridSystem
 
         #region Constructors
 
-        public Grid( int width, int height, float cellSize, Float2 origin = default, T initialValue = default )
+        public LimitedGrid( int width, int height, float cellSize, Float2 origin = default, T initialValue = default )
         {
             InitGrid( width, height, cellSize, origin );
 
@@ -77,7 +108,7 @@ namespace CXUtils.GridSystem
             Fill( initialValue );
         }
 
-        public Grid( int width, int height, float cellSize, Float2 origin = default, Func<int, int, T> createFunc = null )
+        public LimitedGrid( int width, int height, float cellSize, Float2 origin = default, Func<int, int, T> createFunc = null )
         {
             InitGrid( width, height, cellSize, origin );
 
@@ -85,7 +116,7 @@ namespace CXUtils.GridSystem
             Map( createFunc );
         }
 
-        public Grid( Int2 gridSize, float cellSize, Float2 origin = default, Func<int, int, T> createFunc = null )
+        public LimitedGrid( Int2 gridSize, float cellSize, Float2 origin = default, Func<int, int, T> createFunc = null )
         {
             InitGrid( gridSize, cellSize, origin );
 
@@ -161,7 +192,7 @@ namespace CXUtils.GridSystem
         {
             if ( CheckXYValid( x, y ) )
             {
-                GridArray[x, y] = value;
+                _gridArray[x, y] = value;
                 return true;
             }
             return false;
@@ -183,7 +214,7 @@ namespace CXUtils.GridSystem
             if ( !TryGetGridPosition( worldPosition, out var gridPos ) )
                 return false;
 
-            GridArray[gridPos.x, gridPos.y] = value;
+            _gridArray[gridPos.x, gridPos.y] = value;
             return true;
 
         }
@@ -194,7 +225,7 @@ namespace CXUtils.GridSystem
         ///     <para>Not safe</para>
         /// </summary>
         public void SetValue( int x, int y, T value ) =>
-            GridArray[x, y] = value;
+            _gridArray[x, y] = value;
 
         /// <summary>
         ///     Tries to set a value using grid position
@@ -222,7 +253,7 @@ namespace CXUtils.GridSystem
         {
             if ( CheckXYValid( x, y ) )
             {
-                value = GridArray[x, y];
+                value = _gridArray[x, y];
                 return true;
             }
             value = default;
@@ -244,7 +275,7 @@ namespace CXUtils.GridSystem
         {
             if ( TryGetGridPosition( worldPosition, out var gridPos ) )
             {
-                value = GridArray[gridPos.x, gridPos.y];
+                value = _gridArray[gridPos.x, gridPos.y];
 
                 return true;
             }
@@ -254,21 +285,21 @@ namespace CXUtils.GridSystem
         }
 
         /// <summary>
-        ///     Gets the value using the grid position <br/>
+        ///     Gets the value using the grid position <br />
         ///     Not safe
         /// </summary>
         public T GetValue( int x, int y ) =>
-            GridArray[x, y];
+            _gridArray[x, y];
 
         /// <summary>
-        ///     Gets the value using the grid position <br/>
+        ///     Gets the value using the grid position <br />
         ///     Not safe
         /// </summary>
         public T GetValue( Int2 gridPosition ) =>
             GetValue( gridPosition.x, gridPosition.y );
 
         /// <summary>
-        ///     Gets the value using the world position <br/>
+        ///     Gets the value using the world position <br />
         ///     Not safe
         /// </summary>
         public T GetValue( Float2 worldPosition )
@@ -294,7 +325,7 @@ namespace CXUtils.GridSystem
             ( Width, Height ) = ( width, height );
             ( CellSize, Origin ) = ( cellSize, origin );
 
-            GridArray = new T[Width, Height];
+            _gridArray = new T[Width, Height];
         }
 
         void InitGrid( Int2 gridSize, float cellSize, Float2 origin ) =>
@@ -309,19 +340,19 @@ namespace CXUtils.GridSystem
         /// </summary>
         public void Fill( T value = default )
         {
-            for ( int i = 0; i < GridArray.GetLength( 0 ); i++ )
-                for ( int j = 0; j < GridArray.GetLength( 1 ); j++ )
-                    GridArray[i, j] = value;
+            for ( int i = 0; i < _gridArray.GetLength( 0 ); i++ )
+                for ( int j = 0; j < _gridArray.GetLength( 1 ); j++ )
+                    _gridArray[i, j] = value;
         }
 
         /// <summary>
         ///     Uses this function onto all the values on the grid
         /// </summary>
-        public void Map( Func<Grid<T>, int, int, T> mapFunc )
+        public void Map( Func<LimitedGrid<T>, int, int, T> mapFunc )
         {
             for ( int x = 0; x < Width; x++ )
                 for ( int y = 0; y < Height; y++ )
-                    GridArray[x, y] = mapFunc.Invoke( this, x, y );
+                    _gridArray[x, y] = mapFunc.Invoke( this, x, y );
         }
 
         /// <summary>
@@ -331,7 +362,7 @@ namespace CXUtils.GridSystem
         {
             for ( int x = 0; x < Width; x++ )
                 for ( int y = 0; y < Height; y++ )
-                    GridArray[x, y] = mapFunc.Invoke( x, y );
+                    _gridArray[x, y] = mapFunc.Invoke( x, y );
         }
 
         #endregion
@@ -350,14 +381,14 @@ namespace CXUtils.GridSystem
         ///     Get grid's bounds on grid position
         /// </summary>
         public AABBFloat2 GetLocalBounds() =>
-            new AABBFloat2( new Float2( 0, 0 ), (Float2)GridSize );
+            new AABBFloat2( new Float2( 0 ), (Float2)GridSize );
 
         #endregion
 
         #region Utilities
 
         /// <summary> Gets the grid value on the given Grid Position and converting it to a string </summary>
-        public string ToString( int x, int y ) => GridArray[x, y].ToString();
+        public string ToString( int x, int y ) => _gridArray[x, y].ToString();
 
         /// <summary> Gets the grid value on the given Grid Position and converting it to a string </summary>
         public string ToString( Int2 gridPosition ) => ToString( gridPosition.x, gridPosition.y );
