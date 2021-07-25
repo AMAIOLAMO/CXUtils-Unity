@@ -287,7 +287,22 @@ namespace CXUtils.Grid
 
         public override void Swap( Int2 cell1, Int2 cell2 ) =>
             ( _gridArray[cell1.x, cell1.y], _gridArray[cell1.x, cell1.y] ) = ( _gridArray[cell1.x, cell1.y], _gridArray[cell1.x, cell1.y] );
-        
+
+        public List<LineFloat2> GetGridLines()
+        {
+            var lines = new List<LineFloat2>();
+
+            for ( int y = 0; y < Height + 1; ++y )
+                lines.Add( new LineFloat2( new Float2( Origin.x, Origin.y + y * CellSize ),
+                    new Float2( Origin.x + Width * CellSize, Origin.y + y * CellSize ) ) );
+
+            for ( int x = 0; x < Width + 1; ++x )
+                lines.Add( new LineFloat2( new Float2( Origin.x + x * CellSize, Origin.y ),
+                    new Float2( Origin.x + x * CellSize, Origin.y + Height * CellSize ) ) );
+            
+            return lines;
+        }
+
         #endregion
     }
 }
