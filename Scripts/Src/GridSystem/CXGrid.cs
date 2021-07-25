@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CXUtils.Types;
 
 namespace CXUtils.Grid
@@ -286,7 +287,7 @@ namespace CXUtils.Grid
 
         public override void Swap( Int2 cell1, Int2 cell2 ) =>
             ( _gridArray[cell1.x, cell1.y], _gridArray[cell1.x, cell1.y] ) = ( _gridArray[cell1.x, cell1.y], _gridArray[cell1.x, cell1.y] );
-
+        
         #endregion
     }
 }

@@ -17,6 +17,9 @@ namespace CXUtils.CodeUtils
         /// <param name="t">the percentage that calculates between <paramref name="a" /> and <paramref name="b" /></param>
         public static float Lerp( float a, float b, float t ) => ( b - a ) * t + a;
 
+        /// <inheritdoc cref="Lerp(float,float,float)" />
+        public static int Lerp( int a, int b, int t ) => ( b - a ) * t + a;
+
         public static float LerpClamp( float a, float b, float t ) => Lerp( a, b, MathUtils.Clamp01( t ) );
 
         #region Easing
@@ -111,6 +114,20 @@ namespace CXUtils.CodeUtils
             float inverse = 1f - t;
             return inverse * inverse * inverse * p0 + 3f * inverse * inverse * t * p1 + 3 * inverse * t * t * p2 + t * t * t * p3;
         }
+
+        #endregion
+
+        #region LerpVectors
+
+        public static Float2 Lerp( Float2 a, Float2 b, float t ) =>
+            new Float2( Lerp( a.x, b.x, t ), Lerp( a.y, b.y, t ) );
+        public static Float2 LerpClamp( Float2 a, Float2 b, float t ) =>
+            new Float2( LerpClamp( a.x, b.x, t ), LerpClamp( a.y, b.y, t ) );
+
+        public static Float3 Lerp( Float3 a, Float3 b, float t ) =>
+            new Float3( Lerp( a.x, b.x, t ), Lerp( a.y, b.y, t ), Lerp( a.z, b.z, t ) );
+        public static Float3 LerpClamp( Float3 a, Float3 b, float t ) =>
+            new Float3( LerpClamp( a.x, b.x, t ), LerpClamp( a.y, b.y, t ), LerpClamp( a.z, b.z, t ) );
 
         #endregion
     }

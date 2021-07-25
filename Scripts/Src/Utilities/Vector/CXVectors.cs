@@ -90,8 +90,7 @@ namespace CXUtils.Types
 
         public static Float2 operator -( Float2 a ) => new Float2( -a.x, -a.y );
 
-        public static implicit operator Float2( Float3 value ) => new Float2( value.x, value.y );
-
+        public static explicit operator Float2( Float3 value ) => new Float2( value.x, value.y );
         public static explicit operator Float2( float value ) => new Float2( value, value );
         public static explicit operator Float2( Int2 value ) => new Float2( value.x, value.y );
 
