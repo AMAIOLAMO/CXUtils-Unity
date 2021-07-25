@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace CXUtils.CodeUtils
 {
@@ -24,7 +23,7 @@ namespace CXUtils.CodeUtils
         ///     This will map the whole real Number line into the range of 0 - 1
         ///     <para>using calculation 1f / (Math.Pow(Math.E, -x)); </para>
         /// </summary>
-        public static float Sigmoid( float x ) => 1f / Mathf.Pow( E, -x );
+        public static float Sigmoid( float x ) => 1f / (float)Math.Pow( E, -x );
 
         public static bool IsApproximate( this float value, float x, float precision = float.Epsilon ) => Math.Abs( value - x ) < precision;
 
@@ -91,9 +90,9 @@ namespace CXUtils.CodeUtils
         /// <inheritdoc cref="Modulo(float, float)" />
         public static int Modulo( int a, int b ) => ( b + a % b ) % b;
 
-        public static int RoundOnStep( int value, int step ) => (int)Mathf.Round( (float)value / step ) * step;
+        public static int RoundOnStep( int value, int step ) => (int)Math.Round( (float)value / step ) * step;
 
-        public static float RoundOnStep( float value, float step ) => Mathf.Round( value / step ) * step;
+        public static float RoundOnStep( float value, float step ) => (float)Math.Round( value / step ) * step;
 
         #endregion
     }
