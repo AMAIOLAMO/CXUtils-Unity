@@ -9,7 +9,7 @@ namespace CXUtils.CodeUtils
     #region Enums
 
     /// <summary> Option flags for logging lists </summary>
-    public enum LogListOptions
+    public enum LogListType
     {
         /// <summary> Logs on one line </summary>
         Single,
@@ -31,7 +31,7 @@ namespace CXUtils.CodeUtils
         }
 
         /// <summary> Logs a list of objects using ToString </summary>
-        public static void LogList<T>( object sender, T[] listT, LogListOptions logListMode = LogListOptions.Single, string between = ", " )
+        public static void LogList<T>( object sender, T[] listT, LogListType logListMode = LogListType.Single, string between = ", " )
         {
             switch ( listT.Length )
             {
@@ -42,11 +42,11 @@ namespace CXUtils.CodeUtils
                 case 1:
                     switch ( logListMode )
                     {
-                        case LogListOptions.Single:
+                        case LogListType.Single:
                             DLog( sender,  $"Items({listT.Length}): {{{listT[0]}}}" );
                             return;
 
-                        case LogListOptions.Multiple:
+                        case LogListType.Multiple:
                             DLog( sender, $"Items({listT.Length}):\nItem 0 : {listT[0]}" );
                             return;
 
@@ -62,7 +62,7 @@ namespace CXUtils.CodeUtils
 
             switch ( logListMode )
             {
-                case LogListOptions.Single:
+                case LogListType.Single:
                     sb.Append( $"Items({listT.Length}): " );
 
                     for ( i = 0; i < listIndexMax; i++ )
@@ -71,7 +71,7 @@ namespace CXUtils.CodeUtils
                     sb.Append( $"{listT[i]}" );
                     break;
 
-                case LogListOptions.Multiple:
+                case LogListType.Multiple:
                     for ( i = 0; i < listIndexMax; i++ )
                         sb.Append( $"\nItem {i} : {listT[i]}{between}" );
 

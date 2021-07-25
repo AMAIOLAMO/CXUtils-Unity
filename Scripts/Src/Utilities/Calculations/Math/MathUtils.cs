@@ -3,19 +3,6 @@ using UnityEngine;
 
 namespace CXUtils.CodeUtils
 {
-    /// <summary> Options flags for checking range </summary>
-    public enum RangeOptions
-    {
-        ///<summary> Include Max, exclude Min </summary>
-        IncMax,
-        ///<summary> Include Min, exclude Max </summary>
-        IncMin,
-        ///<summary> Include both Min and Max </summary>
-        IncBoth,
-        ///<summary> Exclude Both Min and Max </summary>
-        ExcBoth
-    }
-
     /// <summary>
     ///     Math Function Class
     /// </summary>

@@ -3,26 +3,28 @@ using UnityEngine;
 namespace CXUtils.CodeUtils
 {
     ///<summary> Options for calculating luminance of the color </summary>
-    public enum LumaConvertOptions
+    public enum LumaConvertType
     {
         ///<summary> Get's the average of the Colors </summary>
         Weighted,
 
         ///<summary> Using the standard Luminosity method </summary>
-        Luminosity_STD,
+        LuminositySTD,
 
         ///<summary> For the Sake of performance!!! (Lose of accuracy) </summary>
-        Luminosity_Performance
+        LuminosityPerformance
     }
 
-    ///<summary> Cx's Color Class </summary>
+    /// <summary>
+    ///     Color class that helps with color manipulation
+    /// </summary>
     public static class ColorUtils
     {
         /// <summary>
         /// Unity doesn't have more predefined colors? Use this! :D
         /// <para>Credits: All colors from <seealso cref="https://en.wikipedia.org/wiki/Web_colors"/></para>
         /// </summary>
-        public struct MoreColors
+        public struct Colors
         {
             //Colors all From Wikipedia: Web_Colors => https://en.wikipedia.org/wiki/Web_colors
 
@@ -77,13 +79,13 @@ namespace CXUtils.CodeUtils
         #region Brightness
 
         ///<summary> Get's the gray scale / brightness of the color </summary>
-        public static float GetBrightness( this Color color, LumaConvertOptions lumaConvertOptions = LumaConvertOptions.Weighted )
+        public static float GetBrightness( this Color color, LumaConvertType lumaConvertType = LumaConvertType.Weighted )
         {
-            switch ( lumaConvertOptions )
+            switch ( lumaConvertType )
             {
-                case LumaConvertOptions.Weighted:               return GetBrightness_Weighted( color );
-                case LumaConvertOptions.Luminosity_STD:         return GetBrightness_Luma( color );
-                case LumaConvertOptions.Luminosity_Performance: return GetBrightness_Luma2( color );
+                case LumaConvertType.Weighted:              return GetBrightness_Weighted( color );
+                case LumaConvertType.LuminositySTD:         return GetBrightness_Luma( color );
+                case LumaConvertType.LuminosityPerformance: return GetBrightness_Luma2( color );
 
                 default: throw ExceptionUtils.Error.NotAccessible;
             }

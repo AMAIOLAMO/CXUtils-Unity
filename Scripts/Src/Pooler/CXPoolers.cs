@@ -14,7 +14,7 @@ namespace CXUtils.CodeUtils
     /// <summary>
     ///     Implements a pool that is expandable
     /// </summary>
-    public interface IPoolExpandable<T> : IPoolCapacity where T : new()
+    public interface IPoolExpandable<in T> : IPoolCapacity where T : new()
     {
         /// <summary>
         ///     Expands the pool with more items
@@ -48,7 +48,7 @@ namespace CXUtils.CodeUtils
     /// <typeparam name="T">The type you want to pool</typeparam>
     public class CXPoolerBase<T> : IPoolCapacity, IPoolCycleEvent where T : new()
     {
-        int currentPoppingCount;
+        int _currentPoppingCount;
 
         protected readonly List<T> poolItems;
         public CXPoolerBase( int poolCapacity, Func<int, T> initFunc )
@@ -77,15 +77,15 @@ namespace CXUtils.CodeUtils
         public virtual T PopPool()
         {
             //if the current is already the max, then use the first one
-            if ( currentPoppingCount == poolItems.Count )
+            if ( _currentPoppingCount == poolItems.Count )
             {
-                currentPoppingCount = 0;
+                _currentPoppingCount = 0;
                 InvokeOnCycle();
             }
 
-            var poolingItem = poolItems[currentPoppingCount];
+            var poolingItem = poolItems[_currentPoppingCount];
 
-            currentPoppingCount++;
+            _currentPoppingCount++;
 
             return poolingItem;
         }
@@ -168,12 +168,8 @@ namespace CXUtils.CodeUtils
         /// </summary>
         public virtual T PopPool()
         {
-            //var poolItem = poolingItems.Pop();
-
             //adds a dispose trigger ->
             throw new NotImplementedException();
-            
-            //return poolItem;
         }
     }
 }

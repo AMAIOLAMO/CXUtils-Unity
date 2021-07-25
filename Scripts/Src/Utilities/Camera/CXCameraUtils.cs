@@ -7,7 +7,7 @@ namespace CXUtils.CodeUtils
     public static class CameraUtils
     {
         ///<summary> Options for camera ports </summary>
-        public enum PortOptions
+        public enum PortType
         {
             LeftUp, LeftDown, RightUp,
             RightDown, LeftMiddle, RightMiddle,
@@ -53,24 +53,24 @@ namespace CXUtils.CodeUtils
         static readonly Vector2 MiddleCenter = new Vector2( .5f, .5f );
 
         ///<summary> This method will get the edges of the camera and return the edge camera pos (only for ortho) </summary>
-        public static Vector3 GetCameraPortPosOnWorldPosOrtho( this Camera camera, PortOptions port )
+        public static Vector3 GetCameraPortPosOnWorldPosOrtho( this Camera camera, PortType port )
         {
             switch ( port )
             {
-                case PortOptions.LeftUp: return camera.ViewportToWorldPoint( leftUp );
-                case PortOptions.LeftDown: return camera.ViewportToWorldPoint( leftDown );
+                case PortType.LeftUp: return camera.ViewportToWorldPoint( leftUp );
+                case PortType.LeftDown: return camera.ViewportToWorldPoint( leftDown );
 
-                case PortOptions.RightUp: return camera.ViewportToWorldPoint( rightUp );
-                case PortOptions.RightDown: return camera.ViewportToWorldPoint( rightDown );
+                case PortType.RightUp: return camera.ViewportToWorldPoint( rightUp );
+                case PortType.RightDown: return camera.ViewportToWorldPoint( rightDown );
 
 
-                case PortOptions.UpMiddle: return camera.ViewportToWorldPoint( middleUp );
-                case PortOptions.DownMiddle: return camera.ViewportToWorldPoint( middleDown );
+                case PortType.UpMiddle: return camera.ViewportToWorldPoint( middleUp );
+                case PortType.DownMiddle: return camera.ViewportToWorldPoint( middleDown );
 
-                case PortOptions.LeftMiddle: return camera.ViewportToWorldPoint( middleLeft );
-                case PortOptions.RightMiddle: return camera.ViewportToWorldPoint( middleRight );
+                case PortType.LeftMiddle: return camera.ViewportToWorldPoint( middleLeft );
+                case PortType.RightMiddle: return camera.ViewportToWorldPoint( middleRight );
 
-                case PortOptions.Center: return camera.ViewportToScreenPoint( MiddleCenter );
+                case PortType.Center: return camera.ViewportToScreenPoint( MiddleCenter );
             }
 
             throw ExceptionUtils.Error.NotAccessible;
@@ -83,7 +83,7 @@ namespace CXUtils.CodeUtils
                 throw new ArgumentException( $"{camera.name} is not orthographic! please turn on orthographic in order to use this method!", nameof( camera.orthographic ) );
 
             //getting the border of the real world space
-            var borderPositive = new Vector2( GetCameraPortPosOnWorldPosOrtho( camera, PortOptions.RightMiddle ).x, GetCameraPortPosOnWorldPosOrtho( camera, PortOptions.UpMiddle ).y );
+            var borderPositive = new Vector2( GetCameraPortPosOnWorldPosOrtho( camera, PortType.RightMiddle ).x, GetCameraPortPosOnWorldPosOrtho( camera, PortType.UpMiddle ).y );
 
             return new Bounds( camera.transform.position, borderPositive );
         }
