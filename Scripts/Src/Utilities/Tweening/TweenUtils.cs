@@ -114,6 +114,18 @@ namespace CXUtils.CodeUtils
             float inverse = 1f - t;
             return inverse * inverse * inverse * p0 + 3f * inverse * inverse * t * p1 + 3 * inverse * t * t * p2 + t * t * t * p3;
         }
+        
+        public static Float3 QuadBezier( Float3 p0, Float3 p1, Float3 p2, float t )
+        {
+            float inverse = 1f - t;
+            return inverse * inverse * p0 + 2f * inverse * t * p1 + t * t * p2;
+        }
+
+        public static Float3 CubicBezier( Float3 p0, Float3 p1, Float3 p2, Float3 p3, float t )
+        {
+            float inverse = 1f - t;
+            return inverse * inverse * inverse * p0 + 3f * inverse * inverse * t * p1 + 3 * inverse * t * t * p2 + t * t * t * p3;
+        }
 
         #endregion
 
