@@ -10,6 +10,8 @@ namespace CXUtils.Types
         T Floor { get; }
         T Ceil { get; }
 
+        T Halve { get; }
+
         T Reflect( T normal );
 
         float Dot( T other );
@@ -39,10 +41,10 @@ namespace CXUtils.Types
         public static Float2 Half => (Float2).5f;
         public static Float2 Quarter => (Float2).25f;
 
-        public static Float2 Up => new Float2( 0f, 1f );
-        public static Float2 Down => new Float2( 0f, -1f );
-        public static Float2 Left => new Float2( -1f );
-        public static Float2 Right => new Float2( 1f );
+        public static Float2 PosY => new Float2( y: 1f );
+        public static Float2 NegY => new Float2( y: -1f );
+        public static Float2 NegX => new Float2( -1f );
+        public static Float2 PosX => new Float2( 1f );
 
         public float this[ int index ]
         {
@@ -68,6 +70,7 @@ namespace CXUtils.Types
 
         public Float2 Floor => new Float2( (float)Math.Floor( x ), (float)Math.Floor( y ) );
         public Float2 Ceil => new Float2( (float)Math.Ceiling( x ), (float)Math.Ceiling( y ) );
+        public Float2 Halve => this * .5f;
 
         public bool Equals( Float2 other ) => x.Equals( other.x ) && y.Equals( other.y );
         public override bool Equals( object obj ) => obj is Float2 other && Equals( other );
@@ -89,6 +92,9 @@ namespace CXUtils.Types
         public static Float2 operator /( float value, Float2 a ) => new Float2( a.x / value, a.y / value );
 
         public static Float2 operator -( Float2 a ) => new Float2( -a.x, -a.y );
+
+        public static bool operator ==( Float2 a, Float2 b ) => a.x == b.x && a.y == b.y;
+        public static bool operator !=( Float2 a, Float2 b ) => a.x != b.x || a.y != b.y;
 
         public static explicit operator Float2( Float3 value ) => new Float2( value.x, value.y );
         public static explicit operator Float2( float value ) => new Float2( value, value );
@@ -156,12 +162,12 @@ namespace CXUtils.Types
         public static Float3 Half => (Float3).5f;
         public static Float3 Quarter => (Float3).25f;
 
-        public static Float3 Up => new Float3( 0f, 1f );
-        public static Float3 Down => new Float3( 0f, -1f );
-        public static Float3 Left => new Float3( -1f );
-        public static Float3 Right => new Float3( 1f );
-        public static Float3 Forward => new Float3( 0f, 0f, 1f );
-        public static Float3 Backward => new Float3( 0f, 0f, -1f );
+        public static Float3 PosY => new Float3( y: 1f );
+        public static Float3 NegY => new Float3( y: -1f );
+        public static Float3 NegX => new Float3( -1f );
+        public static Float3 PosX => new Float3( 1f );
+        public static Float3 PosZ => new Float3( z: 1f );
+        public static Float3 NegZ => new Float3( z: -1f );
 
         public Int3 FloorInt => new Int3( (int)Math.Floor( x ), (int)Math.Floor( y ), (int)Math.Floor( z ) );
         public Int3 CeilInt => new Int3( (int)Math.Ceiling( x ), (int)Math.Ceiling( y ), (int)Math.Ceiling( z ) );
@@ -173,6 +179,7 @@ namespace CXUtils.Types
 
         public Float3 Floor => new Float3( (float)Math.Floor( x ), (float)Math.Floor( y ), (float)Math.Floor( z ) );
         public Float3 Ceil => new Float3( (float)Math.Ceiling( x ), (float)Math.Ceiling( y ), (float)Math.Ceiling( z ) );
+        public Float3 Halve => this * .5f;
 
         public bool Equals( Float3 other ) => x.Equals( other.x ) && y.Equals( other.y ) && z.Equals( other.z );
 
@@ -200,6 +207,10 @@ namespace CXUtils.Types
         public static Float3 operator *( float value, Float3 a ) => a * value;
         public static Float3 operator /( float value, Float3 a ) => a / value;
         public static Float3 operator -( Float3 a ) => new Float3( -a.x, -a.y, -a.z );
+
+        public static bool operator ==( Float3 a, Float3 b ) => a.x == b.x && a.y == b.y && a.z == b.z;
+        public static bool operator !=( Float3 a, Float3 b ) => a.x != b.x || a.y != b.y || a.z != b.z;
+
         public static explicit operator Float3( float value ) => new Float3( value, value, value );
         public static explicit operator Float3( Int3 value ) => new Float3( value.x, value.y, value.z );
         public static implicit operator Float3( Float2 value ) => new Float3( value.x, value.y );
@@ -260,18 +271,19 @@ namespace CXUtils.Types
         public static Float4 Half => (Float4).5f;
         public static Float4 Quarter => (Float4).25f;
 
-        public static Float4 Up => new Float4( 0f, 1f );
-        public static Float4 Down => new Float4( 0f, -1f );
-        public static Float4 Left => new Float4( -1f );
-        public static Float4 Right => new Float4( 1f );
-        public static Float4 Forward => new Float4( 0f, 0f, 1f );
-        public static Float4 Backward => new Float4( 0f, 0f, -1f );
+        public static Float4 PosY => new Float4( y: 1f );
+        public static Float4 NegY => new Float4( y: -1f );
+        public static Float4 NegX => new Float4( -1f );
+        public static Float4 PosX => new Float4( 1f );
+        public static Float4 PosZ => new Float4( z: 1f );
+        public static Float4 NegZ => new Float4( z: -1f );
 
         public Int4 FloorInt => new Int4( (int)Math.Floor( x ), (int)Math.Floor( y ), (int)Math.Floor( z ), (int)Math.Floor( w ) );
         public Int4 CeilInt => new Int4( (int)Math.Ceiling( x ), (int)Math.Ceiling( y ), (int)Math.Ceiling( z ), (int)Math.Ceiling( w ) );
 
         public Float4 Floor => new Float4( (float)Math.Floor( x ), (float)Math.Floor( y ), (float)Math.Floor( z ), (float)Math.Floor( w ) );
         public Float4 Ceil => new Float4( (float)Math.Ceiling( x ), (float)Math.Ceiling( y ), (float)Math.Ceiling( z ), (float)Math.Floor( w ) );
+        public Float4 Halve => this * .5f;
 
         public float SqrMagnitude => x * x + y * y + z * z;
         public float Magnitude => (float)Math.Sqrt( SqrMagnitude );
@@ -289,6 +301,10 @@ namespace CXUtils.Types
         public static Float4 operator *( float value, Float4 a ) => a * value;
         public static Float4 operator /( float value, Float4 a ) => a / value;
         public static Float4 operator -( Float4 a ) => new Float4( -a.x, -a.y, -a.z, -a.w );
+
+        public static bool operator ==( Float4 a, Float4 b ) => a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
+        public static bool operator !=( Float4 a, Float4 b ) => a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w;
+
         public static explicit operator Float4( float value ) => new Float4( value, value, value, value );
         public static implicit operator Float4( Float3 value ) => new Float4( value.x, value.y, value.z );
         public static implicit operator Float4( Float2 value ) => new Float4( value.x, value.y );
@@ -368,10 +384,10 @@ namespace CXUtils.Types
         public static Int2 Zero => (Int2)0;
         public static Int2 One => (Int2)1;
 
-        public static Int2 Up => new Int2( 0, 1 );
-        public static Int2 Down => new Int2( 0, -1 );
-        public static Int2 Left => new Int2( -1 );
-        public static Int2 Right => new Int2( 1 );
+        public static Int2 PosY => new Int2( y: 1 );
+        public static Int2 NegY => new Int2( y: -1 );
+        public static Int2 NegX => new Int2( -1 );
+        public static Int2 PosX => new Int2( 1 );
 
         #region Operator overloading
 
@@ -385,6 +401,9 @@ namespace CXUtils.Types
         public static Int2 operator *( int value, Int2 a ) => a * value;
         public static Int2 operator /( int value, Int2 a ) => a / value;
         public static Int2 operator -( Int2 a ) => new Int2( -a.x, -a.y );
+        public static bool operator ==( Int2 a, Int2 b ) => a.x == b.x && a.y == b.y;
+        public static bool operator !=( Int2 a, Int2 b ) => a.x != b.x || a.y != b.y;
+
         public static explicit operator Int2( Int3 value ) => new Int2( value.x, value.y );
         public static explicit operator Int2( int value ) => new Int2( value, value );
 
@@ -444,10 +463,12 @@ namespace CXUtils.Types
         public static Int3 Zero => (Int3)0;
         public static Int3 One => (Int3)1;
 
-        public static Int3 Up => new Int3( 0, 1 );
-        public static Int3 Down => new Int3( 0, -1 );
-        public static Int3 Left => new Int3( -1 );
-        public static Int3 Right => new Int3( 1 );
+        public static Int3 PosY => new Int3( y: 1 );
+        public static Int3 NegY => new Int3( y: -1 );
+        public static Int3 NegX => new Int3( -1 );
+        public static Int3 PosX => new Int3( 1 );
+        public static Int3 PosZ => new Int3( z: 1 );
+        public static Int3 NegZ => new Int3( z: -1 );
 
         #region Operator overloading
 
@@ -461,6 +482,8 @@ namespace CXUtils.Types
         public static Int3 operator *( int value, Int3 a ) => a * value;
         public static Int3 operator /( int value, Int3 a ) => a / value;
         public static Int3 operator -( Int3 a ) => new Int3( -a.x, -a.y, -a.z );
+        public static bool operator ==( Int3 a, Int3 b ) => a.x == b.x && a.y == b.y && a.z == b.z;
+        public static bool operator !=( Int3 a, Int3 b ) => a.x != b.x || a.y != b.y || a.z == b.z;
         public static explicit operator Int3( int value ) => new Int3( value, value, value );
         public static implicit operator Int3( Int2 value ) => new Int3( value.x, value.y );
 
@@ -525,11 +548,13 @@ namespace CXUtils.Types
         public static Int4 Zero => (Int4)0;
         public static Int4 One => (Int4)1;
 
-        public static Int4 Up => new Int4( 0, 1 );
-        public static Int4 Down => new Int4( 0, -1 );
-        public static Int4 Left => new Int4( -1 );
-        public static Int4 Right => new Int4( 1 );
+        public static Int4 PosY => new Int4( y: 1 );
+        public static Int4 NegY => new Int4( y: -1 );
+        public static Int4 NegX => new Int4( -1 );
+        public static Int4 PosX => new Int4( 1 );
 
+        public static Int4 PosZ => new Int4( z: 1 );
+        public static Int4 NegZ => new Int4( z: -1 );
         #region Operator overloading
 
         public static Int4 operator +( Int4 a, Int4 b ) => new Int4( a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w );
@@ -542,6 +567,8 @@ namespace CXUtils.Types
         public static Int4 operator *( int value, Int4 a ) => a * value;
         public static Int4 operator /( int value, Int4 a ) => a / value;
         public static Int4 operator -( Int4 a ) => new Int4( -a.x, -a.y, -a.z, -a.w );
+        public static bool operator ==( Int4 a, Int4 b ) => a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
+        public static bool operator !=( Int4 a, Int4 b ) => a.x != b.x || a.y != b.y || a.z == b.z || a.w != b.w;
         public static explicit operator Int4( int value ) => new Int4( value, value, value, value );
         public static implicit operator Int4( Int2 value ) => new Int4( value.x, value.y );
         public static implicit operator Int4( Int3 value ) => new Int4( value.x, value.y, value.z );
