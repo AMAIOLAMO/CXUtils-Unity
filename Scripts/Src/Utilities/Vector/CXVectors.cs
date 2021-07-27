@@ -20,6 +20,8 @@ namespace CXUtils.Types
         ///     returns a new vector with a new magnitude of value
         /// </summary>
         T MagnitudeOf( float value );
+
+        T MapAxis( Func<float, float> mapFunction );
     }
 
     /// <summary>
@@ -119,6 +121,7 @@ namespace CXUtils.Types
         ///     returns a new Float2 with a direction of this and a specified target magnitude
         /// </summary>
         public Float2 MagnitudeOf( float magnitude ) => Normalized * magnitude;
+        public Float2 MapAxis( Func<float, float> mapFunction ) => new Float2( mapFunction( x ), mapFunction( y ) );
 
         public override string ToString() => "(" + x + ", " + y + ")";
         public string ToString( string format ) => "(" + x.ToString( format ) + ", " + y.ToString( format ) + ")";
@@ -227,6 +230,7 @@ namespace CXUtils.Types
 
 
         public Float3 MagnitudeOf( float magnitude ) => Normalized * magnitude;
+        public Float3 MapAxis( Func<float, float> mapFunction ) => new Float3( mapFunction( x ), mapFunction( y ), mapFunction( z ) );
 
         public string ToString( string format, IFormatProvider formatProvider ) =>
             "(" + x.ToString( format, formatProvider ) + ", " + y.ToString( format, formatProvider ) + ", " + z.ToString( format, formatProvider ) + ")";
@@ -328,6 +332,7 @@ namespace CXUtils.Types
         ///     returns a new Float3 with a direction of this and a specified target magnitude
         /// </summary>
         public Float4 MagnitudeOf( float magnitude ) => Normalized * magnitude;
+        public Float4 MapAxis( Func<float, float> mapFunction ) => new Float4( mapFunction( x ), mapFunction( y ), mapFunction( z ), mapFunction( w ) );
 
         public string ToString( string format, IFormatProvider formatProvider ) =>
             "(" + x.ToString( format, formatProvider ) + ", " + y.ToString( format, formatProvider ) + ", " + z.ToString( format, formatProvider ) + ")";
@@ -414,6 +419,8 @@ namespace CXUtils.Types
         public Int2 Min( Int2 other ) => new Int2( Math.Min( x, other.x ), Math.Min( y, other.y ) );
         public Int2 Max( Int2 other ) => new Int2( Math.Max( x, other.x ), Math.Max( y, other.y ) );
 
+        public Int2 MapAxis( Func<int, int> mapFunction ) => new Int2( mapFunction( x ), mapFunction( y ) );
+
         public bool Equals( Int2 other ) => x == other.x && y == other.y;
 
         public string ToString( string format, IFormatProvider formatProvider ) =>
@@ -493,6 +500,8 @@ namespace CXUtils.Types
 
         public Int3 Min( Int3 other ) => new Int3( Math.Min( x, other.x ), Math.Min( y, other.y ), Math.Min( z, other.z ) );
         public Int3 Max( Int3 other ) => new Int3( Math.Max( x, other.x ), Math.Max( y, other.y ), Math.Max( z, other.z ) );
+
+        public Int3 MapAxis( Func<int, int> mapFunction ) => new Int3( mapFunction( x ), mapFunction( y ), mapFunction( z ) );
 
         public string ToString( string format, IFormatProvider formatProvider ) =>
             "(" + x.ToString( format, formatProvider ) + ", " + y.ToString( format, formatProvider ) + ", " + z.ToString( format, formatProvider ) + ")";
@@ -579,6 +588,8 @@ namespace CXUtils.Types
 
         public Int4 Min( Int4 other ) => new Int4( Math.Min( x, other.x ), Math.Min( y, other.y ), Math.Min( z, other.z ), Math.Min( w, other.w ) );
         public Int4 Max( Int4 other ) => new Int4( Math.Max( x, other.x ), Math.Max( y, other.y ), Math.Max( z, other.z ), Math.Min( w, other.w ) );
+
+        public Int4 MapAxis( Func<int, int> mapFunction ) => new Int4( mapFunction( x ), mapFunction( y ), mapFunction( z ), mapFunction( w ) );
 
         public string ToString( string format, IFormatProvider formatProvider ) =>
             "(" + x.ToString( format, formatProvider ) + ", " + y.ToString( format, formatProvider ) + ", " +

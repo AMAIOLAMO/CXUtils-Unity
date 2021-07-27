@@ -43,10 +43,11 @@ namespace CXUtils.Types
             DoLoopChanged();
         }
 
-        public T[] GetSegmentRaw( int i )
+        public T[] GetSegmentRaw( int segmentIndex )
         {
-            int firstIndex = i * 3;
+            int firstIndex = SplineUtils.SegmentIndexToPointIndex( segmentIndex );
 
+            /*In row:      anchor,             control,                control,                anchor*/
             return new[] { points[firstIndex], points[firstIndex + 1], points[firstIndex + 2], points[LoopIndex( firstIndex + 3 )] };
         }
 
@@ -95,12 +96,22 @@ namespace CXUtils.Types
         /// <summary>
         ///     Is this index a control point?
         /// </summary>
-        public static bool IsControl( int i ) => i % 3 != 0;
+        public static bool IsControl( int pointIndex ) => pointIndex % 3 != 0;
 
         /// <summary>
         ///     Is this index an anchor point?
         /// </summary>
-        public static bool IsAnchor( int i ) => i % 3 == 0;
+        public static bool IsAnchor( int pointIndex ) => pointIndex % 3 == 0;
+
+        /// <summary>
+        ///     Converts segment index to point index
+        /// </summary>
+        public static int SegmentIndexToPointIndex( int segmentIndex ) => segmentIndex * 3;
+
+        /// <summary>
+        ///     Converts point index to segment index
+        /// </summary>
+        public static int PointIndexToSegmentIndex( int pointIndex ) => pointIndex / 3;
     }
 
     /// <summary>
@@ -132,22 +143,22 @@ namespace CXUtils.Types
         /// <summary>
         ///     Moves a point in the spline but move the controls also
         /// </summary>
-        public void MoveDynamic( int i, Float2 position )
+        public void MoveDynamic( int pointIndex, Float2 position )
         {
-            var delta = position - points[i];
-            points[i] = position;
+            var delta = position - points[pointIndex];
+            points[pointIndex] = position;
 
-            if ( SplineUtils.IsAnchor( i ) )
+            if ( SplineUtils.IsAnchor( pointIndex ) )
             {
-                if ( i + 1 < points.Count || IsLoop ) points[LoopIndex( i + 1 )] += delta;
-                if ( i - 1 >= 0 || IsLoop ) points[LoopIndex( i - 1 )] += delta;
+                if ( pointIndex + 1 < points.Count || IsLoop ) points[LoopIndex( pointIndex + 1 )] += delta;
+                if ( pointIndex - 1 >= 0 || IsLoop ) points[LoopIndex( pointIndex - 1 )] += delta;
             }
             else
             {
-                bool nextAnchor = SplineUtils.IsAnchor( i + 1 );
+                bool nextAnchor = SplineUtils.IsAnchor( pointIndex + 1 );
 
-                int mirroredControlIndex = nextAnchor ? i + 2 : i - 2;
-                int anchorIndex = nextAnchor ? i + 1 : i - 1;
+                int mirroredControlIndex = nextAnchor ? pointIndex + 2 : pointIndex - 2;
+                int anchorIndex = nextAnchor ? pointIndex + 1 : pointIndex - 1;
 
                 if ( ( mirroredControlIndex < 0 || mirroredControlIndex >= points.Count ) && !IsLoop ) return;
 
@@ -162,7 +173,7 @@ namespace CXUtils.Types
 
         public override void InsertAnchor( Float2 anchor, int segmentIndex ) =>
             points.InsertRange( segmentIndex * 3 + 2, new[] { anchor + Float2.NegX, anchor, anchor + Float2.PosX } );
-        
+
         protected override void DoLoopChanged()
         {
             if ( IsLoop )

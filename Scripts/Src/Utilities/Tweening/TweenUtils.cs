@@ -3,6 +3,14 @@ using CXUtils.Types;
 
 namespace CXUtils.CodeUtils
 {
+    public enum TweenType
+    {
+        InSine, OutSine, InOutSine, InQuad, OutQuad, InOutQuad,
+        InCubic, OutCubic, InOutCubic, InExpo, OutExpo, InOutExpo,
+        InCirc, OutCirc, InOutCirc, InBack, OutBack, InOutBack,
+        InElastic, OutElastic, InOutElastic, InBounce, OutBounce, InOutBounce
+    }
+
     /// <summary>
     ///     A basic tweening library
     /// </summary>
@@ -34,7 +42,7 @@ namespace CXUtils.CodeUtils
 
         public static float EaseInCubic( float t ) => t * t * t;
         public static float EaseOunCubic( float t ) => 1 - ( 1f - t ) * ( 1f - t ) * ( 1f - t );
-        public static float EaseInOunCubic( float t ) => t < .5f ? 4f * t * t * t : 1f - (float)Math.Pow( -2f * t + 2f, 3f ) * .5f;
+        public static float EaseInOutCubic( float t ) => t < .5f ? 4f * t * t * t : 1f - (float)Math.Pow( -2f * t + 2f, 3f ) * .5f;
 
         public static float EaseInExpo( float t ) => t == 0f ? 0f : (float)Math.Pow( 2f, 10f * t - 10f );
         public static float EaseOutExpo( float t ) => t == 1f ? 1f : 1f - (float)Math.Pow( 2f, -10f * t );
@@ -81,7 +89,7 @@ namespace CXUtils.CodeUtils
                 ? 1f
                 : t < .5f
                     ? (float)( -( Math.Pow( 2.0, 20.0 * t - 10.0 ) * Math.Sin( ( 20.0 * t - 11.125 ) * ELASTIC_C2 ) ) * .5 )
-                    : (float)( Math.Pow( 2.0, -20.0 * t + 10.0 ) * Math.Sin( ( 20.0 * t - 11.125 ) * ELASTIC_C2 ) / 2.0 + 1.0 );
+                    : (float)( Math.Pow( 2.0, -20.0 * t + 10.0 ) * Math.Sin( ( 20.0 * t - 11.125 ) * ELASTIC_C2 ) * .5 + 1.0 );
 
         const float BOUNCE_B1 = 7.5625f,
             BOUNCE_D1 = 2.75f;
@@ -96,8 +104,52 @@ namespace CXUtils.CodeUtils
             return BOUNCE_B1 * ( t -= 2.625f / BOUNCE_D1 ) * t + 0.984375f;
         }
         public static float EaseInOutBounce( float t ) => t < .5f
-            ? ( 1f - EaseOutBounce( 1f - 2f * t ) ) / 2f
-            : ( 1f + EaseOutBounce( 2f * t - 1f ) ) / 2f;
+            ? ( 1f - EaseOutBounce( 1f - 2f * t ) ) * .5f
+            : ( 1f + EaseOutBounce( 2f * t - 1f ) ) * .5f;
+
+        #region EasingTypeEvaluation
+
+        public static float GetEasing( float a, float b, float t, TweenType type )
+        {
+            switch ( type )
+            {
+                case TweenType.InSine:       return EaseInSine( t );
+                case TweenType.OutSine:      return EaseOutSine( t );
+                case TweenType.InOutSine:    return EaseInOutSine( t );
+
+                case TweenType.InQuad:       return EaseInQuad( t );
+                case TweenType.OutQuad:      return EaseInQuad( t );
+                case TweenType.InOutQuad:    return EaseInQuad( t );
+
+                case TweenType.InCubic:      return EaseInCubic( t );
+                case TweenType.OutCubic:     return EaseInCubic( t );
+                case TweenType.InOutCubic:   return EaseInCubic( t );
+
+                case TweenType.InExpo:       return EaseInExpo( t );
+                case TweenType.OutExpo:      return EaseOutExpo( t );
+                case TweenType.InOutExpo:    return EaseInOutExpo( t );
+
+                case TweenType.InCirc:       return EaseInCirc( t );
+                case TweenType.OutCirc:      return EaseOutCirc( t );
+                case TweenType.InOutCirc:    return EaseInOutCirc( t );
+
+                case TweenType.InBack:       return EaseInBack( t );
+                case TweenType.OutBack:      return EaseOutBack( t );
+                case TweenType.InOutBack:    return EaseInOutBack( t );
+
+                case TweenType.InElastic:    return EaseInElastic( t );
+                case TweenType.OutElastic:   return EaseOutElastic( t );
+                case TweenType.InOutElastic: return EaseInOutElastic( t );
+
+                case TweenType.InBounce:     return EaseInBounce( t );
+                case TweenType.OutBounce:    return EaseOutBounce( t );
+                case TweenType.InOutBounce:  return EaseInOutBounce( t );
+
+                default: throw ExceptionUtils.Error.NotAccessible;
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -109,16 +161,16 @@ namespace CXUtils.CodeUtils
             return inverse * inverse * p0 + 2f * inverse * t * p1 + t * t * p2;
         }
 
-        public static Float2 CubicBezier( Float2 p0, Float2 p1, Float2 p2, Float2 p3, float t )
-        {
-            float inverse = 1f - t;
-            return inverse * inverse * inverse * p0 + 3f * inverse * inverse * t * p1 + 3 * inverse * t * t * p2 + t * t * t * p3;
-        }
-        
         public static Float3 QuadBezier( Float3 p0, Float3 p1, Float3 p2, float t )
         {
             float inverse = 1f - t;
             return inverse * inverse * p0 + 2f * inverse * t * p1 + t * t * p2;
+        }
+        
+        public static Float2 CubicBezier( Float2 p0, Float2 p1, Float2 p2, Float2 p3, float t )
+        {
+            float inverse = 1f - t;
+            return inverse * inverse * inverse * p0 + 3f * inverse * inverse * t * p1 + 3 * inverse * t * t * p2 + t * t * t * p3;
         }
 
         public static Float3 CubicBezier( Float3 p0, Float3 p1, Float3 p2, Float3 p3, float t )
