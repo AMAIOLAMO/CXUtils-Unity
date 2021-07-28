@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using CXUtils.Types;
 
 namespace CXUtils.Grid
@@ -50,11 +51,20 @@ namespace CXUtils.Grid
         #endregion
     }
 
+    public interface IUnsafeGrid2D<T>
+    {
+        public bool TryGetValue( Int2 cellPosition, out T value );
+        public bool TryGetValue( int x, int y, out T value );
+
+        public bool CellValid( int x, int y );
+        public bool CellValid( Int2 cellPosition );
+    }
+
     /// <summary>
     ///     A 2D Infinite sized grid system
     /// </summary>
     /// <typeparam name="T">the type that each cell stores</typeparam>
-    public class InfiniteGrid<T> : GridBase<T>
+    public class InfiniteGrid<T> : GridBase<T>, IUnsafeGrid2D<T>
     {
         readonly Dictionary<Int2, T> _gridDictionary;
         public InfiniteGrid( float cellSize, Float2 origin = default ) : base( cellSize, origin ) => _gridDictionary = new Dictionary<Int2, T>();
@@ -80,54 +90,30 @@ namespace CXUtils.Grid
             }
         }
 
-        public bool CellExists( Int2 cellPosition ) => _gridDictionary.ContainsKey( cellPosition );
+        public bool TryGetValue( int x, int y, out T value ) => TryGetValue( new Int2( x, y ), out value );
+
+        public bool TryGetValue( Int2 cellPosition, out T value )
+        {
+            value = default;
+
+            if ( !CellValid( cellPosition ) ) return false;
+
+            value = this[cellPosition];
+            return true;
+        }
+        public bool CellValid( Int2 cellPosition ) => _gridDictionary.ContainsKey( cellPosition );
+
+        public bool CellValid( int x, int y ) => CellValid( new Int2( x, y ) );
+
+        public ReadOnlyDictionary<Int2, T> GetAllCells() => new ReadOnlyDictionary<Int2, T>( _gridDictionary );
     }
 
     /// <summary>
     ///     A 2D Limited size grid system
     /// </summary>
     /// <typeparam name="T">The type that each cell stores</typeparam>
-    public class LimitedGrid<T> : GridBase<T>
+    public class LimitedGrid<T> : GridBase<T>, IUnsafeGrid2D<T>
     {
-
-        /// <summary>
-        ///     Tries to converts the cell position into world position
-        /// </summary>
-        public bool TryGetWorld( int x, int y, out Float2 worldPosition )
-        {
-            if ( IsCellValid( x, y ) )
-            {
-                worldPosition = CellToWorld( x, y );
-                return true;
-            }
-
-            worldPosition = default;
-            return false;
-        }
-
-        /// <summary>
-        ///     Tries to converts the grid position into world position
-        /// </summary>
-        public bool TryGetWorld( Int2 gridPosition, out Float2 worldPosition ) =>
-            TryGetWorld( gridPosition.x, gridPosition.y, out worldPosition );
-
-        /// <summary>
-        ///     Converts the world position into grid position
-        /// </summary>
-        public bool TryGetCell( Float2 worldPosition, out Int2 gridPosition )
-        {
-            var result = WorldToCell( worldPosition );
-
-            if ( IsCellValid( result.x, result.y ) )
-            {
-                gridPosition = result;
-                return true;
-            }
-
-            gridPosition = default;
-            return false;
-        }
-
         #region Utilities
 
         public IEnumerable<LineFloat2> GetGridLines()
@@ -204,7 +190,7 @@ namespace CXUtils.Grid
         /// </summary>
         public bool TrySetValue( int x, int y, T value )
         {
-            if ( !IsCellValid( x, y ) )
+            if ( !CellValid( x, y ) )
                 return false;
 
             _gridArray[x, y] = value;
@@ -227,7 +213,7 @@ namespace CXUtils.Grid
         /// </summary>
         public bool TryGetValue( int x, int y, out T value )
         {
-            if ( IsCellValid( x, y ) )
+            if ( CellValid( x, y ) )
             {
                 value = _gridArray[x, y];
                 return true;
@@ -235,24 +221,16 @@ namespace CXUtils.Grid
             value = default;
             return false;
         }
+        public bool CellValid( int x, int y ) => x >= 0 && y >= 0 && x < Width && y < Height;
+        public bool CellValid( Int2 cellPosition ) => cellPosition.x >= 0 && cellPosition.y >= 0 && cellPosition.x < Width && cellPosition.y < Height;
 
         /// <summary>
         ///     Gets the value using grid position <br />
         ///     Returns if the grid position is valid
         /// </summary>
-        public bool TryGetValue( Int2 gridPosition, out T value ) => TryGetValue( gridPosition.x, gridPosition.y, out value );
+        public bool TryGetValue( Int2 cellPosition, out T value ) => TryGetValue( cellPosition.x, cellPosition.y, out value );
 
         #endregion
-
-        #endregion
-
-        #region Script Utils
-
-        bool IsCellValid( int x, int y ) =>
-            x >= 0 && y >= 0 && x < Width && y < Height;
-
-        bool IsCellValid( Int2 cellPosition ) =>
-            cellPosition.x >= 0 && cellPosition.y >= 0 && cellPosition.x < Width && cellPosition.y < Height;
 
         #endregion
 
