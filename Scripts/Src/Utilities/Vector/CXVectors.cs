@@ -335,13 +335,13 @@ namespace CXUtils.Types
         public Float4 MapAxis( Func<float, float> mapFunction ) => new Float4( mapFunction( x ), mapFunction( y ), mapFunction( z ), mapFunction( w ) );
 
         public string ToString( string format, IFormatProvider formatProvider ) =>
-            "(" + x.ToString( format, formatProvider ) + ", " + y.ToString( format, formatProvider ) + ", " + z.ToString( format, formatProvider ) + ")";
-        public override string ToString() => "(" + x + ", " + y + ", " + z + ")";
-        public string ToString( string format ) => "(" + x.ToString( format ) + ", " + y.ToString( format ) + ", " + z.ToString( format ) + ")";
+            "(" + x.ToString( format, formatProvider ) + ", " + y.ToString( format, formatProvider ) + ", " + z.ToString( format, formatProvider ) + ", " + w.ToString( format, formatProvider ) + ")";
+        public override string ToString() => "(" + x + ", " + y + ", " + z + ", " + w + ")";
+        public string ToString( string format ) => "(" + x.ToString( format ) + ", " + y.ToString( format ) + ", " + z.ToString( format )  + ", " + w.ToString( format ) + ")";
 
-        public bool Equals( Float4 other ) => x.Equals( other.x ) && y.Equals( other.y ) && z.Equals( other.z );
+        public bool Equals( Float4 other ) => x.Equals( other.x ) && y.Equals( other.y ) && z.Equals( other.z ) && w.Equals( other.w );
 
-        public override bool Equals( object obj ) => obj is Float3 other && Equals( other );
+        public override bool Equals( object obj ) => obj is Float4 other && Equals( other );
 
         public override int GetHashCode()
         {
@@ -369,7 +369,7 @@ namespace CXUtils.Types
         public Int2( int x = 0, int y = 0 ) => ( this.x, this.y ) = ( x, y );
         public Int2( Int2 other ) => ( x, y ) = ( other.x, other.y );
 
-        public float this[ int index ]
+        public int this[ int index ]
         {
             get
             {
@@ -449,7 +449,7 @@ namespace CXUtils.Types
         public Int3( int x = 0, int y = 0, int z = 0 ) => ( this.x, this.y, this.z ) = ( x, y, z );
         public Int3( Int3 other ) => ( x, y, z ) = ( other.x, other.y, other.z );
 
-        public float this[ int index ]
+        public int this[ int index ]
         {
             get
             {
@@ -535,7 +535,7 @@ namespace CXUtils.Types
         public Int4( int x = 0, int y = 0, int z = 0, int w = 0 ) => ( this.x, this.y, this.z, this.w ) = ( x, y, z, w );
         public Int4( Int4 other ) => ( x, y, z, w ) = ( other.x, other.y, other.z, other.w );
 
-        public float this[ int index ]
+        public int this[ int index ]
         {
             get
             {
