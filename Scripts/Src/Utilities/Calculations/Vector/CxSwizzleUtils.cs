@@ -5,7 +5,7 @@ namespace CXUtils.Types.Utils
 {
     public static class CxSwizzleUtils
     {
-        public static object Swizzle( this Float2 vector, string swizzle )
+        public static object Swizz( this Float2 vector, string swizzle )
         {
             Debug.Assert( swizzle.Length > 4 || swizzle.Length == 0, "swizzle cannot be over 4 or non elements!" );
 
@@ -39,7 +39,7 @@ namespace CXUtils.Types.Utils
             }
         }
         
-        public static object Swizzle( this Float3 vector, string swizzle )
+        public static object Swizz( this Float3 vector, string swizzle )
         {
             Debug.Assert( swizzle.Length > 4 || swizzle.Length == 0, "swizzle cannot be over 4 or non elements!" );
 
@@ -76,7 +76,7 @@ namespace CXUtils.Types.Utils
             }
         }
         
-        public static object Swizzle( this Float4 vector, string swizzle )
+        public static object Swizz( this Float4 vector, string swizzle )
         {
             Debug.Assert( swizzle.Length > 4 || swizzle.Length == 0, "swizzle cannot be over 4 or non elements!" );
 
@@ -116,7 +116,7 @@ namespace CXUtils.Types.Utils
             }
         }
         
-        public static object Swizzle( this Int2 vector, string swizzle )
+        public static object Swizz( this Int2 vector, string swizzle )
         {
             Debug.Assert( swizzle.Length > 4 || swizzle.Length == 0, "swizzle cannot be over 4 or non elements!" );
 
@@ -150,7 +150,7 @@ namespace CXUtils.Types.Utils
             }
         }
         
-        public static object Swizzle( this Int3 vector, string swizzle )
+        public static object Swizz( this Int3 vector, string swizzle )
         {
             Debug.Assert( swizzle.Length > 4 || swizzle.Length == 0, "swizzle cannot be over 4 or non elements!" );
 
@@ -187,7 +187,7 @@ namespace CXUtils.Types.Utils
             }
         }
         
-        public static object Swizzle( this Int4 vector, string swizzle )
+        public static object Swizz( this Int4 vector, string swizzle )
         {
             Debug.Assert( swizzle.Length > 4 || swizzle.Length == 0, "swizzle cannot be over 4 or non elements!" );
 
