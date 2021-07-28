@@ -7,20 +7,21 @@ namespace CXUtils.Grid
 {
     public abstract class GridBase<T>
     {
-        public GridBase( float cellSize, Float2 origin = default ) =>
-            ( Origin, CellSize ) = ( origin, cellSize );
+        public GridBase( Float2 cellSize, Float2 origin = default ) => ( Origin, CellSize ) = ( origin, cellSize );
 
-        public float CellSize { get; }
+        public Float2 CellSize { get; }
         public Float2 Origin { get; }
 
         public abstract T this[ int x, int y ] { get; set; }
         public abstract T this[ Int2 cellPosition ] { get; set; }
 
+        public float HalfCellX => CellSize.x * .5f;
+        public float HalfCellY => CellSize.y * .5f;
+
         /// <summary>
-        ///     The half length of the cell size
+        ///     The half size of the cell size
         /// </summary>
-        public float HalfCellSize => CellSize * .5f;
-        public Float2 CellCenterOffset => (Float2)HalfCellSize;
+        public Float2 HalfCellSize => CellSize.Halve;
 
         #region Utilities
 
@@ -30,8 +31,8 @@ namespace CXUtils.Grid
         public Int2 WorldToCell( float x, float y ) => ( WorldToLocal( x, y ) / CellSize ).FloorInt;
         public Int2 WorldToCell( Float2 worldPosition ) => ( WorldToLocal( worldPosition ) / CellSize ).FloorInt;
 
-        public Float2 LocalToWorld( float x, float y ) => new Float2( x, y ) * CellSize + Origin;
-        public Float2 LocalToWorld( Float2 localPosition ) => localPosition * CellSize + Origin;
+        public Float2 LocalToWorld( float x, float y ) => new Float2( x, y ) + Origin;
+        public Float2 LocalToWorld( Float2 localPosition ) => localPosition + Origin;
 
         public Float2 WorldToLocal( float x, float y ) => new Float2( x, y ) - Origin;
         public Float2 WorldToLocal( Float2 worldPosition ) => worldPosition - Origin;
@@ -67,7 +68,7 @@ namespace CXUtils.Grid
     public class InfiniteGrid<T> : GridBase<T>, IUnsafeGrid2D<T>
     {
         readonly Dictionary<Int2, T> _gridDictionary;
-        public InfiniteGrid( float cellSize, Float2 origin = default ) : base( cellSize, origin ) => _gridDictionary = new Dictionary<Int2, T>();
+        public InfiniteGrid( Float2 cellSize, Float2 origin = default ) : base( cellSize, origin ) => _gridDictionary = new Dictionary<Int2, T>();
 
         public override T this[ int x, int y ]
         {
@@ -121,12 +122,12 @@ namespace CXUtils.Grid
             var lines = new List<LineFloat2>();
 
             for ( int y = 0; y < Height + 1; ++y )
-                lines.Add( new LineFloat2( new Float2( Origin.x, Origin.y + y * CellSize ),
-                    new Float2( Origin.x + Width * CellSize, Origin.y + y * CellSize ) ) );
+                lines.Add( new LineFloat2( new Float2( Origin.x, Origin.y + y * CellSize.y ),
+                    new Float2( Origin.x + Width * CellSize.x, Origin.y + y * CellSize.y ) ) );
 
             for ( int x = 0; x < Width + 1; ++x )
-                lines.Add( new LineFloat2( new Float2( Origin.x + x * CellSize, Origin.y ),
-                    new Float2( Origin.x + x * CellSize, Origin.y + Height * CellSize ) ) );
+                lines.Add( new LineFloat2( new Float2( Origin.x + x * CellSize.x, Origin.y ),
+                    new Float2( Origin.x + x * CellSize.x, Origin.y + Height * CellSize.y ) ) );
 
             return lines;
         }
@@ -166,13 +167,13 @@ namespace CXUtils.Grid
 
         #region Constructors
 
-        public LimitedGrid( int width, int height, float cellSize, Float2 origin = default ) : base( cellSize, origin )
+        public LimitedGrid( int width, int height, Float2 cellSize, Float2 origin = default ) : base( cellSize, origin )
         {
             ( Width, Height ) = ( width, height );
             _gridArray = new T[Width, Height];
         }
 
-        public LimitedGrid( Int2 gridSize, float cellSize, Float2 origin = default ) : base( cellSize, origin )
+        public LimitedGrid( Int2 gridSize, Float2 cellSize, Float2 origin = default ) : base( cellSize, origin )
         {
             ( Width, Height ) = ( gridSize.x, gridSize.y );
             _gridArray = new T[Width, Height];
