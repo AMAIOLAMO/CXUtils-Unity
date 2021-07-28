@@ -56,9 +56,6 @@ namespace CXUtils.Grid
     {
         public bool TryGetValue( Int2 cellPosition, out T value );
         public bool TryGetValue( int x, int y, out T value );
-
-        public bool CellValid( int x, int y );
-        public bool CellValid( Int2 cellPosition );
     }
 
     /// <summary>
@@ -97,14 +94,55 @@ namespace CXUtils.Grid
         {
             value = default;
 
-            if ( !CellValid( cellPosition ) ) return false;
+            if ( !CellExists( cellPosition ) ) return false;
 
             value = this[cellPosition];
             return true;
         }
-        public bool CellValid( Int2 cellPosition ) => _gridDictionary.ContainsKey( cellPosition );
 
-        public bool CellValid( int x, int y ) => CellValid( new Int2( x, y ) );
+        public bool TryPopCell( Int2 cellPosition, out T value )
+        {
+            value = default;
+            if ( !CellExists( cellPosition ) ) return false;
+
+            value = PopCell( cellPosition );
+            return true;
+        }
+
+        public bool TryPopCell( int x, int y, out T value ) => TryPopCell( new Int2( x, y ), out value );
+
+        /// <summary>
+        ///     Removes the cell content from the grid and pops it out
+        /// </summary>
+        public T PopCell( Int2 cellPosition )
+        {
+            var content = _gridDictionary[cellPosition];
+
+            _gridDictionary.Remove( cellPosition );
+
+            return content;
+        }
+
+        /// <inheritdoc cref="PopCell(Int2)" />
+        public T PopCell( int x, int y ) => PopCell( new Int2( x, y ) );
+
+        public bool TryRemoveCell( Int2 cellPosition )
+        {
+            if ( !CellExists( cellPosition ) ) return false;
+
+            RemoveCell( cellPosition );
+            return true;
+        }
+
+        public bool TryRemoveCell( int x, int y ) => TryRemoveCell( new Int2( x, y ) );
+
+        public void RemoveCell( Int2 cellPosition ) => _gridDictionary.Remove( cellPosition );
+        public void RemoveCell( int x, int y ) => RemoveCell( new Int2( x, y ) );
+
+
+        public bool CellExists( Int2 cellPosition ) => _gridDictionary.ContainsKey( cellPosition );
+
+        public bool CellExists( int x, int y ) => CellExists( new Int2( x, y ) );
 
         public ReadOnlyDictionary<Int2, T> GetAllCells() => new ReadOnlyDictionary<Int2, T>( _gridDictionary );
     }
