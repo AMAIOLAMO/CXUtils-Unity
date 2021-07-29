@@ -13,15 +13,15 @@ namespace CXUtils.CodeUtils
     /// </summary>
     public static class HandleUtils
     {
-        public static void DrawTextRaw( string text, Float3 worldPosition, Color color, SceneView sceneView, GUIStyle style )
-        {
 #if UNITY_EDITOR
+        static void DrawTextRaw( string text, Float3 worldPosition, Color color, SceneView sceneView, GUIStyle style )
+        {
             var screenPos = sceneView.camera.WorldToScreenPoint( worldPosition.ToUnity() );
             var size = style.CalcSize( new GUIContent( text ) );
             GUI.color = color;
             GUI.Label( new Rect( screenPos.x - size.x * .5f, -screenPos.y + sceneView.position.height - size.y * 2f, size.x, size.y ), text, style );
-#endif
         }
+#endif
 
         public static void DrawText( string text, Float3 worldPosition, Color color, GUIStyle style )
         {
