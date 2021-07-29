@@ -1,31 +1,8 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 using SysRandom = System.Random;
 
 namespace CXUtils.CodeUtils
 {
-    /// <summary> A helper class that helps you randomize things </summary>
-    public class RandomUtils
-    {
-        /// <summary> Randomly returns a float between 0 ~ 1 </summary>
-        public static float RandFloat() => Random.Range( 0f, 1f );
-
-        /// <summary> Randomly returns a double between 0 ~ 1 </summary>
-        public static double RandDouble() => RandFloat();
-
-        /// <summary> Randomly decides and returns a boolean </summary>
-        public static bool FlipCoin( float threshold = .5f ) => Random.Range( 0f, 1f ) >= threshold;
-
-        /// <summary> Randomly decides between two items </summary>
-        public static T FlipCoin<T>( T t1, T t2, float threshold = .5f ) => FlipCoin( threshold ) ? t1 : t2;
-
-        /// <summary>
-        ///     Randomly decides between items <br />
-        ///     QUICK NOTE: Possibilities of items are the same
-        /// </summary>
-        public T FlipCoin<T>( params T[] items ) => items[Random.Range( 0, items.Length - 1 )]; //in here, the random that comes from unity will return the upper bound, so -1
-    }
-
     /// <summary>
     ///     A <see cref="SysRandom" /> Wrapper
     /// </summary>
@@ -64,7 +41,7 @@ namespace CXUtils.CodeUtils
             for ( i = 0; i < probabilityItemPair.Length; i++ )
                 total += probabilityItemPair[i].Key;
 
-            int lastMin = 0;
+            const int lastMin = 0;
             int rand = Next( 0, total + 1 ); // this will go from 0 to tot (since next doesn't include upper bound, so we increment it)
 
             //get probability
