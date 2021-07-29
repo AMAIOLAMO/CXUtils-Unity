@@ -46,12 +46,12 @@ namespace CXUtils.CodeUtils
     ///     A simple pooler base that you could use to pool stuff for performace
     /// </summary>
     /// <typeparam name="T">The type you want to pool</typeparam>
-    public class CXPoolerBase<T> : IPoolCapacity, IPoolCycleEvent where T : new()
+    public class CxPoolerBase<T> : IPoolCapacity, IPoolCycleEvent where T : new()
     {
         int _currentPoppingCount;
 
         protected readonly List<T> poolItems;
-        public CXPoolerBase( int poolCapacity, Func<int, T> initFunc )
+        public CxPoolerBase( int poolCapacity, Func<int, T> initFunc )
         {
             poolItems = new List<T>();
 
@@ -61,7 +61,7 @@ namespace CXUtils.CodeUtils
                 poolItems.Add( initFunc( i ) );
         }
 
-        public CXPoolerBase( List<T> pool )
+        public CxPoolerBase( List<T> pool )
         {
             poolItems = pool;
             PoolCapacity = pool.Count;
@@ -102,17 +102,17 @@ namespace CXUtils.CodeUtils
     /// <summary>
     ///     A pool that auto queues stuff from the pool
     /// </summary>
-    public class CXStackPoolerBase<T> : IPoolCapacity, IPoolExpandable<T> where T : IPoolOccupiedItem, new()
+    public class CxStackPoolerBase<T> : IPoolCapacity, IPoolExpandable<T> where T : IPoolOccupiedItem, new()
     {
         protected readonly Stack<T> poolingItems;
-        public CXStackPoolerBase( Stack<T> queuePool )
+        public CxStackPoolerBase( Stack<T> queuePool )
         {
             poolingItems = queuePool;
 
             PoolCapacity = queuePool.Count;
         }
 
-        public CXStackPoolerBase( int poolCapacity, Func<int, T> initFunc )
+        public CxStackPoolerBase( int poolCapacity, Func<int, T> initFunc )
         {
             poolingItems = new Stack<T>();
 

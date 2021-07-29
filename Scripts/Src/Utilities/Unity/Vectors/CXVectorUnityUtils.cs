@@ -2,7 +2,7 @@
 
 namespace CXUtils.Types.UnityUtils
 {
-    public static class CXVectorUnityUtils
+    public static class CxVectorUnityUtils
     {
         public static Vector2 ToUnity( this Float2 value ) => new Vector2( value.x, value.y );
         public static Vector3 ToUnity( this Float3 value ) => new Vector3( value.x, value.y, value.z );

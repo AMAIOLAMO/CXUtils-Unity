@@ -8,91 +8,69 @@ namespace CXUtils.CodeUtils
     public class RandomUtils
     {
         /// <summary> Randomly returns a float between 0 ~ 1 </summary>
-        public static float RandFloat()
-        {
-            return Random.Range(0f, 1f);
-        }
+        public static float RandFloat() => Random.Range( 0f, 1f );
 
         /// <summary> Randomly returns a double between 0 ~ 1 </summary>
-        public static double RandDouble()
-        {
-            return RandFloat();
-        }
+        public static double RandDouble() => RandFloat();
 
         /// <summary> Randomly decides and returns a boolean </summary>
-        public static bool FlipCoin(float threshold = .5f)
-        {
-            return Random.Range(0f, 1f) >= threshold;
-        }
+        public static bool FlipCoin( float threshold = .5f ) => Random.Range( 0f, 1f ) >= threshold;
 
         /// <summary> Randomly decides between two items </summary>
-        public static T FlipCoin<T>(T t1, T t2, float threshold = .5f)
-        {
-            return FlipCoin(threshold) ? t1 : t2;
-        }
+        public static T FlipCoin<T>( T t1, T t2, float threshold = .5f ) => FlipCoin( threshold ) ? t1 : t2;
 
         /// <summary>
         ///     Randomly decides between items <br />
         ///     QUICK NOTE: Possibilities of items are the same
         /// </summary>
-        public T FlipCoin<T>(params T[] items)
-        {
-            return items[Random.Range(0, items.Length - 1)]; //in here, the random that comes from unity will return the upper bound, so -1
-        }
+        public T FlipCoin<T>( params T[] items ) => items[Random.Range( 0, items.Length - 1 )]; //in here, the random that comes from unity will return the upper bound, so -1
     }
 
-    /// <summary> A Random class that helps to randomize object </summary>
+    /// <summary>
+    ///     A <see cref="SysRandom" /> Wrapper
+    /// </summary>
     public class CxRandom : SysRandom
     {
         public CxRandom() { }
-        public CxRandom(int seed) : base(seed) { }
+        public CxRandom( int seed ) : base( seed ) { }
 
         /// <summary>
-        ///     Randomly decides and returns a boolean <br/>
+        ///     Randomly decides and returns a boolean <br />
         ///     QUICK NOTE: excludes threshold (value > threshold)
         /// </summary>
-        public bool FlipCoin(double threshold = .5f)
-        {
-            return NextDouble() > threshold;
-        }
+        public bool FlipCoin( double threshold = .5f ) => NextDouble() > threshold;
 
         /// <summary>
-        ///     Randomly decides between two items <br/>
+        ///     Randomly decides between two items <br />
         ///     QUICK NOTE: excludes threshold (value > threshold)
         /// </summary>
-        public T FlipCoin<T>(T t1, T t2, double threshold = .5d)
-        {
-            return FlipCoin(threshold) ? t1 : t2;
-        }
+        public T FlipCoin<T>( T t1, T t2, double threshold = .5d ) => FlipCoin( threshold ) ? t1 : t2;
 
         /// <summary>
-        ///     Randomly decides between these items <br/>
+        ///     Randomly decides between these items <br />
         ///     QUICK NOTE: possibilities are the same
         /// </summary>
-        public T FlipCoin<T>(params T[] items)
-        {
-            return items[Next(0, items.Length)]; //in here, the random value will never return the upper bound, so don't worry
-        }
+        public T FlipCoin<T>( params T[] items ) => items[Next( 0, items.Length )];
 
         /// <summary>
-        ///     Randomly decides between items with the given sorted pair <br/>
+        ///     Randomly decides between items with the given sorted pair <br />
         ///     QUICK NOTE: <paramref name="probabilityItemPair" /> needs to be sorted from lowest to highest
         /// </summary>
-        public bool TryFlipCoin<T>(out T item, params KeyValuePair<int, T>[] probabilityItemPair)
+        public bool TryFlipCoin<T>( out T item, params KeyValuePair<int, T>[] probabilityItemPair )
         {
             int i, total = 0;
 
             //get total
-            for (i = 0; i < probabilityItemPair.Length; i++)
+            for ( i = 0; i < probabilityItemPair.Length; i++ )
                 total += probabilityItemPair[i].Key;
 
-            var lastMin = 0;
-            var rand = Next(0, total) + 1; // this will go from 0 to tot (since next doesn't include upper bound, so we increment it)
+            int lastMin = 0;
+            int rand = Next( 0, total + 1 ); // this will go from 0 to tot (since next doesn't include upper bound, so we increment it)
 
             //get probability
-            for (i = 0; i < probabilityItemPair.Length; i++)
+            for ( i = 0; i < probabilityItemPair.Length; i++ )
                 //if in range
-                if (rand > lastMin && rand <= total)
+                if ( rand > lastMin && rand <= total )
                 {
                     item = probabilityItemPair[i].Value;
                     return true;
