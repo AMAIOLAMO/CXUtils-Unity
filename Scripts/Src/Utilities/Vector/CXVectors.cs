@@ -1,8 +1,24 @@
 using System;
+using CXUtils.CodeUtils;
 
 namespace CXUtils.Types
 {
-    public interface ITypeFloat<T> : IEquatable<T>, IFormattable
+    public interface ITypeVector<T, TValue> : IEquatable<T>, IFormattable
+    {
+        T Min( T other );
+        T Max( T other );
+
+        /// <summary>
+        /// Maps the <paramref name="mapFunction"/> to all axis
+        /// </summary>
+        T MapAxis( Func<TValue, TValue> mapFunction );
+    }
+
+    public interface ITypeVectorInt<T> : ITypeVector<T, int>
+    {
+    }
+
+    public interface ITypeVectorFloat<T> : ITypeVector<T, float>
     {
         T Normalized { get; }
         float SqrMagnitude { get; }
@@ -20,15 +36,13 @@ namespace CXUtils.Types
         ///     returns a new vector with a new magnitude of value
         /// </summary>
         T MagnitudeOf( float value );
-
-        T MapAxis( Func<float, float> mapFunction );
     }
 
     /// <summary>
     ///     represents two floats
     /// </summary>
     [Serializable]
-    public readonly struct Float2 : ITypeFloat<Float2>
+    public readonly struct Float2 : ITypeVectorFloat<Float2>
     {
         public readonly float x, y;
         public Float2( float x = .0f, float y = .0f ) => ( this.x, this.y ) = ( x, y );
@@ -62,16 +76,16 @@ namespace CXUtils.Types
             }
         }
 
-        public Int2 FloorInt => new Int2( (int)Math.Floor( x ), (int)Math.Floor( y ) );
-        public Int2 CeilInt => new Int2( (int)Math.Ceiling( x ), (int)Math.Ceiling( y ) );
+        public Int2 FloorInt => new Int2( (int)MathUtils.Floor( x ), (int)MathUtils.Floor( y ) );
+        public Int2 CeilInt => new Int2( (int)MathUtils.Ceil( x ), (int)MathUtils.Ceil( y ) );
 
         public float SqrMagnitude => x * x + y * y;
         public float Magnitude => (float)Math.Sqrt( SqrMagnitude );
 
         public Float2 Normalized => this / Magnitude;
 
-        public Float2 Floor => new Float2( (float)Math.Floor( x ), (float)Math.Floor( y ) );
-        public Float2 Ceil => new Float2( (float)Math.Ceiling( x ), (float)Math.Ceiling( y ) );
+        public Float2 Floor => new Float2( MathUtils.Floor( x ), MathUtils.Floor( y ) );
+        public Float2 Ceil => new Float2( MathUtils.Ceil( x ), MathUtils.Ceil( y ) );
         public Float2 Halve => this * .5f;
 
         public bool Equals( Float2 other ) => x.Equals( other.x ) && y.Equals( other.y );
@@ -135,7 +149,7 @@ namespace CXUtils.Types
     ///     represents three floats
     /// </summary>
     [Serializable]
-    public readonly struct Float3 : ITypeFloat<Float3>
+    public readonly struct Float3 : ITypeVectorFloat<Float3>
     {
         public readonly float x, y, z;
         public Float3( float x = .0f, float y = .0f, float z = .0f ) => ( this.x, this.y, this.z ) = ( x, y, z );
@@ -172,31 +186,18 @@ namespace CXUtils.Types
         public static Float3 PosZ => new Float3( z: 1f );
         public static Float3 NegZ => new Float3( z: -1f );
 
-        public Int3 FloorInt => new Int3( (int)Math.Floor( x ), (int)Math.Floor( y ), (int)Math.Floor( z ) );
-        public Int3 CeilInt => new Int3( (int)Math.Ceiling( x ), (int)Math.Ceiling( y ), (int)Math.Ceiling( z ) );
+        public Int3 FloorInt => new Int3( (int)MathUtils.Floor( x ), (int)MathUtils.Floor( y ), (int)MathUtils.Floor( z ) );
+        public Int3 CeilInt => new Int3( (int)MathUtils.Ceil( x ), (int)MathUtils.Ceil( y ), (int)MathUtils.Ceil( z ) );
 
         public float SqrMagnitude => x * x + y * y + z * z;
         public float Magnitude => (float)Math.Sqrt( SqrMagnitude );
 
         public Float3 Normalized => this / Magnitude;
 
-        public Float3 Floor => new Float3( (float)Math.Floor( x ), (float)Math.Floor( y ), (float)Math.Floor( z ) );
-        public Float3 Ceil => new Float3( (float)Math.Ceiling( x ), (float)Math.Ceiling( y ), (float)Math.Ceiling( z ) );
+        public Float3 Floor => new Float3( MathUtils.Floor( x ), MathUtils.Floor( y ), MathUtils.Floor( z ) );
+        public Float3 Ceil => new Float3( MathUtils.Ceil( x ), MathUtils.Ceil( y ), MathUtils.Ceil( z ) );
         public Float3 Halve => this * .5f;
 
-        public bool Equals( Float3 other ) => x.Equals( other.x ) && y.Equals( other.y ) && z.Equals( other.z );
-
-        public override bool Equals( object obj ) => obj is Float3 other && Equals( other );
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hashCode = x.GetHashCode();
-                hashCode = ( hashCode * 397 ) ^ y.GetHashCode();
-                hashCode = ( hashCode * 397 ) ^ z.GetHashCode();
-                return hashCode;
-            }
-        }
 
         #region Operator overloading
 
@@ -222,6 +223,22 @@ namespace CXUtils.Types
 
         #region Utility
 
+        public bool Equals( Float3 other ) => x.Equals( other.x ) && y.Equals( other.y ) && z.Equals( other.z );
+        public Float3 Min( Float3 other ) => new Float3( Math.Min( x, other.x ), Math.Min( y, other.y ), Math.Min( z, other.z ) );
+        public Float3 Max( Float3 other ) => new Float3( Math.Max( x, other.x ), Math.Max( y, other.y ), Math.Max( z, other.z ) );
+
+        public override bool Equals( object obj ) => obj is Float3 other && Equals( other );
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = x.GetHashCode();
+                hashCode = ( hashCode * 397 ) ^ y.GetHashCode();
+                hashCode = ( hashCode * 397 ) ^ z.GetHashCode();
+                return hashCode;
+            }
+        }
+
         public float Dot( Float3 other ) => x * other.x + y * other.y + z * other.z;
 
         public Float3 Cross( Float3 other ) => new Float3( y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x );
@@ -244,7 +261,7 @@ namespace CXUtils.Types
     ///     represents four floats
     /// </summary>
     [Serializable]
-    public readonly struct Float4 : ITypeFloat<Float4>
+    public readonly struct Float4 : ITypeVectorFloat<Float4>
     {
         public readonly float x, y, z, w;
         public Float4( float x = .0f, float y = .0f, float z = .0f, float w = .0f ) => ( this.x, this.y, this.z, this.w ) = ( x, y, z, w );
@@ -282,11 +299,11 @@ namespace CXUtils.Types
         public static Float4 PosZ => new Float4( z: 1f );
         public static Float4 NegZ => new Float4( z: -1f );
 
-        public Int4 FloorInt => new Int4( (int)Math.Floor( x ), (int)Math.Floor( y ), (int)Math.Floor( z ), (int)Math.Floor( w ) );
-        public Int4 CeilInt => new Int4( (int)Math.Ceiling( x ), (int)Math.Ceiling( y ), (int)Math.Ceiling( z ), (int)Math.Ceiling( w ) );
+        public Int4 FloorInt => new Int4( (int)MathUtils.Floor( x ), (int)MathUtils.Floor( y ), (int)MathUtils.Floor( z ), (int)MathUtils.Floor( w ) );
+        public Int4 CeilInt => new Int4( (int)MathUtils.Ceil( x ), (int)MathUtils.Ceil( y ), (int)MathUtils.Ceil( z ), (int)MathUtils.Ceil( w ) );
 
-        public Float4 Floor => new Float4( (float)Math.Floor( x ), (float)Math.Floor( y ), (float)Math.Floor( z ), (float)Math.Floor( w ) );
-        public Float4 Ceil => new Float4( (float)Math.Ceiling( x ), (float)Math.Ceiling( y ), (float)Math.Ceiling( z ), (float)Math.Floor( w ) );
+        public Float4 Floor => new Float4( MathUtils.Floor( x ), MathUtils.Floor( y ), MathUtils.Floor( z ), MathUtils.Floor( w ) );
+        public Float4 Ceil => new Float4( MathUtils.Ceil( x ), MathUtils.Ceil( y ), MathUtils.Ceil( z ), MathUtils.Floor( w ) );
         public Float4 Halve => this * .5f;
 
         public float SqrMagnitude => x * x + y * y + z * z;
@@ -317,6 +334,8 @@ namespace CXUtils.Types
 
         #region Utility
 
+        public Float4 Min( Float4 other ) => new Float4( Math.Min( x, other.x ), Math.Min( y, other.y ), Math.Min( z, other.z ), Math.Min( w, other.w ) );
+        public Float4 Max( Float4 other ) => new Float4( Math.Max( x, other.x ), Math.Max( y, other.y ), Math.Max( z, other.z ), Math.Max( w, other.w ) );
         public float Dot( Float4 other ) => x * other.x + y * other.y + z * other.z + w * other.w;
 
         public Float4 Cross( Float4 other ) => new Float4(
@@ -337,7 +356,7 @@ namespace CXUtils.Types
         public string ToString( string format, IFormatProvider formatProvider ) =>
             "(" + x.ToString( format, formatProvider ) + ", " + y.ToString( format, formatProvider ) + ", " + z.ToString( format, formatProvider ) + ", " + w.ToString( format, formatProvider ) + ")";
         public override string ToString() => "(" + x + ", " + y + ", " + z + ", " + w + ")";
-        public string ToString( string format ) => "(" + x.ToString( format ) + ", " + y.ToString( format ) + ", " + z.ToString( format )  + ", " + w.ToString( format ) + ")";
+        public string ToString( string format ) => "(" + x.ToString( format ) + ", " + y.ToString( format ) + ", " + z.ToString( format ) + ", " + w.ToString( format ) + ")";
 
         public bool Equals( Float4 other ) => x.Equals( other.x ) && y.Equals( other.y ) && z.Equals( other.z ) && w.Equals( other.w );
 
@@ -362,7 +381,7 @@ namespace CXUtils.Types
     ///     represents two integers
     /// </summary>
     [Serializable]
-    public readonly struct Int2 : IEquatable<Int2>, IFormattable
+    public readonly struct Int2 : ITypeVectorInt<Int2>
     {
         public readonly int x, y;
 
@@ -442,7 +461,7 @@ namespace CXUtils.Types
     ///     represents three integers
     /// </summary>
     [Serializable]
-    public readonly struct Int3 : IEquatable<Int3>, IFormattable
+    public readonly struct Int3 : ITypeVectorInt<Int3>
     {
         public readonly int x, y, z;
 
@@ -528,7 +547,7 @@ namespace CXUtils.Types
     ///     represents four integers
     /// </summary>
     [Serializable]
-    public readonly struct Int4 : IEquatable<Int4>, IFormattable
+    public readonly struct Int4 : ITypeVectorInt<Int4>
     {
         public readonly int x, y, z, w;
 
