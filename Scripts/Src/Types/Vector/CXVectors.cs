@@ -9,7 +9,7 @@ namespace CXUtils.Types
         T Max( T other );
 
         /// <summary>
-        /// Maps the <paramref name="mapFunction"/> to all axis
+        ///     Maps the <paramref name="mapFunction" /> to all axis
         /// </summary>
         T MapAxis( Func<TValue, TValue> mapFunction );
     }
@@ -82,7 +82,7 @@ namespace CXUtils.Types
         public float SqrMagnitude => x * x + y * y;
         public float Magnitude => (float)Math.Sqrt( SqrMagnitude );
 
-        public Float2 Normalized => this / Magnitude;
+        public Float2 Normalized => Magnitude == 0f ? Zero : this / Magnitude;
 
         public Float2 Floor => new Float2( MathUtils.Floor( x ), MathUtils.Floor( y ) );
         public Float2 Ceil => new Float2( MathUtils.Ceil( x ), MathUtils.Ceil( y ) );
@@ -192,7 +192,7 @@ namespace CXUtils.Types
         public float SqrMagnitude => x * x + y * y + z * z;
         public float Magnitude => (float)Math.Sqrt( SqrMagnitude );
 
-        public Float3 Normalized => this / Magnitude;
+        public Float3 Normalized => Magnitude == 0f ? Zero : this / Magnitude;
 
         public Float3 Floor => new Float3( MathUtils.Floor( x ), MathUtils.Floor( y ), MathUtils.Floor( z ) );
         public Float3 Ceil => new Float3( MathUtils.Ceil( x ), MathUtils.Ceil( y ), MathUtils.Ceil( z ) );
@@ -309,7 +309,7 @@ namespace CXUtils.Types
         public float SqrMagnitude => x * x + y * y + z * z;
         public float Magnitude => (float)Math.Sqrt( SqrMagnitude );
 
-        public Float4 Normalized => this / Magnitude;
+        public Float4 Normalized => Magnitude == 0f ? Zero : this / Magnitude;
 
         #region Operator overloading
 
