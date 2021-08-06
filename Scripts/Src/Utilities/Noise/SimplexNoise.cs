@@ -13,16 +13,19 @@ namespace CXUtils.CodeUtils
     /// <summary>
     ///     Gradient noise that is better and quicker than Perlin noise
     /// </summary>
-    public class SimplexNoise : IGradientNoise2D, IGradientNoise3D, IGradientNoise4D
+    public static class SimplexNoise
     {
-        public float Sample(Float2 value)
+        public static float Sample(Float2 value)
         {
             float n0, n1, n2;
 
             float s = (value.x + value.y) * F2;
-            int i = MathUtils.FloorInt(value.x + s);
-            int j = MathUtils.FloorInt(value.y + s);
+
+            int i = (value.x + s).FloorInt();
+            int j = (value.y + s).FloorInt();
+
             float t = (i + j) * G2;
+
             float X0 = i - t,
                   Y0 = j - t,
                   x0 = value.x - X0,
@@ -39,6 +42,7 @@ namespace CXUtils.CodeUtils
 
             int ii = i & 255;
             int jj = j & 255;
+
             int gi0 = _permMod12[ii +      _perm[jj]     ];
             int gi1 = _permMod12[ii + i1 + _perm[jj + j1]];
             int gi2 = _permMod12[ii + 1  + _perm[jj + 1] ];
@@ -48,7 +52,7 @@ namespace CXUtils.CodeUtils
             else
             {
                 t0 *= t0;
-                n0 = t0 * t0 * _grad3[gi0].Dot(new Float4(x0, y0));
+                n0 = t0 * t0 * _grad3[gi0].Dot(new Float2(x0, y0));
             }
 
             float t1 = .5f - x1 * x1 - y1 * y1;
@@ -56,21 +60,114 @@ namespace CXUtils.CodeUtils
             else
             {
                 t1 *= t1;
-                n1 = t1 * t1 * _grad3[gi1].Dot(new Float4(x1, y1));
+                n1 = t1 * t1 * _grad3[gi1].Dot(new Float2(x1, y1));
             }
             float t2 = .5f - x2 * x2 - y2 * y2;
             if ( t2 < 0 ) n2 = 0f;
             else
             {
                 t2 *= t2;
-                n2 = t2 * t2 * _grad3[gi2].Dot(new Float4(x2, y2));
+                n2 = t2 * t2 * _grad3[gi2].Dot(new Float2(x2, y2));
             }
 
             return 70f * (n0 + n1 + n2);
         }
 
-        public float Sample(Float3 value) => throw new NotImplementedException();
-        public float Sample(Float4 value) => throw new NotImplementedException();
+        public static float Sample(Float3 value)
+        {
+            float n0, n1, n2, n3;
+
+            float s = (value.x + value.y + value.z) * F3;
+
+            int i = MathUtils.FloorInt(value.x + s);
+            int j = MathUtils.FloorInt(value.y + s);
+            int k = MathUtils.FloorInt(value.z + s);
+
+            float t = (i + j + k) * G3;
+
+            float X0 = i - t;
+            float Y0 = j - t;
+            float Z0 = k - t;
+            float x0 = value.x - X0;
+            float y0 = value.y - Y0;
+            float z0 = value.z - Z0;
+
+            int i1, j1, k1;
+            int i2, j2, k2;
+
+            if ( x0 >= y0 )
+            {
+                if ( y0 >= z0 )
+                { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 1; k2 = 0; } // X Y Z order
+                else if ( x0 >= z0 )
+                { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 0; k2 = 1; } // X Z Y order
+                else
+                { i1 = 0; j1 = 0; k1 = 1; i2 = 1; j2 = 0; k2 = 1; } // Z X Y order
+            }
+            else
+            {
+                if ( y0 < z0 )
+                { i1 = 0; j1 = 0; k1 = 1; i2 = 0; j2 = 1; k2 = 1; } // Z Y X order
+                else if ( x0 < z0 )
+                { i1 = 0; j1 = 1; k1 = 0; i2 = 0; j2 = 1; k2 = 1; } // Y Z X order
+                else
+                { i1 = 0; j1 = 1; k1 = 0; i2 = 1; j2 = 1; k2 = 0; } // Y X Z order
+            }
+
+            float x1 = x0 - i1 + G3;
+            float y1 = y0 - j1 + G3;
+            float z1 = z0 - k1 + G3;
+            float x2 = x0 - i2 + 2f * G3;
+            float y2 = y0 - j2 + 2f * G3;
+            float z2 = z0 - k2 + 2f * G3;
+            float x3 = x0 - 1f + 3f * G3;
+            float y3 = y0 - 1f + 3f * G3;
+            float z3 = z0 - 1f + 3f * G3;
+
+            int ii = i & 255;
+            int jj = j & 255;
+            int kk = k & 255;
+            int gi0 = _permMod12[ii +      _perm[jj +      _perm[kk]]     ];
+            int gi1 = _permMod12[ii + i1 + _perm[jj + j1 + _perm[kk + k1]]];
+            int gi2 = _permMod12[ii + i2 + _perm[jj + j2 + _perm[kk + k2]]];
+            int gi3 = _permMod12[ii + 1  + _perm[jj + 1  + _perm[kk + 1]] ];
+
+            float t0 = .6f - x0 * x0 - y0 * y0 - z0 * z0;
+            if ( t0 < 0f ) n0 = 0f;
+            else
+            {
+                t0 *= t0;
+                n0 = t0 * t0 * _grad3[gi0].Dot(new Float3(x0, y0, z0));
+            }
+
+            float t1 = .6f - x1 * x1 - y1 * y1 - z1 * z1;
+            if ( t1 < 0f ) n1 = 0f;
+            else
+            {
+                t1 *= t1;
+                n1 = t1 * t1 * _grad3[gi1].Dot(new Float3(x1, y1, z1));
+            }
+
+            float t2 = .6f - x2 * x2 - y2 * y2 - z2 * z2;
+            if ( t2 < 0f ) n2 = 0f;
+            else
+            {
+                t2 *= t2;
+                n2 = t2 * t2 * _grad3[gi2].Dot(new Float3(x2, y2, z2));
+            }
+
+            float t3 = .6f - x3 * x3 - y3 * y3 - z3 * z3;
+            if ( t3 < 0f ) n3 = 0f;
+            else
+            {
+                t3 *= t3;
+                n3 = t3 * t3 * _grad3[gi3].Dot(new Float3(x3, y3, z3));
+            }
+
+            return 32f * (n0 + n1 + n2 + n3);
+        }
+
+        public static float Sample(Float4 value) => throw new NotImplementedException();
 
         static SimplexNoise()
         {
