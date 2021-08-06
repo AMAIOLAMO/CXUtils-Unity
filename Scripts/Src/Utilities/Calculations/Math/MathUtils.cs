@@ -22,6 +22,9 @@ namespace CXUtils.CodeUtils
         public static float Floor(float value) => value > 0 ? value : value - 1f;
         public static float Ceil(float value) => value < 0 ? value : value + 1f;
 
+        public static int FloorInt(float value) => (int)Floor(value);
+        public static int CeilInt(float value) => (int)Ceil(value);
+
 
         /// <summary>
         ///     This will map the whole real Number line into the range of 0 - 1
