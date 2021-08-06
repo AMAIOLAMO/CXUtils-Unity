@@ -1,13 +1,12 @@
 using CXUtils.Types;
 using System;
-using UnityEditor.PackageManager.UI;
 
 namespace CXUtils.CodeUtils
 {
     /*
      * Note: this code is based on https://weber.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
      * and http://www.itn.liu.se/~stegu/simplexnoise/SimplexNoise.java
-     * I did not implemented this, I just converted this into C#
+     * I did not implemented this, I just converted this into C# and implemented further
     */
 
     /// <summary>
@@ -167,7 +166,146 @@ namespace CXUtils.CodeUtils
             return 32f * (n0 + n1 + n2 + n3);
         }
 
-        public static float Sample(Float4 value) => throw new NotImplementedException();
+        public static float Sample(Float4 value)
+        {
+            float n0, n1, n2, n3, n4;
+
+            float s = (value.x + value.y + value.z + value.w) * F4; // Factor for 4D skewing
+
+            int i = MathUtils.FloorInt(value.x + s);
+            int j = MathUtils.FloorInt(value.y + s);
+            int k = MathUtils.FloorInt(value.z + s);
+            int l = MathUtils.FloorInt(value.w + s);
+
+            float t = (i + j + k + l) * G4;
+            float X0 = i - t;
+            float Y0 = j - t;
+            float Z0 = k - t;
+            float W0 = l - t;
+            float x0 = value.x - X0;
+            float y0 = value.y - Y0;
+            float z0 = value.z - Z0;
+            float w0 = value.w - W0;
+
+            int rankx = 0;
+            int ranky = 0;
+            int rankz = 0;
+            int rankw = 0;
+
+            if ( x0 > y0 ) rankx++;
+            else ranky++;
+
+            if ( x0 > z0 ) rankx++;
+            else rankz++;
+
+            if ( x0 > w0 ) rankx++;
+            else rankw++;
+
+            if ( y0 > z0 ) ranky++;
+            else rankz++;
+
+            if ( y0 > w0 ) ranky++;
+            else rankw++;
+
+            if ( z0 > w0 ) rankz++;
+            else rankw++;
+
+            int i1, j1, k1, l1;
+            int i2, j2, k2, l2;
+            int i3, j3, k3, l3;
+
+            i1 = rankx >= 3 ? 1 : 0;
+            j1 = ranky >= 3 ? 1 : 0;
+            k1 = rankz >= 3 ? 1 : 0;
+            l1 = rankw >= 3 ? 1 : 0;
+
+            // Rank 2 denotes the second largest coordinate.
+
+            i2 = rankx >= 2 ? 1 : 0;
+            j2 = ranky >= 2 ? 1 : 0;
+            k2 = rankz >= 2 ? 1 : 0;
+            l2 = rankw >= 2 ? 1 : 0;
+
+            // Rank 1 denotes the second smallest coordinate.
+
+            i3 = rankx >= 1 ? 1 : 0;
+            j3 = ranky >= 1 ? 1 : 0;
+            k3 = rankz >= 1 ? 1 : 0;
+            l3 = rankw >= 1 ? 1 : 0;
+
+            float x1 = x0 - i1 + G4; // Offsets for second corner in (x,y,z,w) coords
+            float y1 = y0 - j1 + G4;
+            float z1 = z0 - k1 + G4;
+            float w1 = w0 - l1 + G4;
+            float x2 = x0 - i2 + 2f * G4; // Offsets for third corner in (x,y,z,w) coords
+            float y2 = y0 - j2 + 2f * G4;
+            float z2 = z0 - k2 + 2f * G4;
+            float w2 = w0 - l2 + 2f * G4;
+            float x3 = x0 - i3 + 3f * G4; // Offsets for fourth corner in (x,y,z,w) coords
+            float y3 = y0 - j3 + 3f * G4;
+            float z3 = z0 - k3 + 3f * G4;
+            float w3 = w0 - l3 + 3f * G4;
+            float x4 = x0 - 1f + 4f * G4; // Offsets for last corner in (x,y,z,w) coords
+            float y4 = y0 - 1f + 4f * G4;
+            float z4 = z0 - 1f + 4f * G4;
+            float w4 = w0 - 1f + 4f * G4;
+
+            // Work out the hashed gradient indices of the five simplex corners
+
+            int ii = i & 255;
+            int jj = j & 255;
+            int kk = k & 255;
+            int ll = l & 255;
+
+            int gi0 = _perm[ii +      _perm[jj +      _perm[kk +      _perm[ll]     ]]] % 32;
+            int gi1 = _perm[ii + i1 + _perm[jj + j1 + _perm[kk + k1 + _perm[ll + l1]]]] % 32;
+            int gi2 = _perm[ii + i2 + _perm[jj + j2 + _perm[kk + k2 + _perm[ll + l2]]]] % 32;
+            int gi3 = _perm[ii + i3 + _perm[jj + j3 + _perm[kk + k3 + _perm[ll + l3]]]] % 32;
+            int gi4 = _perm[ii + 1  + _perm[jj + 1  + _perm[kk + 1  + _perm[ll + 1] ]]] % 32;
+
+            // Calculate the contribution from the five corners
+            float t0 = .6f - x0 * x0 - y0 * y0 - z0 * z0 - w0 * w0;
+            if ( t0 < 0f ) n0 = 0f;
+            else
+            {
+                t0 *= t0;
+                n0 = t0 * t0 * _grad4[gi0].Dot(new Float4(x0, y0, z0, w0));
+            }
+
+            float t1 = .6f - x1 * x1 - y1 * y1 - z1 * z1 - w1 * w1;
+            if ( t1 < 0f ) n1 = 0f;
+            else
+            {
+                t1 *= t1;
+                n1 = t1 * t1 * _grad4[gi1].Dot(new Float4(x1, y1, z1, w1));
+            }
+
+            float t2 = .6f - x2 * x2 - y2 * y2 - z2 * z2 - w2 * w2;
+            if ( t2 < 0f ) n2 = 0f;
+            else
+            {
+                t2 *= t2;
+                n2 = t2 * t2 * _grad4[gi2].Dot(new Float4(x2, y2, z2, w2));
+            }
+
+            float t3 = .6f - x3 * x3 - y3 * y3 - z3 * z3 - w3 * w3;
+            if ( t3 < 0f ) n3 = 0f;
+            else
+            {
+                t3 *= t3;
+                n3 = t3 * t3 * _grad4[gi3].Dot(new Float4(x3, y3, z3, w3));
+            }
+
+            float t4 = .6f - x4 * x4 - y4 * y4 - z4 * z4 - w4 * w4;
+            if ( t4 < 0f ) n4 = 0f;
+            else
+            {
+                t4 *= t4;
+                n4 = t4 * t4 * _grad4[gi4].Dot(new Float4(x4, y4, z4, w4));
+            }
+
+            return 27f * (n0 + n1 + n2 + n3 + n4);
+        }
 
         static SimplexNoise()
         {
@@ -232,7 +370,5 @@ namespace CXUtils.CodeUtils
                                         _permMod12 = new short[512];
 
         #endregion
-
-
     }
 }
