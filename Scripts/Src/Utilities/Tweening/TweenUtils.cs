@@ -183,14 +183,14 @@ namespace CXUtils.CodeUtils
 
         #region LerpVectors
 
-        public static Float2 Lerp( Float2 a, Float2 b, float t ) =>
+        public static Float2 Lerp( this Float2 a, Float2 b, float t ) =>
             new Float2( Lerp( a.x, b.x, t ), Lerp( a.y, b.y, t ) );
-        public static Float2 LerpClamp( Float2 a, Float2 b, float t ) =>
+        public static Float2 LerpClamp( this Float2 a, Float2 b, float t ) =>
             new Float2( LerpClamp( a.x, b.x, t ), LerpClamp( a.y, b.y, t ) );
 
-        public static Float3 Lerp( Float3 a, Float3 b, float t ) =>
+        public static Float3 Lerp( this Float3 a, Float3 b, float t ) =>
             new Float3( Lerp( a.x, b.x, t ), Lerp( a.y, b.y, t ), Lerp( a.z, b.z, t ) );
-        public static Float3 LerpClamp( Float3 a, Float3 b, float t ) =>
+        public static Float3 LerpClamp( this Float3 a, Float3 b, float t ) =>
             new Float3( LerpClamp( a.x, b.x, t ), LerpClamp( a.y, b.y, t ), LerpClamp( a.z, b.z, t ) );
 
         #endregion
