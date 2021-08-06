@@ -1,5 +1,6 @@
 using CXUtils.Types;
 using System;
+using UnityEngine;
 
 namespace CXUtils.CodeUtils
 {
@@ -14,6 +15,9 @@ namespace CXUtils.CodeUtils
     /// </summary>
     public static class SimplexNoise
     {
+        /// <summary>
+        ///     Returns a simplex noise between -1 to 1 using <paramref name="value"/>
+        /// </summary>
         public static float Sample(Float2 value)
         {
             float n0, n1, n2;
@@ -72,6 +76,7 @@ namespace CXUtils.CodeUtils
             return 70f * (n0 + n1 + n2);
         }
 
+        /// <inheritdoc cref="Sample(Float2)"/>
         public static float Sample(Float3 value)
         {
             float n0, n1, n2, n3;
@@ -166,6 +171,7 @@ namespace CXUtils.CodeUtils
             return 32f * (n0 + n1 + n2 + n3);
         }
 
+        /// <inheritdoc cref="Sample(Float2)"/>
         public static float Sample(Float4 value)
         {
             float n0, n1, n2, n3, n4;
@@ -187,28 +193,28 @@ namespace CXUtils.CodeUtils
             float z0 = value.z - Z0;
             float w0 = value.w - W0;
 
-            int rankx = 0;
-            int ranky = 0;
-            int rankz = 0;
-            int rankw = 0;
+            int rankx = 0,
+                ranky = 0,
+                rankz = 0,
+                rankw = 0;
 
-            if ( x0 > y0 ) rankx++;
-            else ranky++;
+            if ( x0 > y0 ) ++rankx;
+            else ++ranky;
 
-            if ( x0 > z0 ) rankx++;
-            else rankz++;
+            if ( x0 > z0 ) ++rankx;
+            else ++rankz;
 
-            if ( x0 > w0 ) rankx++;
-            else rankw++;
+            if ( x0 > w0 ) ++rankx;
+            else ++rankw;
 
-            if ( y0 > z0 ) ranky++;
-            else rankz++;
+            if ( y0 > z0 ) ++ranky;
+            else ++rankz;
 
-            if ( y0 > w0 ) ranky++;
-            else rankw++;
+            if ( y0 > w0 ) ++ranky;
+            else ++rankw;
 
-            if ( z0 > w0 ) rankz++;
-            else rankw++;
+            if ( z0 > w0 ) ++rankz;
+            else ++rankw;
 
             int i1, j1, k1, l1;
             int i2, j2, k2, l2;
@@ -310,7 +316,7 @@ namespace CXUtils.CodeUtils
         static SimplexNoise()
         {
             //calculate for permutations & permutations that mods wraps in 12
-            for ( int i = 0; i < 512; i++ )
+            for ( int i = 0; i < 512; ++i )
             {
                 _perm[i] = _p[i & 255];
                 _permMod12[i] = (short)(_perm[i] % 12);
@@ -335,7 +341,7 @@ namespace CXUtils.CodeUtils
             new Float4(1f, 1f, 0f, 1f ), new Float4(1f, 1f, 0f, -1f ), new Float4(1f, -1f, 0f, 1f ), new Float4(1f, -1f, 0f, -1f ),
             new Float4(-1f, 1f, 0f, 1f), new Float4(-1f, 1f, 0f, -1f), new Float4(-1f, -1f, 0f, 1f), new Float4(-1f, -1f, 0f, -1f),
             new Float4(1f, 1f, 1f     ), new Float4(1f, 1f, -1f     ), new Float4(1f, -1f, 1f     ), new Float4(1f, -1f, -1f     ),
-            new Float4(-1f, 1f, 1f    ), new Float4(-1f, 1f, -1f    ), new Float4(-1f, -1f, 1f    ), new Float4(-1f, -1f, -1f    ),
+            new Float4(-1f, 1f, 1f    ), new Float4(-1f, 1f, -1f    ), new Float4(-1f, -1f, 1f    ), new Float4(-1f, -1f, -1f    )
         };
 
         static readonly short[] _p =
@@ -356,8 +362,8 @@ namespace CXUtils.CodeUtils
         };
 
         // Skewing and unskewing factors for 2, 3, and 4 dimensions
-        const float SQRT_3 = 1.73205080756887729352744f,
-                    SQRT_5 = 2.23606797749978969640917f;
+        const float SQRT_3 = 1.732050807568877293527446341505f,
+                    SQRT_5 = 2.236067977499789696409173668731f;
 
         const float F2 = .5f * (SQRT_3 - 1f);
         const float G2 = (3f - SQRT_3) / 6f;

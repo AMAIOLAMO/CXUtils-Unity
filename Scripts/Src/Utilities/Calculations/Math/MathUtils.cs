@@ -22,8 +22,19 @@ namespace CXUtils.CodeUtils
         public static float Floor(this float value) => value > 0 ? value : value - 1f;
         public static float Ceil(this float value) => value < 0 ? value : value + 1f;
 
-        public static int FloorInt(this float value) => (int)Floor(value);
-        public static int CeilInt(this float value) => (int)Ceil(value);
+        public static int FloorInt(this float value)
+        {
+            int valueInt = (int)value;
+
+            return value < valueInt ? valueInt - 1 : valueInt;
+        }
+
+        public static int CeilInt(this float value)
+        {
+            int valueInt = (int)value;
+
+            return value > valueInt ? valueInt + 1 : valueInt;
+        }
 
 
         /// <summary>
