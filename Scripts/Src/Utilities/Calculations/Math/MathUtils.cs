@@ -19,8 +19,9 @@ namespace CXUtils.CodeUtils
 
         public const float E = 2.71828182845905f;
 
-        public static float Floor(this float value) => value > 0 ? value : value - 1f;
-        public static float Ceil(this float value) => value < 0 ? value : value + 1f;
+        public static float Floor(this float value) => FloorInt(value);
+
+        public static float Ceil(this float value) => CeilInt(value);
 
         public static int FloorInt(this float value)
         {
@@ -63,10 +64,14 @@ namespace CXUtils.CodeUtils
         ///     Maps the given value from the given range to the another given range <br />
         ///     NOTE: If values overflow, it will cause unexpected behaviour
         /// </summary>
-        public static float Map(float val, float inMin, float inMax, float outMin, float outMax) => (val - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+        public static float Map(float value, float inMin, float inMax, float outMin, float outMax) => (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 
-        public static float Clamp(float value, float min, float max) =>
-            value < min ? min : value > max ? max : value;
+        /// <summary>
+        ///     Maps the given value from (-1 ~ 1) to (0 ~ 1)
+        /// </summary>
+        public static float MapNeg11To01(float value) => value * .5f + .5f;
+
+        public static float Clamp(float value, float min, float max) => value < min ? min : value > max ? max : value;
 
         public static float Clamp01(float value) => Clamp(value, 0f, 1f);
 

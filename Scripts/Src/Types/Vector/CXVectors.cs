@@ -80,8 +80,8 @@ namespace CXUtils.Types
             }
         }
 
-        public Int2 FloorInt => new Int2((int)MathUtils.Floor(x), (int)MathUtils.Floor(y));
-        public Int2 CeilInt => new Int2((int)MathUtils.Ceil(x), (int)MathUtils.Ceil(y));
+        public Int2 FloorInt => new Int2(MathUtils.FloorInt(x), MathUtils.FloorInt(y));
+        public Int2 CeilInt => new Int2(MathUtils.CeilInt(x), MathUtils.CeilInt(y));
 
         public float SqrMagnitude => x * x + y * y;
         public float Magnitude => (float)Math.Sqrt(SqrMagnitude);
@@ -195,8 +195,8 @@ namespace CXUtils.Types
         public static Float3 PosZ => new Float3(z: 1f);
         public static Float3 NegZ => new Float3(z: -1f);
 
-        public Int3 FloorInt => new Int3((int)MathUtils.Floor(x), (int)MathUtils.Floor(y), (int)MathUtils.Floor(z));
-        public Int3 CeilInt => new Int3((int)MathUtils.Ceil(x), (int)MathUtils.Ceil(y), (int)MathUtils.Ceil(z));
+        public Int3 FloorInt => new Int3(MathUtils.FloorInt(x), MathUtils.FloorInt(y), MathUtils.FloorInt(z));
+        public Int3 CeilInt => new Int3(MathUtils.CeilInt(x), MathUtils.CeilInt(y), MathUtils.CeilInt(z));
 
         public float SqrMagnitude => x * x + y * y + z * z;
         public float Magnitude => (float)Math.Sqrt(SqrMagnitude);
@@ -314,8 +314,8 @@ namespace CXUtils.Types
         public static Float4 PosZ => new Float4(z: 1f);
         public static Float4 NegZ => new Float4(z: -1f);
 
-        public Int4 FloorInt => new Int4((int)MathUtils.Floor(x), (int)MathUtils.Floor(y), (int)MathUtils.Floor(z), (int)MathUtils.Floor(w));
-        public Int4 CeilInt => new Int4((int)MathUtils.Ceil(x), (int)MathUtils.Ceil(y), (int)MathUtils.Ceil(z), (int)MathUtils.Ceil(w));
+        public Int4 FloorInt => new Int4(MathUtils.FloorInt(x), MathUtils.FloorInt(y), MathUtils.FloorInt(z), MathUtils.FloorInt(w));
+        public Int4 CeilInt => new Int4(MathUtils.CeilInt(x), MathUtils.CeilInt(y), MathUtils.CeilInt(z), MathUtils.CeilInt(w));
 
         public Float4 Floor => new Float4(MathUtils.Floor(x), MathUtils.Floor(y), MathUtils.Floor(z), MathUtils.Floor(w));
         public Float4 Ceil => new Float4(MathUtils.Ceil(x), MathUtils.Ceil(y), MathUtils.Ceil(z), MathUtils.Floor(w));

@@ -183,14 +183,14 @@ namespace CXUtils.CodeUtils
             int l = MathUtils.FloorInt(value.w + s);
 
             float t = (i + j + k + l) * G4;
-            float X0 = i - t;
-            float Y0 = j - t;
-            float Z0 = k - t;
-            float W0 = l - t;
-            float x0 = value.x - X0;
-            float y0 = value.y - Y0;
-            float z0 = value.z - Z0;
-            float w0 = value.w - W0;
+            float X0 = i - t,
+                  Y0 = j - t,
+                  Z0 = k - t,
+                  W0 = l - t,
+                  x0 = value.x - X0,
+                  y0 = value.y - Y0,
+                  z0 = value.z - Z0,
+                  w0 = value.w - W0;
 
             int rankx = 0,
                 ranky = 0,

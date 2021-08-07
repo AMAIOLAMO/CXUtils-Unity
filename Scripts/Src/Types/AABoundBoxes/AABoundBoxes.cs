@@ -29,7 +29,7 @@ namespace CXUtils.Types
     }
 
     /// <summary>
-    ///     An axis aligned bounding box using Float2 <br />
+    ///     An axis aligned bounding box using Int2 <br />
     ///     NOTE: the <see cref="origin" /> is in the center of the bounding box,
     ///     the size is also the full width and full height of the bounding box; <br />
     ///     Also it's worth to note that the origin is <see cref="Float2" />
