@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CXUtils.CodeUtils.Generic
+namespace CXUtils.Common.Generic
 {
 
     /// <summary> A single heap item </summary>

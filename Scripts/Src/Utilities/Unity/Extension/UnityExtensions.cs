@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     public static class GMOBJUtils
     {

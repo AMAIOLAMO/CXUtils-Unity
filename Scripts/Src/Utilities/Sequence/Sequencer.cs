@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     /// <summary>
     ///     A class that is used to enumerate through triggers / <see cref="Action" />

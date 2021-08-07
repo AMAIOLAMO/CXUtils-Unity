@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     #region Enums
 

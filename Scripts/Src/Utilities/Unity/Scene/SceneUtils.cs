@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using SM = UnityEngine.SceneManagement.SceneManager;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     ///<summary> A helper for scene managing </summary>
     public class SceneUtils

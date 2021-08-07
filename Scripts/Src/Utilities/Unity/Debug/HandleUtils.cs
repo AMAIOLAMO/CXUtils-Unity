@@ -6,7 +6,7 @@ using UnityEditor;
 
 #endif
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     /// <summary>
     ///     An utility to draw stuff in <see cref="SceneView"/>

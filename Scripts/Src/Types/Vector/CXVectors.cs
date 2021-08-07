@@ -1,5 +1,5 @@
 using System;
-using CXUtils.CodeUtils;
+using CXUtils.Common;
 
 namespace CXUtils.Types
 {

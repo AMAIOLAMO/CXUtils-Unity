@@ -1,4 +1,4 @@
-using MathUtils = CXUtils.CodeUtils.MathUtils;
+using MathUtils = CXUtils.Common.MathUtils;
 
 #if UNITY_EDITOR
 using UnityEditor;

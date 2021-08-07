@@ -1,4 +1,4 @@
-﻿using CXUtils.CodeUtils;
+﻿using CXUtils.Common;
 using UnityEngine;
 
 namespace CXUtils.Components

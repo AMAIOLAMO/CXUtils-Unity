@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     ///<summary> A simple noise helper class </summary>
     public struct NoiseUtils

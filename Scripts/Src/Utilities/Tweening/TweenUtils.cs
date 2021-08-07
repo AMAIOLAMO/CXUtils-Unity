@@ -1,7 +1,7 @@
 ﻿using System;
 using CXUtils.Types;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     public enum TweenType
     {

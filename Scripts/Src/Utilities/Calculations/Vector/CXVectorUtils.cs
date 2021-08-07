@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     /// <summary>
     ///    Vector extension methods

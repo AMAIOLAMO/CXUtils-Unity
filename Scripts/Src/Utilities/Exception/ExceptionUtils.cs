@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     /// <summary>
     ///     A utility for handling Exceptions

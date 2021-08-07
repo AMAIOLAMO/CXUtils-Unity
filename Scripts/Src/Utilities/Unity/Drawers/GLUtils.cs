@@ -1,7 +1,7 @@
 using CXUtils.Types;
 using UnityEngine;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     /// <summary>
     ///     An utility for drawing directly using GL

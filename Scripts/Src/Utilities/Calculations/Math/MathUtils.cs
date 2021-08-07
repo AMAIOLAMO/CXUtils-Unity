@@ -1,6 +1,6 @@
 using System;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     /// <summary>
     ///     Math Function Class

@@ -1,7 +1,6 @@
 using CXUtils.Types;
-using System;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     /*
      * Note: this code is based on https://weber.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf

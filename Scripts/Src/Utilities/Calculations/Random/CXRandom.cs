@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SysRandom = System.Random;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     /// <summary>
     ///     A <see cref="SysRandom" /> Wrapper

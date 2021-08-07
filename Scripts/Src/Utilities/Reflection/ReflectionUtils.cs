@@ -2,7 +2,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     ///<summary> A simple reflection helper </summary>
     public class ReflectionUtils

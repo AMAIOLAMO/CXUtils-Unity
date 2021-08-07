@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     ///<summary> Options for calculating luminance of the color </summary>
     public enum LumaConvertType

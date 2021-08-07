@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     ///<summary> Cx's Camera Class </summary>
     public static class CameraUtils

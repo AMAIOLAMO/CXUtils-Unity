@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace CXUtils.CodeUtils
+namespace CXUtils.Common
 {
     ///<summary> CX's Helper Mesh Utils and extensions </summary>
     public static class MeshUtils
