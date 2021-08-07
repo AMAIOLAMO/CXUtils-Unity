@@ -10,8 +10,8 @@ namespace CXUtils.Types
     /// </summary>
     public readonly struct AABBFloat2
     {
-        public AABBFloat2( Float2 origin, Float2 size ) => ( this.origin, this.size ) = ( origin, size );
-        public AABBFloat2( AABBFloat2 other ) => ( origin, size ) = ( other.origin, other.size );
+        public AABBFloat2(Float2 origin, Float2 size) => (this.origin, this.size) = (origin, size);
+        public AABBFloat2(AABBFloat2 other) => (origin, size) = (other.origin, other.size);
 
         public readonly Float2 origin, size;
 
@@ -26,6 +26,8 @@ namespace CXUtils.Types
 
         public Float2 MinBound => origin - HalfSize;
         public Float2 MaxBound => origin + HalfSize;
+
+        public bool Contains(Float2 point) => !(point.x < MinXBound || point.x > MaxXBound || point.y < MinYBound || point.y > MinYBound);
     }
 
     /// <summary>
@@ -36,8 +38,8 @@ namespace CXUtils.Types
     /// </summary>
     public readonly struct AABBInt2 : IEnumerable<Float2>
     {
-        public AABBInt2( Float2 origin, Int2 size ) => ( this.origin, this.size ) = ( origin, size );
-        public AABBInt2( AABBInt2 other ) => ( origin, size ) = ( other.origin, other.size );
+        public AABBInt2(Float2 origin, Int2 size) => (this.origin, this.size) = (origin, size);
+        public AABBInt2(AABBInt2 other) => (origin, size) = (other.origin, other.size);
 
         public readonly Float2 origin;
         public readonly Int2 size;
@@ -54,7 +56,7 @@ namespace CXUtils.Types
         public Float2 MinBound => origin - HalfSize;
         public Float2 MaxBound => origin + HalfSize;
 
-        public IEnumerator<Float2> GetEnumerator() => new AABBInt2Enumerator( this );
+        public IEnumerator<Float2> GetEnumerator() => new AABBInt2Enumerator(this);
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         class AABBInt2Enumerator : IEnumerator<Float2>
@@ -62,20 +64,21 @@ namespace CXUtils.Types
             readonly AABBInt2 _boundBox;
             Int2 _currentOffset = Int2.Zero;
 
-            public AABBInt2Enumerator( AABBInt2 boundBox ) => _boundBox = boundBox;
+            public AABBInt2Enumerator(AABBInt2 boundBox) => _boundBox = boundBox;
 
             public bool MoveNext()
             {
                 int resultX = _currentOffset.x + 1;
-                
+
                 if ( resultX > _boundBox.size.x )
                 {
                     if ( _currentOffset.y > _boundBox.size.y )
                         return false;
                     //else
-                    _currentOffset = new Int2( 0, _currentOffset.y + 1 );
+                    _currentOffset = new Int2(0, _currentOffset.y + 1);
                 }
-                else _currentOffset = new Int2( resultX, _currentOffset.y );
+                else
+                    _currentOffset = new Int2(resultX, _currentOffset.y);
 
                 Current = (Float2)_currentOffset + _boundBox.origin;
 
