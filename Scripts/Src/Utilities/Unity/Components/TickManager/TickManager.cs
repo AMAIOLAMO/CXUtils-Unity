@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using CXUtils.CodeUtils;
 
-namespace CXUtils.HelperComponents
+namespace CXUtils.Components
 {
     /// <summary>
     ///     A simple time ticking system for accounting time objects

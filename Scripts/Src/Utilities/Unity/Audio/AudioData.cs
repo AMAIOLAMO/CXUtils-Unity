@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace CXUtils.HelperComponents
+namespace CXUtils.Components
 {
     [Serializable]
     [CreateAssetMenu( fileName = "audioData", menuName = "CXUtils/Audio/AudioData" )]

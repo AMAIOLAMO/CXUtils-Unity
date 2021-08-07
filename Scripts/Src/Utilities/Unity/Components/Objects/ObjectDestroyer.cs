@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace CXUtils.HelperComponents
+namespace CXUtils.Components
 {
     /// <summary>
     /// Options fields to destroy objects

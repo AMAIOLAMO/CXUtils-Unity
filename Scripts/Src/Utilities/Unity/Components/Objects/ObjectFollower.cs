@@ -1,7 +1,7 @@
 ﻿using CXUtils.CodeUtils;
 using UnityEngine;
 
-namespace CXUtils.HelperComponents
+namespace CXUtils.Components
 {
     [AddComponentMenu( "CXUtils/Objects/ObjectFollower" )]
     public class ObjectFollower : MonoBehaviour

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using CXUtils.HelperComponents;
+using CXUtils.Components;
 
 [CustomEditor(typeof(CharacterGroundCheck2D))]
 public class CharacterGroundCheck2DInspectorWindow : Editor

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace CXUtils.HelperComponents
+namespace CXUtils.Components
 {
     ///<summary> A Trajectory Renderer for rendering trajectories on x and y position </summary>
     [AddComponentMenu( "CXUtils/Physics/TrajectoryRenderer" )]

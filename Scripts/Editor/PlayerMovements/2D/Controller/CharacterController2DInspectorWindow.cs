@@ -1,5 +1,5 @@
 ﻿using UnityEditor;
-using CXUtils.HelperComponents;
+using CXUtils.Components;
 
 [CustomEditor(typeof(CharacterController2D))]
 

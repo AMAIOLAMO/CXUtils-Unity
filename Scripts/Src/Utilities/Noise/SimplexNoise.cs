@@ -1,4 +1,5 @@
 using CXUtils.Types;
+using System;
 
 namespace CXUtils.CodeUtils
 {
@@ -388,7 +389,6 @@ namespace CXUtils.CodeUtils
         {
             float result = 0f;
 
-            // Loop of octaves
             for ( int i = 0; i < octaves; ++i )
             {
                 result += amplitude * SimplexNoise.Sample(value);
@@ -404,7 +404,6 @@ namespace CXUtils.CodeUtils
         {
             float result = 0f;
 
-            // Loop of octaves
             for ( int i = 0; i < octaves; ++i )
             {
                 result += amplitude * SimplexNoise.Sample(value);
@@ -420,7 +419,6 @@ namespace CXUtils.CodeUtils
         {
             float result = 0f;
 
-            // Loop of octaves
             for ( int i = 0; i < octaves; ++i )
             {
                 result += amplitude * SimplexNoise.Sample(value);

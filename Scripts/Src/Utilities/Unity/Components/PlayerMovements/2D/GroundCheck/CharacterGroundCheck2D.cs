@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CXUtils.HelperComponents
+namespace CXUtils.Components
 {
     [AddComponentMenu( "CXUtils/Player/2D/CharacterGroundCheck2D" )]
     public class CharacterGroundCheck2D : MonoBehaviour

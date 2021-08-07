@@ -3,7 +3,7 @@ using CXUtils.CodeUtils;
 using UnityEngine;
 using UnityEngine.CXExtensions;
 
-namespace CXUtils.HelperComponents
+namespace CXUtils.Components
 {
     /// <summary> A Character controller for 2Dimention games </summary>
     [AddComponentMenu( "CXUtils/Player/2D/CharacterController2D" )]

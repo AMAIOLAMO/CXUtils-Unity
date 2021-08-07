@@ -1,175 +1,77 @@
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 
 namespace CXUtils.CodeUtils
 {
     /// <summary>
-    ///     Implements a capacity for pool
+    ///     A wrapper around the pooled object so that it could be disposed
     /// </summary>
-    public interface IPoolCapacity
+    public class PoolObject<T> : IDisposable
     {
-        int PoolCapacity { get; }
-    }
+        readonly T _pooledObject;
+        readonly PoolerBase<T> _rootPooler;
 
-    /// <summary>
-    ///     Implements a pool that is expandable
-    /// </summary>
-    public interface IPoolExpandable<in T> : IPoolCapacity where T : new()
-    {
-        /// <summary>
-        ///     Expands the pool with more items
-        /// </summary>
-        /// <returns>The new capacity of the expanded pool</returns>
-        int ExpandPool( int expandAmount, Func<int, T> initFunc );
-    }
+        public bool IsDisposed { get; private set; }
 
-    /// <summary>
-    ///     implements a single pool cycle
-    /// </summary>
-    public interface IPoolCycleEvent
-    {
-        /// <summary>
-        ///     When one pool cycle happened, this will trigger
-        /// </summary>
-        event Action OnCycle;
-    }
-
-    /// <summary>
-    ///     Implements a wait-able item in the pool
-    /// </summary>
-    public interface IPoolOccupiedItem
-    {
-        public bool IsOccupied { get; }
-    }
-
-    /// <summary>
-    ///     A simple pooler base that you could use to pool stuff for performace
-    /// </summary>
-    /// <typeparam name="T">The type you want to pool</typeparam>
-    public class CxPoolerBase<T> : IPoolCapacity, IPoolCycleEvent where T : new()
-    {
-        int _currentPoppingCount;
-
-        protected readonly List<T> poolItems;
-        public CxPoolerBase( int poolCapacity, Func<int, T> initFunc )
+        public PoolObject(T pooledObject, PoolerBase<T> root)
         {
-            poolItems = new List<T>();
-
-            PoolCapacity = poolCapacity;
-
-            for ( int i = 0; i < poolCapacity; i++ )
-                poolItems.Add( initFunc( i ) );
+            _pooledObject = pooledObject;
+            _rootPooler = root;
         }
 
-        public CxPoolerBase( List<T> pool )
+        public T Get() => _pooledObject;
+
+        public virtual void Dispose()
         {
-            poolItems = pool;
-            PoolCapacity = pool.Count;
-        }
+            if ( IsDisposed ) return;
 
-        public int PoolCapacity { get; }
-
-        public event Action OnCycle;
-
-        /// <summary>
-        ///     Pops an item from the pool
-        /// </summary>
-        public virtual T PopPool()
-        {
-            //if the current is already the max, then use the first one
-            if ( _currentPoppingCount == poolItems.Count )
-            {
-                _currentPoppingCount = 0;
-                InvokeOnCycle();
-            }
-
-            var poolingItem = poolItems[_currentPoppingCount];
-
-            _currentPoppingCount++;
-
-            return poolingItem;
-        }
-
-        /// <summary>
-        ///     Invokes the method <see cref="OnCycle" />
-        /// </summary>
-        protected void InvokeOnCycle()
-        {
-            OnCycle?.Invoke();
+            IsDisposed = true;
+            _rootPooler.Free(this);
         }
     }
 
     /// <summary>
-    ///     A pool that auto queues stuff from the pool
+    ///     A basic pooling class that uses <see cref="IDisposable"/> with <see cref="PoolObject{T}"/>
     /// </summary>
-    public class CxStackPoolerBase<T> : IPoolCapacity, IPoolExpandable<T> where T : IPoolOccupiedItem, new()
+    public class PoolerBase<T>
     {
-        protected readonly Stack<T> poolingItems;
-        public CxStackPoolerBase( Stack<T> queuePool )
-        {
-            poolingItems = queuePool;
+        protected readonly Queue<T> poolObjects;
+        protected readonly HashSet<PoolObject<T>> occupiedObjects;
 
-            PoolCapacity = queuePool.Count;
+        public int Count => poolObjects.Count;
+
+        public PoolerBase()
+        {
+            poolObjects = new Queue<T>();
+            occupiedObjects = new HashSet<PoolObject<T>>();
         }
 
-        public CxStackPoolerBase( int poolCapacity, Func<int, T> initFunc )
+        public PoolerBase(int capacity, Func<int, T> initializeFunction) : this()
         {
-            poolingItems = new Stack<T>();
-
-            PoolCapacity = poolCapacity;
-
-            for ( int i = 0; i < poolCapacity; i++ )
-                poolingItems.Push( initFunc( i ) );
+            Debug.Assert(initializeFunction != null, nameof(initializeFunction) + " cannot be null!");
+            for(int i = 0; i < capacity; ++i ) poolObjects.Enqueue(initializeFunction(i));
         }
 
-        /// <summary>
-        ///     The current pool item count
-        /// </summary>
-        public int Count => poolingItems.Count;
-
-        /// <summary>
-        ///     Just checks if the pool is empty or not
-        /// </summary>
-        public bool IsPoolEmpty => poolingItems.Count == 0;
-
-        public int PoolCapacity { get; private set; }
-
-        public int ExpandPool( int expandAmount, Func<int, T> initFunc )
+        public virtual PoolObject<T> Pop()
         {
-            PoolCapacity += expandAmount;
-
-            //just push item into the expanded amount :D
-            for ( int i = 0; i < expandAmount; i++ )
-                poolingItems.Push( initFunc( i ) );
-
-            return PoolCapacity;
+            Debug.Assert(poolObjects.Count == 0, "pool is empty! cannot pop elements!");
+            var poolObject = new PoolObject<T>(poolObjects.Dequeue(), this);
+            occupiedObjects.Add(poolObject);
+            return poolObject;
         }
 
         /// <summary>
-        ///     Tries to pop an item from the pool <br />
-        ///     return true if could pop an item else false
+        ///     Pushes an item into the pool
         /// </summary>
-        public virtual bool TryPopPool( out T item )
+        public virtual void Push(T item) => poolObjects.Enqueue(item);
+
+        public virtual void Free(PoolObject<T> poolObject)
         {
-            //if no items to pop out from the pool then return false
-            if ( IsPoolEmpty )
-            {
-                item = default;
-                return false;
-            }
-
-            item = PopPool();
-
-            return true;
-        }
-
-        /// <summary>
-        ///     Pops from the pool (Non safe)
-        /// </summary>
-        public virtual T PopPool()
-        {
-            //adds a dispose trigger ->
-            throw new NotImplementedException();
+            //remove from occupied objects
+            occupiedObjects.Remove(poolObject);
+            //then put in pool
+            poolObjects.Enqueue(poolObject.Get());
         }
     }
 }
