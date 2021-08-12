@@ -8,7 +8,7 @@ namespace CXUtils.Components
     public class AudioManager : MonoBehaviour
     {
         [SerializeField] int _audioSourceAmount = 10;
-        [Range( 0f, 1f )]
+        [Range(0f, 1f)]
         [SerializeField] float _mainVolume = 1f;
 
         readonly Queue<AudioSource> _freeAudioSources = new Queue<AudioSource>();
@@ -22,7 +22,7 @@ namespace CXUtils.Components
                 _mainVolume = value;
                 AudioListener.volume = value;
 
-                OnMainVolumeChanged?.Invoke( value );
+                OnMainVolumeChanged?.Invoke(value);
             }
         }
 
@@ -35,22 +35,22 @@ namespace CXUtils.Components
             AudioListener.volume = _mainVolume;
 
             //initialize audio sources
-            InitializeAudioSources( _audioSourceAmount );
+            InitializeAudioSources(_audioSourceAmount);
         }
 
         void OnValidate()
         {
-            _audioSourceAmount = Math.Max( _audioSourceAmount, 1 );
+            _audioSourceAmount = Math.Max(_audioSourceAmount, 1);
         }
 
-        void InitializeAudioSources( int amount )
+        void InitializeAudioSources(int amount)
         {
             for ( int i = 0; i < amount; i++ )
             {
                 var source = gameObject.AddComponent<AudioSource>();
                 source.playOnAwake = false;
 
-                _freeAudioSources.Enqueue( source );
+                _freeAudioSources.Enqueue(source);
             }
         }
 
@@ -59,15 +59,15 @@ namespace CXUtils.Components
         /// <summary>
         ///     Expands the audio buffers with extra <paramref name="addCount" />
         /// </summary>
-        public void Expand( int addCount )
+        public void Expand(int addCount)
         {
             _audioSourceAmount += addCount;
 
             //then generate more
-            InitializeAudioSources( addCount );
+            InitializeAudioSources(addCount);
         }
 
-        public AudioSource PlayClip( AudioClip audioClip )
+        public AudioSource PlayClip(AudioClip audioClip)
         {
             var receivedAudioSource = RequestSource();
 
@@ -80,7 +80,7 @@ namespace CXUtils.Components
         /// <summary>
         ///     Tries to request a, <see cref="AudioSource" />
         /// </summary>
-        public bool TryRequestSource( out AudioSource audioSource ) => ( audioSource = RequestSource() ) != null;
+        public bool TryRequestSource(out AudioSource audioSource) => (audioSource = RequestSource()) != null;
 
         /// <summary>
         ///     Request an audio source from the free queue
@@ -88,25 +88,23 @@ namespace CXUtils.Components
         public AudioSource RequestSource()
         {
             //if no free audio sources
-            if ( _freeAudioSources.Count == 0 )
-                return null;
+            if ( _freeAudioSources.Count == 0 ) return null;
 
             AudioSource audioSource;
 
-            MakeOccupied( audioSource = _freeAudioSources.Dequeue() );
+            MakeOccupied(audioSource = _freeAudioSources.Dequeue());
 
             return audioSource;
         }
 
         // == Helper ==
 
-        void MakeOccupied( AudioSource source )
+        void MakeOccupied(AudioSource source)
         {
-            _occupiedAudioSources.Add( source );
+            _occupiedAudioSources.Add(source);
 
             //if this is the first occupied audio source
-            if ( _occupiedAudioSources.Count == 1 )
-                StartCoroutine( AudioCheck() );
+            if ( _occupiedAudioSources.Count == 1 ) StartCoroutine(AudioCheck());
         }
 
         IEnumerator AudioCheck()
@@ -119,11 +117,11 @@ namespace CXUtils.Components
                     if ( _occupiedAudioSources[i].isPlaying ) continue;
 
                     //else finished playing
-                    _freeAudioSources.Enqueue( _occupiedAudioSources[i] );
-                    _occupiedAudioSources.RemoveAt( i );
+                    _freeAudioSources.Enqueue(_occupiedAudioSources[i]);
+                    _occupiedAudioSources.RemoveAt(i);
                 }
-                
-                yield return UseAudioCheckDelay ? new WaitForSecondsRealtime( AudioCheckDelay ) : null;
+
+                yield return UseAudioCheckDelay ? new WaitForSecondsRealtime(AudioCheckDelay) : null;
             }
         }
     }

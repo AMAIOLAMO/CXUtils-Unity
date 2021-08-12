@@ -22,16 +22,16 @@ namespace CXUtils.Types
     public interface ITypeVectorFloat<T> : ITypeVector<T, float>
     {
         T Normalized { get; }
+
         float SqrMagnitude { get; }
         float Magnitude { get; }
+
         T Floor { get; }
         T Ceil { get; }
 
         T Halve { get; }
 
         T Reflect(T normal);
-
-        //float Dot(T other);
 
         /// <summary>
         ///     returns a new vector with a new magnitude of value

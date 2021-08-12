@@ -1,19 +1,19 @@
 ﻿using System;
+using CXUtils.Types;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using CXUtils.Types;
 
 namespace CXUtils.Grid
 {
     public abstract class GridBase<T>
     {
-        public GridBase( Float2 cellSize, Float2 origin = default ) => ( Origin, CellSize ) = ( origin, cellSize );
+        public GridBase(Float2 cellSize, Float2 origin = default) => (Origin, CellSize) = (origin, cellSize);
 
         public Float2 CellSize { get; }
         public Float2 Origin { get; }
 
-        public abstract T this[ int x, int y ] { get; set; }
-        public abstract T this[ Int2 cellPosition ] { get; set; }
+        public abstract T this[int x, int y] { get; set; }
+        public abstract T this[Int2 cellPosition] { get; set; }
 
         public float HalfCellX => CellSize.x * .5f;
         public float HalfCellY => CellSize.y * .5f;
@@ -25,37 +25,37 @@ namespace CXUtils.Grid
 
         #region Utilities
 
-        public Float2 CellToWorld( int x, int y ) => new Float2( x, y ) * CellSize + Origin;
-        public Float2 CellToWorld( Int2 cellPosition ) => (Float2)cellPosition * CellSize + Origin;
+        public Float2 CellToWorld(int x, int y) => new Float2(x, y) * CellSize + Origin;
+        public Float2 CellToWorld(Int2 cellPosition) => (Float2)cellPosition * CellSize + Origin;
 
-        public Int2 WorldToCell( float x, float y ) => ( WorldToLocal( x, y ) / CellSize ).FloorInt;
-        public Int2 WorldToCell( Float2 worldPosition ) => ( WorldToLocal( worldPosition ) / CellSize ).FloorInt;
+        public Int2 WorldToCell(float x, float y) => (WorldToLocal(x, y) / CellSize).FloorInt;
+        public Int2 WorldToCell(Float2 worldPosition) => (WorldToLocal(worldPosition) / CellSize).FloorInt;
 
-        public Float2 LocalToWorld( float x, float y ) => new Float2( x, y ) + Origin;
-        public Float2 LocalToWorld( Float2 localPosition ) => localPosition + Origin;
+        public Float2 LocalToWorld(float x, float y) => new Float2(x, y) + Origin;
+        public Float2 LocalToWorld(Float2 localPosition) => localPosition + Origin;
 
-        public Float2 WorldToLocal( float x, float y ) => new Float2( x, y ) - Origin;
-        public Float2 WorldToLocal( Float2 worldPosition ) => worldPosition - Origin;
+        public Float2 WorldToLocal(float x, float y) => new Float2(x, y) - Origin;
+        public Float2 WorldToLocal(Float2 worldPosition) => worldPosition - Origin;
 
-        public virtual void Swap( int x1, int y1, int x2, int y2 )
+        public virtual void Swap(int x1, int y1, int x2, int y2)
         {
-            ( this[x1, y1], this[x2, y2] ) = ( this[x2, y2], this[x1, y1] );
+            (this[x1, y1], this[x2, y2]) = (this[x2, y2], this[x1, y1]);
         }
-        public virtual void Swap( Int2 cell1, Int2 cell2 )
+        public virtual void Swap(Int2 cell1, Int2 cell2)
         {
-            ( this[cell1], this[cell2] ) = ( this[cell2], this[cell1] );
+            (this[cell1], this[cell2]) = (this[cell2], this[cell1]);
         }
 
-        public virtual string ToString( int x, int y ) => this[x, y].ToString();
-        public virtual string ToString( Int2 cellPosition ) => this[cellPosition.x, cellPosition.y].ToString();
+        public virtual string ToString(int x, int y) => this[x, y].ToString();
+        public virtual string ToString(Int2 cellPosition) => this[cellPosition.x, cellPosition.y].ToString();
 
         #endregion
     }
 
     public interface IUnsafeGrid2D<T>
     {
-        public bool TryGetValue( Int2 cellPosition, out T value );
-        public bool TryGetValue( int x, int y, out T value );
+        public bool TryGetValue(Int2 cellPosition, out T value);
+        public bool TryGetValue(int x, int y, out T value);
     }
 
     /// <summary>
@@ -65,86 +65,89 @@ namespace CXUtils.Grid
     public class InfiniteGrid<T> : GridBase<T>, IUnsafeGrid2D<T>
     {
         readonly Dictionary<Int2, T> _gridDictionary;
-        public InfiniteGrid( Float2 cellSize, Float2 origin = default ) : base( cellSize, origin ) => _gridDictionary = new Dictionary<Int2, T>();
+        public InfiniteGrid(Float2 cellSize, Float2 origin = default) : base(cellSize, origin) => _gridDictionary = new Dictionary<Int2, T>();
 
-        public override T this[ int x, int y ]
+        public override T this[int x, int y]
         {
-            get => this[new Int2( x, y )];
-            set => this[new Int2( x, y )] = value;
+            get => this[new Int2(x, y)];
+            set => this[new Int2(x, y)] = value;
         }
-        public override T this[ Int2 cellPosition ]
+        public override T this[Int2 cellPosition]
         {
             get => _gridDictionary[cellPosition];
             set
             {
-                if ( _gridDictionary.ContainsKey( cellPosition ) )
+                if ( _gridDictionary.ContainsKey(cellPosition) )
                 {
                     _gridDictionary[cellPosition] = value;
                     return;
                 }
 
                 //else
-                _gridDictionary.Add( cellPosition, value );
+                _gridDictionary.Add(cellPosition, value);
             }
         }
 
-        public bool TryGetValue( int x, int y, out T value ) => TryGetValue( new Int2( x, y ), out value );
+        public bool TryGetValue(int x, int y, out T value) => TryGetValue(new Int2(x, y), out value);
 
-        public bool TryGetValue( Int2 cellPosition, out T value )
+        public bool TryGetValue(Int2 cellPosition, out T value)
         {
             value = default;
 
-            if ( !CellExists( cellPosition ) ) return false;
+            if ( !CellExists(cellPosition) )
+                return false;
 
             value = this[cellPosition];
             return true;
         }
 
-        public bool TryPopCell( Int2 cellPosition, out T value )
+        public bool TryPopCell(Int2 cellPosition, out T value)
         {
             value = default;
-            if ( !CellExists( cellPosition ) ) return false;
+            if ( !CellExists(cellPosition) )
+                return false;
 
-            value = PopCell( cellPosition );
+            value = PopCell(cellPosition);
             return true;
         }
 
-        public bool TryPopCell( int x, int y, out T value ) => TryPopCell( new Int2( x, y ), out value );
+        public bool TryPopCell(int x, int y, out T value) => TryPopCell(new Int2(x, y), out value);
 
         /// <summary>
         ///     Removes the cell content from the grid and pops it out
         /// </summary>
-        public T PopCell( Int2 cellPosition )
+        public T PopCell(Int2 cellPosition)
         {
             var content = _gridDictionary[cellPosition];
 
-            _gridDictionary.Remove( cellPosition );
+            _gridDictionary.Remove(cellPosition);
 
             return content;
         }
 
         /// <inheritdoc cref="PopCell(Int2)" />
-        public T PopCell( int x, int y ) => PopCell( new Int2( x, y ) );
+        public T PopCell(int x, int y) => PopCell(new Int2(x, y));
 
-        public bool TryRemoveCell( Int2 cellPosition )
+        public bool TryRemoveCell(Int2 cellPosition)
         {
-            if ( !CellExists( cellPosition ) ) return false;
+            if ( !CellExists(cellPosition) )
+                return false;
 
-            RemoveCell( cellPosition );
+            RemoveCell(cellPosition);
             return true;
         }
 
-        public bool TryRemoveCell( int x, int y ) => TryRemoveCell( new Int2( x, y ) );
+        public bool TryRemoveCell(int x, int y) => TryRemoveCell(new Int2(x, y));
 
-        public void RemoveCell( Int2 cellPosition ) => _gridDictionary.Remove( cellPosition );
-        public void RemoveCell( int x, int y ) => RemoveCell( new Int2( x, y ) );
+        public void RemoveCell(Int2 cellPosition) => _gridDictionary.Remove(cellPosition);
+        public void RemoveCell(int x, int y) => RemoveCell(new Int2(x, y));
 
 
-        public bool CellExists( Int2 cellPosition ) => _gridDictionary.ContainsKey( cellPosition );
+        public bool CellExists(Int2 cellPosition) => _gridDictionary.ContainsKey(cellPosition);
 
-        public bool CellExists( int x, int y ) => CellExists( new Int2( x, y ) );
+        public bool CellExists(int x, int y) => CellExists(new Int2(x, y));
 
-        public ReadOnlyDictionary<Int2, T> GetAllCells() => new ReadOnlyDictionary<Int2, T>( _gridDictionary );
+        public ReadOnlyDictionary<Int2, T> GetAllCells() => new ReadOnlyDictionary<Int2, T>(_gridDictionary);
     }
 
     /// <summary>
@@ -160,12 +163,12 @@ namespace CXUtils.Grid
             var lines = new List<LineFloat2>();
 
             for ( int y = 0; y < Height + 1; ++y )
-                lines.Add( new LineFloat2( new Float2( Origin.x, Origin.y + y * CellSize.y ),
-                    new Float2( Origin.x + Width * CellSize.x, Origin.y + y * CellSize.y ) ) );
+                lines.Add(new LineFloat2(new Float2(Origin.x, Origin.y + y * CellSize.y),
+                    new Float2(Origin.x + Width * CellSize.x, Origin.y + y * CellSize.y)));
 
             for ( int x = 0; x < Width + 1; ++x )
-                lines.Add( new LineFloat2( new Float2( Origin.x + x * CellSize.x, Origin.y ),
-                    new Float2( Origin.x + x * CellSize.x, Origin.y + Height * CellSize.y ) ) );
+                lines.Add(new LineFloat2(new Float2(Origin.x + x * CellSize.x, Origin.y),
+                    new Float2(Origin.x + x * CellSize.x, Origin.y + Height * CellSize.y)));
 
             return lines;
         }
@@ -178,13 +181,13 @@ namespace CXUtils.Grid
         public int Width { get; }
         public int Height { get; }
 
-        public override T this[ int x, int y ]
+        public override T this[int x, int y]
         {
             get => _gridArray[x, y];
             set => _gridArray[x, y] = value;
         }
 
-        public override T this[ Int2 cellPosition ]
+        public override T this[Int2 cellPosition]
         {
             get => _gridArray[cellPosition.x, cellPosition.y];
             set => _gridArray[cellPosition.x, cellPosition.y] = value;
@@ -199,21 +202,21 @@ namespace CXUtils.Grid
         /// <summary>
         ///     The whole <see cref="LimitedGrid{T}" />'s size
         /// </summary>
-        public Int2 GridSize => new Int2( Width, Height );
+        public Int2 GridSize => new Int2(Width, Height);
 
         #endregion
 
         #region Constructors
 
-        public LimitedGrid( int width, int height, Float2 cellSize, Float2 origin = default ) : base( cellSize, origin )
+        public LimitedGrid(int width, int height, Float2 cellSize, Float2 origin = default) : base(cellSize, origin)
         {
-            ( Width, Height ) = ( width, height );
+            (Width, Height) = (width, height);
             _gridArray = new T[Width, Height];
         }
 
-        public LimitedGrid( Int2 gridSize, Float2 cellSize, Float2 origin = default ) : base( cellSize, origin )
+        public LimitedGrid(Int2 gridSize, Float2 cellSize, Float2 origin = default) : base(cellSize, origin)
         {
-            ( Width, Height ) = ( gridSize.x, gridSize.y );
+            (Width, Height) = (gridSize.x, gridSize.y);
             _gridArray = new T[Width, Height];
         }
 
@@ -227,9 +230,9 @@ namespace CXUtils.Grid
         ///     Tries to set a value using grid position <br />
         ///     Returns if sets correctly
         /// </summary>
-        public bool TrySetValue( int x, int y, T value )
+        public bool TrySetValue(int x, int y, T value)
         {
-            if ( !CellValid( x, y ) )
+            if ( !CellValid(x, y) )
                 return false;
 
             _gridArray[x, y] = value;
@@ -240,7 +243,7 @@ namespace CXUtils.Grid
         ///     Tries to set a value using grid position <br />
         ///     Returns if sets correctly
         /// </summary>
-        public bool TrySetValue( Int2 cellPosition, T value ) => TrySetValue( cellPosition.x, cellPosition.y, value );
+        public bool TrySetValue(Int2 cellPosition, T value) => TrySetValue(cellPosition.x, cellPosition.y, value);
 
         #endregion
 
@@ -250,9 +253,9 @@ namespace CXUtils.Grid
         ///     Gets the value using grid position <br />
         ///     Returns if the grid position is valid
         /// </summary>
-        public bool TryGetValue( int x, int y, out T value )
+        public bool TryGetValue(int x, int y, out T value)
         {
-            if ( CellValid( x, y ) )
+            if ( CellValid(x, y) )
             {
                 value = _gridArray[x, y];
                 return true;
@@ -260,14 +263,14 @@ namespace CXUtils.Grid
             value = default;
             return false;
         }
-        public bool CellValid( int x, int y ) => x >= 0 && y >= 0 && x < Width && y < Height;
-        public bool CellValid( Int2 cellPosition ) => cellPosition.x >= 0 && cellPosition.y >= 0 && cellPosition.x < Width && cellPosition.y < Height;
+        public bool CellValid(int x, int y) => x >= 0 && y >= 0 && x < Width && y < Height;
+        public bool CellValid(Int2 cellPosition) => cellPosition.x >= 0 && cellPosition.y >= 0 && cellPosition.x < Width && cellPosition.y < Height;
 
         /// <summary>
         ///     Gets the value using grid position <br />
         ///     Returns if the grid position is valid
         /// </summary>
-        public bool TryGetValue( Int2 cellPosition, out T value ) => TryGetValue( cellPosition.x, cellPosition.y, out value );
+        public bool TryGetValue(Int2 cellPosition, out T value) => TryGetValue(cellPosition.x, cellPosition.y, out value);
 
         #endregion
 
@@ -278,28 +281,28 @@ namespace CXUtils.Grid
         /// <summary>
         ///     Sets all the value in the grid to the given value
         /// </summary>
-        public void Fill( T value = default )
+        public void Fill(T value = default)
         {
             for ( int x = 0; x < Width; ++x )
                 for ( int y = 0; y < Height; ++y )
                     _gridArray[x, y] = value;
         }
 
-        public void Fill( Func<int, int, T> fillFunction )
+        public void Fill(Func<int, int, T> fillFunction)
         {
             for ( int x = 0; x < Width; ++x )
                 for ( int y = 0; y < Height; ++y )
-                    _gridArray[x, y] = fillFunction( x, y );
+                    _gridArray[x, y] = fillFunction(x, y);
         }
 
         /// <summary>
         ///     Uses this function onto all the values on the grid
         /// </summary>
-        public void Map( Func<LimitedGrid<T>, int, int, T> mapFunction )
+        public void Map(Func<LimitedGrid<T>, int, int, T> mapFunction)
         {
             for ( int x = 0; x < Width; ++x )
                 for ( int y = 0; y < Height; ++y )
-                    _gridArray[x, y] = mapFunction.Invoke( this, x, y );
+                    _gridArray[x, y] = mapFunction.Invoke(this, x, y);
         }
 
         #endregion
@@ -313,14 +316,14 @@ namespace CXUtils.Grid
         {
             var boundCenter = Origin + (Float2)GridSize * .5f;
 
-            return new AABBFloat2( boundCenter, (Float2)GridSize );
+            return new AABBFloat2(boundCenter, (Float2)GridSize);
         }
 
         /// <summary>
         ///     Get grid's bounds on grid position
         /// </summary>
         public AABBFloat2 GetLocalBounds() =>
-            new AABBFloat2( (Float2)0f, (Float2)GridSize );
+            new AABBFloat2((Float2)0f, (Float2)GridSize);
 
         #endregion
     }
