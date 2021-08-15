@@ -25,6 +25,14 @@ namespace CXUtils.Components
         public event Action<int> OnTicked;
 
         /// <summary>
+        ///     Set's the tick to the given <paramref name="tick"/>
+        /// </summary>
+        public void SetTick(int tick)
+        {
+            CurrentTick = tick;
+        }
+
+        /// <summary>
         ///     Set's the <see cref="CurrentTick" /> to 0 and returns the last tick
         /// </summary>
         public int ResetTick()
