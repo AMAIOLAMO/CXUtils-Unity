@@ -11,6 +11,14 @@ namespace CXUtils.Common
         public CxRandom() { }
         public CxRandom(int seed) : base(seed) { }
 
+        public float NextFloat()
+        {
+            double mantissa = NextDouble() * 2d - 1d;
+
+            double exponent = Math.Pow(2d, Next(-126, 128));
+            return (float)(mantissa * exponent);
+        }
+
         /// <summary>
         ///     Randomly decides and returns a boolean <br />
         ///     QUICK NOTE: excludes threshold (value > threshold)
