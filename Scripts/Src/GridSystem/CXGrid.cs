@@ -59,13 +59,13 @@ namespace CXUtils.Grid
     }
 
     /// <summary>
-    ///     A 2D Infinite sized grid system
+    ///     A 2D Infinite sized / boundless grid system
     /// </summary>
     /// <typeparam name="T">the type that each cell stores</typeparam>
-    public class InfiniteGrid<T> : GridBase<T>, IUnsafeGrid2D<T>
+    public class BoundlessGrid<T> : GridBase<T>, IUnsafeGrid2D<T>
     {
         readonly Dictionary<Int2, T> _gridDictionary;
-        public InfiniteGrid(Float2 cellSize, Float2 origin = default) : base(cellSize, origin) => _gridDictionary = new Dictionary<Int2, T>();
+        public BoundlessGrid(Float2 cellSize, Float2 origin = default) : base(cellSize, origin) => _gridDictionary = new Dictionary<Int2, T>();
 
         public override T this[int x, int y]
         {
@@ -151,10 +151,10 @@ namespace CXUtils.Grid
     }
 
     /// <summary>
-    ///     A 2D Limited size grid system
+    ///     A 2D Limited size / bounded grid system
     /// </summary>
     /// <typeparam name="T">The type that each cell stores</typeparam>
-    public class LimitedGrid<T> : GridBase<T>, IUnsafeGrid2D<T>
+    public class BoundGrid<T> : GridBase<T>, IUnsafeGrid2D<T>
     {
         #region Utilities
 
@@ -200,7 +200,7 @@ namespace CXUtils.Grid
         public int CellCount => Width * Height;
 
         /// <summary>
-        ///     The whole <see cref="LimitedGrid{T}" />'s size
+        ///     The whole <see cref="BoundGrid{T}" />'s size
         /// </summary>
         public Int2 GridSize => new Int2(Width, Height);
 
@@ -208,13 +208,13 @@ namespace CXUtils.Grid
 
         #region Constructors
 
-        public LimitedGrid(int width, int height, Float2 cellSize, Float2 origin = default) : base(cellSize, origin)
+        public BoundGrid(int width, int height, Float2 cellSize, Float2 origin = default) : base(cellSize, origin)
         {
             (Width, Height) = (width, height);
             _gridArray = new T[Width, Height];
         }
 
-        public LimitedGrid(Int2 gridSize, Float2 cellSize, Float2 origin = default) : base(cellSize, origin)
+        public BoundGrid(Int2 gridSize, Float2 cellSize, Float2 origin = default) : base(cellSize, origin)
         {
             (Width, Height) = (gridSize.x, gridSize.y);
             _gridArray = new T[Width, Height];
@@ -298,7 +298,7 @@ namespace CXUtils.Grid
         /// <summary>
         ///     Uses this function onto all the values on the grid
         /// </summary>
-        public void Map(Func<LimitedGrid<T>, int, int, T> mapFunction)
+        public void Map(Func<BoundGrid<T>, int, int, T> mapFunction)
         {
             for ( int x = 0; x < Width; ++x )
                 for ( int y = 0; y < Height; ++y )
