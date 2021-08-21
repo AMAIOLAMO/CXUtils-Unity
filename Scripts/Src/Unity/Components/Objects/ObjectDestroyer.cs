@@ -1,11 +1,10 @@
 ﻿using CXUtils.Common;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace CXUtils.Components
 {
     /// <summary>
-    /// Options fields to destroy objects
+    ///     Options fields to destroy objects
     /// </summary>
     public enum ObjectDestroyOptions { InstantOnStart, TimerOnStart }
 
