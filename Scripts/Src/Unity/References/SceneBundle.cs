@@ -62,7 +62,7 @@ namespace CXUtils.Unity
             return operations;
         }
 
-        void AssertBundleLength() => Debug.Assert(_references.Length == 0, nameof(_references) + " cannot load 0 scene references!");
+        void AssertBundleLength() => Debug.Assert(_references.Length != 0, nameof(_references) + " cannot load 0 scene references!");
     }
 }
 
