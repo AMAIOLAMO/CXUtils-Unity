@@ -20,7 +20,7 @@ namespace CXUtils.Types
 
         public CubicBezier2D( Float2[] points )
         {
-            Debug.Assert( points.Length == 4, nameof( points ) + " must have 4 points to create a segment!" );
+            BezierHelper.AssertPoints(points);
 
             _buffer = points;
         }
@@ -45,11 +45,16 @@ namespace CXUtils.Types
 
         public CubicBezier3D( Float3[] points )
         {
-            Debug.Assert( points.Length == 4, nameof( points ) + " must have 4 points to create a segment!" );
+            BezierHelper.AssertPoints(points);
 
             _buffer = points;
         }
 
         public Float3 Sample( float t ) => TweenUtils.CubicBezier( _buffer[0], _buffer[1], _buffer[2], _buffer[3], t );
+    }
+
+    public static class BezierHelper
+    {
+        public static void AssertPoints<T>(T[] array) => Debug.Assert(array.Length == 4, nameof(array) + " must have 4 points to create a segment!");
     }
 }
