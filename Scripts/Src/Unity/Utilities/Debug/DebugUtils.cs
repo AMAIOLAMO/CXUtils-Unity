@@ -22,6 +22,15 @@ namespace CXUtils.Common
     /// <summary> A class full of helper function for debugging </summary>
     public static class DebugUtils
     {
+        #region Performance
+
+        /// <summary>
+        ///     Get's the current FPS (Frames per second)
+        /// </summary>
+        [Pure]
+        public static int GetFPS(float deltaTime) => (int)( 1f / deltaTime );
+
+        #endregion
         #region Logs
 
         /// <summary> Logs a single message </summary>
@@ -30,7 +39,9 @@ namespace CXUtils.Common
             DLog( sender, msg );
         }
 
-        /// <summary> Logs a list of objects using ToString </summary>
+        /// <summary>
+        ///     Logs a list of objects using ToString
+        /// </summary>
         public static void LogList<T>( object sender, T[] listT, LogListType logListMode = LogListType.Single, string between = ", " )
         {
             switch ( listT.Length )
@@ -43,7 +54,7 @@ namespace CXUtils.Common
                     switch ( logListMode )
                     {
                         case LogListType.Single:
-                            DLog( sender,  $"Items({listT.Length}): {{{listT[0]}}}" );
+                            DLog( sender, $"Items({listT.Length}): {{{listT[0]}}}" );
                             return;
 
                         case LogListType.Multiple:
@@ -77,7 +88,7 @@ namespace CXUtils.Common
 
                     sb.Append( $"\nItem {listIndexMax} : {listT[i]}" );
                     break;
-                
+
                 default:
                     throw ExceptionUtils.Error.NotAccessible;
             }
@@ -100,53 +111,6 @@ namespace CXUtils.Common
         public static void LogWarning( in object sender, in string msg )
         {
             DLogWarning( sender, msg );
-        }
-
-        #endregion
-
-        #region Performance
-
-        const int FPS_BUFFER_LEN = 60;
-        static readonly int[] FPSBuffer = new int[FPS_BUFFER_LEN];
-        static bool _fpsBufferFull;
-        static int _fpsBufferIndex;
-
-        /// <summary>
-        ///     Recieves the avrg FPS :D
-        /// </summary>
-        public static int GetAvrgFPS()
-        {
-            FPSBuffer[_fpsBufferIndex++] = GetFPS();
-
-            if ( _fpsBufferIndex >= FPS_BUFFER_LEN )
-            {
-                _fpsBufferIndex = 0;
-                _fpsBufferFull = true;
-            }
-
-            int sum = 0;
-
-            if ( !_fpsBufferFull )
-            {
-                for ( int i = 0; i <= _fpsBufferIndex; i++ )
-                    sum += FPSBuffer[i];
-
-                return sum / ( _fpsBufferIndex + 1 );
-            }
-            //else
-
-            for ( int i = 0; i < FPS_BUFFER_LEN; i++ )
-                sum += FPSBuffer[i];
-
-            return sum / FPS_BUFFER_LEN;
-        }
-
-        /// <summary> Get's the current FPS (Frames per second) </summary>
-        [Pure]
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static int GetFPS()
-        {
-            return ( int )( 1f / Time.unscaledDeltaTime );
         }
 
         #endregion
@@ -185,10 +149,7 @@ namespace CXUtils.Common
 
         [Pure]
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        static string LogArgToString( object sender, object msg )
-        {
-            return "[" + sender + "] " + msg;
-        }
+        static string LogArgToString( object sender, object msg ) => "[" + sender + "] " + msg;
 
         #endregion
 

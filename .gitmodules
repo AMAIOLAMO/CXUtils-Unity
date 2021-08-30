@@ -1,0 +1,3 @@
+[submodule "Plugins/CXUtils-CSharp"]
+	path = Plugins/CXUtils-CSharp
+	url = https://github.com/AMAIOLAMO/CXUtils-CSharp

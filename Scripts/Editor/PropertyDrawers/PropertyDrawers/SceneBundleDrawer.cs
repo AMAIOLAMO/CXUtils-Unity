@@ -1,60 +1,73 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
 namespace CXUtils.Unity
 {
     //NOT FINISHED!
-    //[CustomPropertyDrawer(typeof(SceneBundle))]
+    //[CustomPropertyDrawer( typeof( SceneBundle ) )]
     public class SceneBundleDrawer : PropertyDrawer
     {
-        bool _foldout = false;
-
         const string REFERENCES_PROPERTY_IDENTIFIER = "_references";
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        float _extraPropertyHeight;
+
+        bool _foldout;
+
+        public override void OnGUI( Rect position, SerializedProperty property, GUIContent label )
         {
-            var referencesProperty = property.FindPropertyRelative(REFERENCES_PROPERTY_IDENTIFIER);
+            _extraPropertyHeight = 0f;
+            var referencesProperty = property.FindPropertyRelative( REFERENCES_PROPERTY_IDENTIFIER );
 
-            _foldout = EditorGUI.BeginFoldoutHeaderGroup(position, _foldout, label);
+            int referenceArraySize = referencesProperty.arraySize;
+            
+            int resultArraySize = EditorGUI.IntField( position, referenceArraySize );
 
-            if (_foldout)
+            resultArraySize = Math.Max( resultArraySize, 0 );
+            
+            _extraPropertyHeight += EditorGUIUtility.singleLineHeight;
+            var intFieldRect = new Rect( position.x, position.y + EditorGUIUtility.singleLineHeight, position.width / 2f, position.height );
+            _foldout = EditorGUI.Foldout( intFieldRect, _foldout, label );
+
+            if ( resultArraySize != referenceArraySize )
             {
-                float propertyHeight = EditorGUI.GetPropertyHeight(referencesProperty, true);
-
-                int referencesArraySize = referencesProperty.arraySize;
-
-                for ( int i = 0; i < referencesArraySize; ++i )
-                {
-                    EditorGUI.PropertyField(new Rect(0, propertyHeight * i, position.width, propertyHeight), referencesProperty.GetArrayElementAtIndex(i), true);
-                }
-
-                if ( GUI.Button(new Rect(0, position.y + EditorGUIUtility.singleLineHeight + propertyHeight * referencesArraySize, position.width, EditorGUIUtility.singleLineHeight), "Add New"))
-                {
-                    Debug.Log("hey :D");
-                }
+                int resultDifference = resultArraySize - referenceArraySize;
+                if ( resultDifference < 0 )
+                    for ( int i = 0; i > resultDifference; --i )
+                        //NOTE: here we add the resultDifference because result difference is already negative, thus decreasing reference array size
+                        referencesProperty.DeleteArrayElementAtIndex( referenceArraySize + resultDifference - 1 );
+                else // > 0
+                    for ( int i = 0; i < resultDifference; ++i )
+                        referencesProperty.DeleteArrayElementAtIndex( referenceArraySize );
+                referenceArraySize = resultArraySize;
             }
 
-            EditorGUI.EndFoldoutHeaderGroup();
+            if ( _foldout )
+            {
+                ++EditorGUI.indentLevel;
 
-            if ( referencesProperty.arraySize != 0 )
-                return;
+                if ( referencesProperty.arraySize != 0 )
+                {
+                    float propertyHeight = EditorGUI.GetPropertyHeight( referencesProperty, true );
+
+                    _extraPropertyHeight += propertyHeight * referenceArraySize;
+
+                    for ( int i = 0; i < referenceArraySize; ++i )
+                    {
+                        var newPosition = new Rect( 0f, position.y + propertyHeight * i + EditorGUIUtility.singleLineHeight * 2f, position.width, propertyHeight );
+                        EditorGUI.PropertyField( newPosition, referencesProperty.GetArrayElementAtIndex( i ) );
+                    }
+                }
+
+                --EditorGUI.indentLevel;
+            }
+
+            if ( referenceArraySize != 0 ) return;
 
             //else
-            EditorGUILayout.HelpBox(nameof(SceneBundle) + " cannot have 0 elements!", MessageType.Error);
+            EditorGUILayout.HelpBox( nameof( SceneBundle ) + " cannot have 0 elements!", MessageType.Error );
         }
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            if ( !_foldout )
-                return base.GetPropertyHeight(property, label) + GUI.skin.box.CalcHeight(label, Screen.width);
-            //else
-
-            var referencesProperty = property.FindPropertyRelative(REFERENCES_PROPERTY_IDENTIFIER);
-
-            float propertyHeight = EditorGUI.GetPropertyHeight(referencesProperty, true);
-
-            return base.GetPropertyHeight(property, label) + GUI.skin.box.CalcHeight(label, Screen.width) + referencesProperty.arraySize * propertyHeight;
-        }
+        public override float GetPropertyHeight( SerializedProperty property, GUIContent label ) => base.GetPropertyHeight( property, label ) + _extraPropertyHeight;
     }
 }
-

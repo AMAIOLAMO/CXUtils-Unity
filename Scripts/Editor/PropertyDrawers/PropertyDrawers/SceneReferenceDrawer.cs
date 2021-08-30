@@ -24,27 +24,27 @@ namespace CXUtils.Unity
                 newSceneAsset = EditorGUI.ObjectField(newRect, oldSceneAsset, typeof(SceneAsset), false) as SceneAsset;
             }
 
-            if ( EditorGUI.EndChangeCheck() )
+            if ( !EditorGUI.EndChangeCheck() ) return;
+            //else
+
+            if ( newSceneAsset == null )
             {
-                if ( newSceneAsset == null )
-                {
-                    scenePathProperty.stringValue = null;
-                    buildIndexProperty.intValue = -1;
-                    return;
-                }
-
-                var newPath = AssetDatabase.GetAssetPath(newSceneAsset);
-                var newScene = SceneManager.GetSceneByPath(newPath);
-
-                scenePathProperty.stringValue = newPath;
-
-                buildIndexProperty.intValue = newScene.IsValid() ? newScene.buildIndex : -1;
+                scenePathProperty.stringValue = null;
+                buildIndexProperty.intValue = -1;
+                return;
             }
+
+            var newPath = AssetDatabase.GetAssetPath(newSceneAsset);
+            var newScene = SceneManager.GetSceneByPath(newPath);
+
+            scenePathProperty.stringValue = newPath;
+
+            buildIndexProperty.intValue = newScene.IsValid() ? newScene.buildIndex : -1;
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return base.GetPropertyHeight(property, label) + GUI.skin.box.CalcSize(label).y;
+            return base.GetPropertyHeight(property, label) + GUI.skin.box.CalcHeight(label, Screen.width);
         }
     }
 }
