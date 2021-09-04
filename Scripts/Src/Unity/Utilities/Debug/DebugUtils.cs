@@ -2,9 +2,10 @@
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Text;
+using CXUtils.Common;
 using UnityEngine;
 
-namespace CXUtils.Common
+namespace CXUtils.Unity
 {
     #region Enums
 
@@ -31,6 +32,7 @@ namespace CXUtils.Common
         public static int GetFPS(float deltaTime) => (int)( 1f / deltaTime );
 
         #endregion
+        
         #region Logs
 
         /// <summary> Logs a single message </summary>
@@ -62,7 +64,7 @@ namespace CXUtils.Common
                             return;
 
                         default:
-                            throw ExceptionUtils.Error.NotAccessible;
+                            throw ExceptionUtils.NotAccessible;
                     }
             }
 
@@ -90,7 +92,7 @@ namespace CXUtils.Common
                     break;
 
                 default:
-                    throw ExceptionUtils.Error.NotAccessible;
+                    throw ExceptionUtils.NotAccessible;
             }
 
             DLog( sender, sb.ToString() );

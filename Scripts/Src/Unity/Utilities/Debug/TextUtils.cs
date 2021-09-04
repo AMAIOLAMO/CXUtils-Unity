@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace CXUtils.Common
+namespace CXUtils.Unity
 {
     /// <summary>
     ///     A helper for text debugging

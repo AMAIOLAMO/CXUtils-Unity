@@ -25,7 +25,7 @@ namespace CXUtils.Components
                     MovePlayerTopDown();
                     break;
 
-                default: throw ExceptionUtils.Error.NotAccessible;
+                default: throw ExceptionUtils.NotAccessible;
             }
         }
 
@@ -182,7 +182,7 @@ namespace CXUtils.Components
                     Platformer_Velocity();
                     break;
 
-                default: throw ExceptionUtils.Error.NotAccessible;
+                default: throw ExceptionUtils.NotAccessible;
             }
 
             JumpMovements();
@@ -202,7 +202,7 @@ namespace CXUtils.Components
                     TopDownVelocity();
                     break;
 
-                default: throw ExceptionUtils.Error.NotAccessible;
+                default: throw ExceptionUtils.NotAccessible;
             }
         }
 
@@ -328,7 +328,7 @@ namespace CXUtils.Components
                 case MovementDeltaTimeOptions.FixedDeltaTime: return Time.fixedDeltaTime;
                 case MovementDeltaTimeOptions.FixedUnscaledDeltaTime: return Time.fixedUnscaledDeltaTime;
 
-                default: throw ExceptionUtils.Error.NotAccessible;
+                default: throw ExceptionUtils.NotAccessible;
             }
         }
 

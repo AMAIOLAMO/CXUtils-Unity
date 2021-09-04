@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using CXUtils.Types;
-using CXUtils.Types.UnityUtils;
+using CXUtils.Unity;
 
 namespace CXUtils.Common
 {
@@ -73,7 +73,7 @@ namespace CXUtils.Common
                 case PortType.Center:      return camera.ViewportToWorldPoint(_middleCenter.ToUnity());
             }
 
-            throw ExceptionUtils.Error.NotAccessible;
+            throw ExceptionUtils.NotAccessible;
         }
 
         ///<summary> Get's the Vector2 border in world space </summary>

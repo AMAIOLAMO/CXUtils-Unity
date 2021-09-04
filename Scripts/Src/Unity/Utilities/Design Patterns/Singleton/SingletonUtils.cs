@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CXUtils.DesignPatterns
+namespace CXUtils.Unity.DesignPatterns
 {
     /// <summary>
     ///     A base singleton class that you can inherit to control from <br />

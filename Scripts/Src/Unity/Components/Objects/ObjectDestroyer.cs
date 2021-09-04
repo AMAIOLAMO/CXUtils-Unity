@@ -37,7 +37,7 @@ namespace CXUtils.Components
                 case ObjectDestroyOptions.InstantOnStart: Destroy( GetTarget() ); break;
                 case ObjectDestroyOptions.TimerOnStart: Destroy( GetTarget(), time ); break;
 
-                default: throw ExceptionUtils.Error.NotAccessible;
+                default: throw ExceptionUtils.NotAccessible;
             }
         }
 
