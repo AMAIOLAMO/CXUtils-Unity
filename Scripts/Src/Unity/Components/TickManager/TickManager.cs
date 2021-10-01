@@ -1,58 +1,45 @@
 using System;
-using System.Runtime.CompilerServices;
 using CXUtils.Common;
 
 namespace CXUtils.Components
 {
+
     /// <summary>
     ///     A simple time ticking system for accounting time objects
     /// </summary>
-    public class TickManager
+    public class TickManager<T> : ITickManager<T>
     {
-        readonly Timer baseTimer;
+        readonly ITicker<T> _ticker;
 
         public readonly float tickTime;
 
-        public TickManager( float tickTime )
+        public TickManager( ITicker<T> ticker, float tickTime )
         {
             this.tickTime = tickTime;
 
-            baseTimer = new Timer( tickTime );
+            _ticker = ticker;
         }
 
-        public int CurrentTick { get; private set; }
+        public int Current { get; private set; }
 
         public event Action<int> OnTicked;
 
-        /// <summary>
-        ///     Set's the tick to the given <paramref name="tick"/>
-        /// </summary>
-        public void SetTick(int tick)
+        public void Set( int tick ) => Current = tick;
+
+        public int Reset()
         {
-            CurrentTick = tick;
+            int last = Current;
+            Current = 0;
+            return last;
         }
 
-        /// <summary>
-        ///     Set's the <see cref="CurrentTick" /> to 0 and returns the last tick
-        /// </summary>
-        public int ResetTick()
+        public bool Tick( T delta )
         {
-            int lastTick = CurrentTick;
-            CurrentTick = 0;
-            return lastTick;
-        }
-
-        /// <summary>
-        ///     Ticks the Tick manager using <paramref name="delta" />
-        /// </summary>
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public bool Tick( float delta )
-        {
-            if ( !baseTimer.Tick( delta ) )
+            if ( !_ticker.Tick( delta ) )
                 return false;
 
-            CurrentTick++;
-            OnTicked?.Invoke( CurrentTick );
+            Current++;
+            OnTicked?.Invoke( Current );
             return true;
         }
     }
