@@ -11,12 +11,8 @@ namespace CXUtils.Components
     {
         readonly ITicker<T> _ticker;
 
-        public readonly float tickTime;
-
-        public TickManager( ITicker<T> ticker, float tickTime )
+        public TickManager( ITicker<T> ticker )
         {
-            this.tickTime = tickTime;
-
             _ticker = ticker;
         }
 
