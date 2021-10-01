@@ -9,7 +9,7 @@ namespace CXUtils.Components
     [CreateAssetMenu( fileName = "audioData", menuName = "CXUtils/Audio/AudioData" )]
     public class AudioData : ScriptableObject
     {
-        [FormerlySerializedAs("audioClips")] [SerializeField] AudioClip[] _audioClips;
+        [SerializeField] AudioClip[] _audioClips;
 
         public AudioClip[] AudioClips => _audioClips;
 

@@ -6,7 +6,6 @@ namespace CXUtils.Common
     ///<summary> CX's Helper Mesh Utils and extensions </summary>
     public static class MeshUtils
     {
-
         #region Script Methods
 
         /// <summary> Recalculates all the bounds, normals and tangents of the mesh </summary>
@@ -18,6 +17,7 @@ namespace CXUtils.Common
         }
 
         #endregion
+        
         #region Mesh Construction
 
         /// <summary>

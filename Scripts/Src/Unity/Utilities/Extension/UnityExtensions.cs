@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace CXUtils.Common
 {
-    public static class GMOBJUtils
+    public static class GameObjectUtils
     {
         /// <summary>
-        /// Toggle the <paramref name="gameObject"/>'s activeness <br/>
-        /// using either <see cref="GameObject.activeSelf"/> or <see cref="GameObject.activeInHierarchy"/> depending on <paramref name="useSelf"/>
+        ///     Toggle the <paramref name="gameObject" />'s activeness <br />
+        ///     using either <see cref="GameObject.activeSelf" /> or <see cref="GameObject.activeInHierarchy" /> depending on
         /// </summary>
-        public static bool ToggleActive( this GameObject gameObject, bool useSelf = true )
+        public static bool ToggleActive( this GameObject gameObject )
         {
-            bool resultActive = !( useSelf ? gameObject.activeSelf : gameObject.activeInHierarchy );
+            bool resultActive = !gameObject.activeSelf;
             gameObject.SetActive( resultActive );
             return resultActive;
         }
