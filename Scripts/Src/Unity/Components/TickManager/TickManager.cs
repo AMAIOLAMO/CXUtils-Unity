@@ -36,6 +36,7 @@ namespace CXUtils.Components
 
             Current++;
             OnTicked?.Invoke( Current );
+            _ticker.Reset();
             return true;
         }
     }
