@@ -1,4 +1,4 @@
-using CXUtils.Types;
+using CXUtils.Domain.Types;
 using UnityEngine;
 
 namespace CXUtils.Unity

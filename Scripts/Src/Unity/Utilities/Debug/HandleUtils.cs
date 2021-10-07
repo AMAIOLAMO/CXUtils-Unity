@@ -1,4 +1,4 @@
-using CXUtils.Types;
+using CXUtils.Domain.Types;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -8,7 +8,7 @@ using UnityEditor;
 namespace CXUtils.Unity
 {
     /// <summary>
-    ///     An utility to draw stuff in <see cref="SceneView"/>
+    ///     An utility to draw stuff in <see cref="SceneView" />
     /// </summary>
     public static class HandleUtils
     {

@@ -1,5 +1,5 @@
 using UnityQuaternion = UnityEngine.Quaternion;
-using CxQuaternion = CXUtils.Types.Quaternion;
+using CxQuaternion = CXUtils.Domain.Types.Quaternion;
 
 namespace CXUtils.Unity
 {
