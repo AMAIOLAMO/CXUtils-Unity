@@ -32,7 +32,7 @@ namespace CXUtils.Unity.DesignPatterns
 
         protected virtual void OnInstanceInit() { }
 
-        void OnDestroy()
+        protected virtual void OnDestroy()
         {
             Application.quitting -= OnApplicationQuit;
         }
