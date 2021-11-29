@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using System.Runtime.CompilerServices;
 using System.Text;
 using CXUtils.Common;
 using UnityEngine;
@@ -29,10 +28,10 @@ namespace CXUtils.Unity
         ///     Get's the current FPS (Frames per second)
         /// </summary>
         [Pure]
-        public static int GetFPS(float deltaTime) => (int)( 1f / deltaTime );
+        public static int GetFPS( float deltaTime ) => (int)( 1f / deltaTime );
 
         #endregion
-        
+
         #region Logs
 
         /// <summary> Logs a single message </summary>
@@ -121,13 +120,11 @@ namespace CXUtils.Unity
 
         #region Logs
 
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
         static void DLog( object sender, object msg )
         {
             Debug.Log( LogArgToString( sender, msg ) );
         }
 
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
         static void DLogError( object sender, object msg )
         {
             Debug.LogError( LogArgToString( sender, msg ) );
@@ -139,7 +136,6 @@ namespace CXUtils.Unity
             throw new T();
         }
 
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
         static void DLogWarning( object sender, string msg )
         {
             Debug.LogWarning( LogArgToString( sender, msg ) );
@@ -150,7 +146,6 @@ namespace CXUtils.Unity
         #region Helper Utils
 
         [Pure]
-        [MethodImpl( MethodImplOptions.AggressiveInlining )]
         static string LogArgToString( object sender, object msg ) => "[" + sender + "] " + msg;
 
         #endregion

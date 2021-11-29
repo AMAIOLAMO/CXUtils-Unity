@@ -15,25 +15,25 @@ namespace CXUtils.Components
 
         //private
 
-        [SerializeField] Collider2D groundCheckCollision;
+        [SerializeField] Collider2D _groundCheckCollision;
 
-        [SerializeField] string[] tags;
+        [SerializeField] string[] _tags;
 
-        [SerializeField] bool usingTags;
-        [SerializeField] bool isOnGround;
+        [SerializeField] bool _usingTags;
+        [SerializeField] bool _isOnGround;
 
-        [SerializeField] CollisionUpdateOptions collideUpdateOption;
+        [SerializeField] CollisionUpdateOptions _collideUpdateOption;
 
         //public
 
-        public Collider2D GroundCheckCollision => groundCheckCollision;
+        public Collider2D GroundCheckCollision => _groundCheckCollision;
 
-        public CollisionUpdateOptions CollideUpdateOption { get => collideUpdateOption; set => collideUpdateOption = value; }
+        public CollisionUpdateOptions CollideUpdateOption { get => _collideUpdateOption; set => _collideUpdateOption = value; }
 
-        public string[] Tags { get => tags; set => tags = value; }
+        public string[] Tags { get => _tags; set => _tags = value; }
 
-        public bool IsOnGround { get => isOnGround; private set => isOnGround = value; }
-        public bool UsingTags { get => usingTags; set => usingTags = value; }
+        public bool IsOnGround { get => _isOnGround; private set => _isOnGround = value; }
+        public bool UsingTags  { get => _usingTags;  set => _usingTags = value; }
 
         #endregion
 
@@ -41,19 +41,19 @@ namespace CXUtils.Components
 
         void Update()
         {
-            if ( collideUpdateOption == CollisionUpdateOptions.Update )
+            if ( _collideUpdateOption == CollisionUpdateOptions.Update )
                 CollisionCheck();
         }
 
         void FixedUpdate()
         {
-            if ( collideUpdateOption == CollisionUpdateOptions.FixedUpdate )
+            if ( _collideUpdateOption == CollisionUpdateOptions.FixedUpdate )
                 CollisionCheck();
         }
 
         void LateUpdate()
         {
-            if ( collideUpdateOption == CollisionUpdateOptions.LateUpdate )
+            if ( _collideUpdateOption == CollisionUpdateOptions.LateUpdate )
                 CollisionCheck();
         }
 
@@ -70,12 +70,12 @@ namespace CXUtils.Components
         {
             var contactPoints = new ContactPoint2D[20];
 
-            int length = groundCheckCollision.GetContacts( contactPoints );
+            int length = _groundCheckCollision.GetContacts( contactPoints );
 
-            if ( length == 0 || tags.Length == 0 || !usingTags ) return false;
+            if ( length == 0 || _tags.Length == 0 || !_usingTags ) return false;
 
             for ( int index = 0; index < length; index++ )
-                foreach ( string i in tags )
+                foreach ( string i in _tags )
                     if ( i != null )
                     {
                         if ( contactPoints[index].collider.CompareTag( i ) )

@@ -1,27 +1,25 @@
-﻿using UnityEditor;
-using CXUtils.Components;
+﻿using CXUtils.Components;
+using UnityEditor;
 
-[CustomEditor(typeof(CharacterController2D))]
-
+[CustomEditor( typeof( CharacterController2D ) )]
 public class CharacterController2DInspectorWindow : Editor
 {
     public override void OnInspectorGUI()
     {
-        CharacterController2D charControl2D = (CharacterController2D)target;
+        var charControl2D = (CharacterController2D)target;
 
         base.OnInspectorGUI();
 
-        
-        if(charControl2D.GamePerspecOptions == CharacterController2D.GamePerspectiveOptions.Platformer)
-        {
-            EditorGUILayout.LabelField("Platformer Extra Content");
 
-            charControl2D.CharacterGroundCheck =
-                (CharacterGroundCheck2D)
-                EditorGUILayout.ObjectField("Ground Check 2D", charControl2D.CharacterGroundCheck, typeof(CharacterGroundCheck2D), true);
+        if ( charControl2D.Perspec != CharacterController2D.PerspectiveMode.Platformer ) return;
 
-            charControl2D.PlayerCurrentJumpStrength =
-                EditorGUILayout.FloatField("Jump Strength", charControl2D.PlayerCurrentJumpStrength);
-        }
+        EditorGUILayout.LabelField( "Platformer Extra Content" );
+
+        charControl2D.CharacterGroundCheck =
+            (CharacterGroundCheck2D)
+            EditorGUILayout.ObjectField( "Ground Check 2D", charControl2D.CharacterGroundCheck, typeof( CharacterGroundCheck2D ), true );
+
+        charControl2D.PlayerCurrentJumpStrength =
+            EditorGUILayout.FloatField( "Jump Strength", charControl2D.PlayerCurrentJumpStrength );
     }
 }

@@ -11,8 +11,8 @@ namespace CXUtils.Unity
         /// <summary>
         ///     Instantiates a text on the scene world
         /// </summary>
-        public static TextMesh SpawnTextOnWorld( Transform parent, Vector3 position,
-            Func<TextMesh, TextMesh> modifier, int sortingOrder = 0, bool usingLocalPosition = false )
+        public static TextMesh SpawnText( Transform parent, Vector3 position,
+            Func<TextMesh, TextMesh> modifier, int sortOrder = 0, bool useLocalPosition = false )
         {
             var goText = new GameObject( "Text_World", typeof( TextMesh ) );
             var transform = goText.transform;
@@ -23,7 +23,7 @@ namespace CXUtils.Unity
                 transform.SetParent( parent );
 
             //setting transform
-            if ( usingLocalPosition )
+            if ( useLocalPosition )
                 transform.localPosition = position;
             else
                 transform.position = position;
@@ -32,24 +32,29 @@ namespace CXUtils.Unity
             txtMesh = modifier( txtMesh );
 
             //set sorting order
-            txtMesh.GetComponent<MeshRenderer>().sortingOrder = sortingOrder;
+            txtMesh.GetComponent<MeshRenderer>().sortingOrder = sortOrder;
 
             return txtMesh;
         }
 
-        /// <inheritdoc cref="SpawnTextOnWorld(UnityEngine.Transform,UnityEngine.Vector3,System.Func{UnityEngine.TextMesh,UnityEngine.TextMesh},int,bool)"/>
-        public static TextMesh SpawnTextOnWorld( Vector3 position, string text, int fontSize,
+        /// <inheritdoc
+        ///     cref="SpawnText" />
+        public static TextMesh SpawnText( Vector3 position, string text, int fontSize,
             Color color, TextAnchor textAnchor = TextAnchor.MiddleCenter, TextAlignment textAlignment = TextAlignment.Center,
-            bool usingLocalPosition = false ) => SpawnTextOnWorld( null, position, text, fontSize, color, textAnchor, textAlignment, 0, usingLocalPosition );
+            bool useLocalPosition = false ) =>
+            SpawnText( null, position, text, fontSize, color, textAnchor, textAlignment, 0, useLocalPosition );
 
-        /// <inheritdoc cref="SpawnTextOnWorld(UnityEngine.Transform,UnityEngine.Vector3,System.Func{UnityEngine.TextMesh,UnityEngine.TextMesh},int,bool)"/>
-        public static TextMesh SpawnTextOnWorld( Transform parent,
+        /// <inheritdoc
+        ///     cref="SpawnText" />
+        public static TextMesh SpawnText( Transform parent,
             Vector3 position, string text, int fontSize = 30, Color color = default, TextAnchor textAnchor = TextAnchor.MiddleCenter,
-            TextAlignment textAlignment = TextAlignment.Center, int sortingOrder = 0, bool usingLocalPosition = false ) =>
-            SpawnTextOnWorld( parent, position,
-                txtMesh => SetTextMesh( txtMesh, text, fontSize, color, textAnchor, textAlignment ), sortingOrder, usingLocalPosition );
+            TextAlignment textAlignment = TextAlignment.Center, int sortOrder = 0, bool useLocalPosition = false ) =>
+            SpawnText( parent, position,
+                txtMesh => SetTextMesh( txtMesh, text, fontSize, color, textAnchor, textAlignment ),
+                sortOrder, useLocalPosition );
 
-        static TextMesh SetTextMesh( TextMesh txtMesh, string text, int fontSize, Color color, TextAnchor textAnchor, TextAlignment textAlignment )
+        static TextMesh SetTextMesh( TextMesh txtMesh, string text, int fontSize,
+            Color color, TextAnchor textAnchor, TextAlignment textAlignment )
         {
             txtMesh.text = text;
             txtMesh.fontSize = fontSize;
@@ -59,6 +64,5 @@ namespace CXUtils.Unity
 
             return txtMesh;
         }
-
     }
 }

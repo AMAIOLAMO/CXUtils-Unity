@@ -3,9 +3,8 @@ using CXUtils.Common;
 
 namespace CXUtils.Components
 {
-
     /// <summary>
-    ///     A simple time ticking system for accounting time objects
+    ///     A basic ticker system that REQUIRES MANUAL RESET WHEN RESET HAPPENS
     /// </summary>
     public class TickManager<T> : ITickManager<T>
     {

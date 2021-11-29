@@ -2,26 +2,43 @@
 using CXUtils.Common;
 using UnityEngine;
 using UnityEngine.CXExtensions;
+using UnityEngine.Serialization;
 
 namespace CXUtils.Components
 {
-    /// <summary> A Character controller for 2Dimention games </summary>
+    /// <summary>
+    ///     A Character controller for 2 Dimension games
+    /// </summary>
     [AddComponentMenu( "CXUtils/Player/2D/CharacterController2D" )]
     public class CharacterController2D : MonoBehaviour
     {
+        void Update()
+        {
+            CheckAndMove( MovementUpdateOptions.Update );
+        }
+
+        void FixedUpdate()
+        {
+            CheckAndMove( MovementUpdateOptions.FixedUpdate );
+        }
+
+        void LateUpdate()
+        {
+            CheckAndMove( MovementUpdateOptions.LateUpdate );
+        }
         void CheckAndMove( MovementUpdateOptions moveUpdateOp )
         {
-            if ( moveUpdateOptions != moveUpdateOp ) return;
+            if ( _moveUpdateOptions != moveUpdateOp ) return;
 
             GetMovements();
 
-            switch ( gamePerspecOptions )
+            switch ( _perspective )
             {
-                case GamePerspectiveOptions.Platformer:
+                case PerspectiveMode.Platformer:
                     MovePlayerPlatformer();
                     break;
 
-                case GamePerspectiveOptions.TopDown:
+                case PerspectiveMode.TopDown:
                     MovePlayerTopDown();
                     break;
 
@@ -29,12 +46,39 @@ namespace CXUtils.Components
             }
         }
 
+        #region MovementInputs
+
+        protected virtual void GetMovements()
+        {
+            MovementVectorRaw = new Vector2( Input.GetAxisRaw( "Horizontal" ), Input.GetAxisRaw( "Vertical" ) );
+        }
+
+        #endregion
+
+        #region ScriptMethods(private)
+
+        /// <summary> This method will check all the delta times and returns the matched delta Time </summary>
+        float CurrentUsingDeltaTime()
+        {
+            switch ( _moveDeltaTimeOptions )
+            {
+                case MovementDeltaTimeOptions.DeltaTime:              return Time.deltaTime;
+                case MovementDeltaTimeOptions.UnscaledDeltaTime:      return Time.unscaledDeltaTime;
+                case MovementDeltaTimeOptions.FixedDeltaTime:         return Time.fixedDeltaTime;
+                case MovementDeltaTimeOptions.FixedUnscaledDeltaTime: return Time.fixedUnscaledDeltaTime;
+
+                default: throw ExceptionUtils.NotAccessible;
+            }
+        }
+
+        #endregion
+
         #region Enums
 
         /// <summary>
         ///     How the Character controller works
         /// </summary>
-        public enum GamePerspectiveOptions
+        public enum PerspectiveMode
         {
             Platformer, TopDown
         }
@@ -73,96 +117,56 @@ namespace CXUtils.Components
         [Header( "Requirements" )]
         [NotNull]
         [SerializeField]
-        Rigidbody2D playerRigidBody;
+        Rigidbody2D _playerRigidBody;
 
         [HideInInspector]
         [SerializeField]
-        CharacterGroundCheck2D characterGroundCheck;
+        CharacterGroundCheck2D _characterGroundCheck;
 
         [Header( "Options" )]
-        [SerializeField]
-        GamePerspectiveOptions gamePerspecOptions = GamePerspectiveOptions.Platformer;
-        [SerializeField] MovementUpdateOptions moveUpdateOptions = MovementUpdateOptions.Update;
-        [SerializeField] MovementDeltaTimeOptions moveDeltaTimeOptions = MovementDeltaTimeOptions.DeltaTime;
-        [SerializeField] MovementMode moveMode = MovementMode.Position;
+        [SerializeField] PerspectiveMode _perspective = PerspectiveMode.Platformer;
+        [SerializeField] MovementUpdateOptions    _moveUpdateOptions    = MovementUpdateOptions.Update;
+        [SerializeField] MovementDeltaTimeOptions _moveDeltaTimeOptions = MovementDeltaTimeOptions.DeltaTime;
+        [SerializeField] MovementMode             _moveMode             = MovementMode.Position;
 
         [Header( "Player Settings" )]
         [SerializeField]
         float playerCurrentSpeed = 5f;
 
-        [SerializeField] bool isLocalTransform;
+        [SerializeField] bool _isLocalTransform;
 
         [HideInInspector]
-        [SerializeField]
-        float playerCurrentJumpStrength = 5f;
+        [SerializeField] float _jumpStrength = 5f;
 
-        [SerializeField] bool isMovementNormalized;
+        [SerializeField] bool _isMovementNormalized;
 
         #endregion
 
-        protected Vector2 movementVector_Raw;
+        protected Vector2 MovementVectorRaw { get; private set; }
 
-        public Rigidbody2D PlayerRigidBody { get => playerRigidBody; set => playerRigidBody = value; }
+        public Rigidbody2D PlayerRigidBody { get => _playerRigidBody; set => _playerRigidBody = value; }
 
-        public CharacterGroundCheck2D CharacterGroundCheck { get => characterGroundCheck; set => characterGroundCheck = value; }
+        public CharacterGroundCheck2D CharacterGroundCheck { get => _characterGroundCheck; set => _characterGroundCheck = value; }
 
         public event Action PlayerStartJump;
 
         #region Option Properties
 
-        public GamePerspectiveOptions GamePerspecOptions { get => gamePerspecOptions; set => gamePerspecOptions = value; }
-        public MovementUpdateOptions MoveUpdateOptions { get => moveUpdateOptions; set => moveUpdateOptions = value; }
-        public MovementDeltaTimeOptions MoveDeltaTimeOptions { get => moveDeltaTimeOptions; set => moveDeltaTimeOptions = value; }
-        public MovementMode MoveMode { get => moveMode; set => moveMode = value; }
+        public PerspectiveMode          Perspec              { get => _perspective;          set => _perspective = value; }
+        public MovementUpdateOptions    MoveUpdateOptions    { get => _moveUpdateOptions;    set => _moveUpdateOptions = value; }
+        public MovementDeltaTimeOptions MoveDeltaTimeOptions { get => _moveDeltaTimeOptions; set => _moveDeltaTimeOptions = value; }
+        public MovementMode             MoveMode             { get => _moveMode;             set => _moveMode = value; }
 
         #endregion
 
-        public Vector2 MovementVector
-        {
-            get
-            {
-                if ( isMovementNormalized )
-                    return movementVector_Raw.normalized;
+        public Vector2 MovementVector =>
+            _isMovementNormalized ? MovementVectorRaw.normalized : MovementVectorRaw;
 
-                return movementVector_Raw;
-            }
-        }
+        public float PlayerCurrentSpeed        { get => playerCurrentSpeed;        set => playerCurrentSpeed = value; }
+        public float PlayerCurrentJumpStrength { get => _jumpStrength; set => _jumpStrength = value; }
 
-        public float PlayerCurrentSpeed { get => playerCurrentSpeed; set => playerCurrentSpeed = value; }
-        public float PlayerCurrentJumpStrength { get => playerCurrentJumpStrength; set => playerCurrentJumpStrength = value; }
-
-        public bool IsLocalTransform { get => isLocalTransform; set => isLocalTransform = value; }
-        public bool IsMovementNormalized { get => isMovementNormalized; set => isMovementNormalized = value; }
-
-        #endregion
-
-        #region MainThread
-
-        void Update()
-        {
-            CheckAndMove( MovementUpdateOptions.Update );
-        }
-
-        void FixedUpdate()
-        {
-            CheckAndMove( MovementUpdateOptions.FixedUpdate );
-        }
-
-        void LateUpdate()
-        {
-            CheckAndMove( MovementUpdateOptions.LateUpdate );
-        }
-
-        #endregion
-
-        #region MainMethods
-
-        #region MovementInputs
-
-        protected virtual void GetMovements()
-        {
-            movementVector_Raw = new Vector2( Input.GetAxisRaw( "Horizontal" ), Input.GetAxisRaw( "Vertical" ) );
-        }
+        public bool IsLocalTransform     { get => _isLocalTransform;     set => _isLocalTransform = value; }
+        public bool IsMovementNormalized { get => _isMovementNormalized; set => _isMovementNormalized = value; }
 
         #endregion
 
@@ -170,7 +174,7 @@ namespace CXUtils.Components
 
         protected virtual void MovePlayerPlatformer()
         {
-            switch ( moveMode )
+            switch ( _moveMode )
             {
                 case MovementMode.Position:
                     Platformer_Position();
@@ -190,7 +194,7 @@ namespace CXUtils.Components
 
         protected virtual void MovePlayerTopDown()
         {
-            switch ( moveMode )
+            switch ( _moveMode )
             {
                 case MovementMode.Position:
                     TopDown_Position();
@@ -224,16 +228,16 @@ namespace CXUtils.Components
 
             newForce *= playerCurrentSpeed;
 
-            playerRigidBody.AddForce( newForce, ForceMode2D.Impulse );
+            _playerRigidBody.AddForce( newForce, ForceMode2D.Impulse );
         }
 
         protected virtual void Platformer_Velocity()
         {
-            var newVelocity = playerRigidBody.velocity;
+            var newVelocity = _playerRigidBody.velocity;
 
             newVelocity.x = MovementVector.x * playerCurrentSpeed;
 
-            playerRigidBody.velocity = newVelocity;
+            _playerRigidBody.velocity = newVelocity;
         }
 
         #endregion
@@ -244,7 +248,7 @@ namespace CXUtils.Components
         {
             var thisTransform = transform;
 
-            var newOffset = isLocalTransform ?
+            var newOffset = _isLocalTransform ?
                 thisTransform.right * MovementVector.x + thisTransform.up * MovementVector.y :
                 Vector3.right * MovementVector.x + Vector3.up * MovementVector.y;
 
@@ -256,17 +260,17 @@ namespace CXUtils.Components
         {
             var thisTransform = transform;
 
-            var newForce = isLocalTransform ?
+            var newForce = _isLocalTransform ?
                 (Vector2)( thisTransform.right * MovementVector.x + thisTransform.up * MovementVector.y ) :
                 Vector2.right * MovementVector.x + Vector2.up * MovementVector.y;
 
             newForce *= playerCurrentSpeed;
 
-            playerRigidBody.AddForce( newForce, ForceMode2D.Impulse );
+            _playerRigidBody.AddForce( newForce, ForceMode2D.Impulse );
         }
 
         protected virtual void TopDownVelocity() =>
-            playerRigidBody.velocity = MovementVector * playerCurrentSpeed;
+            _playerRigidBody.velocity = MovementVector * playerCurrentSpeed;
 
         #endregion
 
@@ -287,12 +291,12 @@ namespace CXUtils.Components
         protected virtual void JumpMovements()
         {
             //Jump method
-            if ( CharacterGroundCheck == null || playerRigidBody == null )
+            if ( CharacterGroundCheck == null || _playerRigidBody == null )
                 return;
 
             if ( canJump )
             {
-                if ( !Input.GetKey( KeyCode.Space ) || !characterGroundCheck.IsOnGround )
+                if ( !Input.GetKey( KeyCode.Space ) || !_characterGroundCheck.IsOnGround )
                     return;
 
                 lastJumpTime = Time.time;
@@ -301,9 +305,9 @@ namespace CXUtils.Components
                 //Invokes the event when the player is jumping
                 PlayerStartJump?.Invoke();
 
-                playerRigidBody.velocity += isLocalTransform ?
-                    (Vector2)transform.up * playerCurrentJumpStrength :
-                    Vector2.up * playerCurrentJumpStrength;
+                _playerRigidBody.velocity += _isLocalTransform ?
+                    (Vector2)transform.up * _jumpStrength :
+                    Vector2.up * _jumpStrength;
             }
             else
             {
@@ -315,26 +319,5 @@ namespace CXUtils.Components
         }
 
         #endregion
-
-        #region ScriptMethods(private)
-
-        /// <summary> This method will check all the delta times and returns the matched delta Time </summary>
-        float CurrentUsingDeltaTime()
-        {
-            switch ( moveDeltaTimeOptions )
-            {
-                case MovementDeltaTimeOptions.DeltaTime: return Time.deltaTime;
-                case MovementDeltaTimeOptions.UnscaledDeltaTime: return Time.unscaledDeltaTime;
-                case MovementDeltaTimeOptions.FixedDeltaTime: return Time.fixedDeltaTime;
-                case MovementDeltaTimeOptions.FixedUnscaledDeltaTime: return Time.fixedUnscaledDeltaTime;
-
-                default: throw ExceptionUtils.NotAccessible;
-            }
-        }
-
-        #endregion
-
-        #endregion
     }
-
 }
