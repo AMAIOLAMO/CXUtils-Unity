@@ -1,5 +1,4 @@
 using System.Collections;
-using CXUtils.Common;
 using UnityEngine;
 
 namespace CXUtils.Components
@@ -7,11 +6,13 @@ namespace CXUtils.Components
     [AddComponentMenu( "CXUtils/Objects/Shaker2D" )]
     public class Shaker2D : MonoBehaviour
     {
-        public Coroutine Shake( float duration, float intensity, Vector2? center = null ) =>
-            StartCoroutine( ShakeInternal( duration, intensity, center ) );
+        public void Shake( float maxDuration, float maxIntensity, float minIntensity, Vector2? center = null, bool intensityFade = true )
+        {
+            if ( _shakeCoroutine != null )
+                StopCoroutine( _shakeCoroutine );
 
-        public Coroutine ShakeFade( float maxDuration, float maxIntensity, float minIntensity = 0f, Vector2? center = null ) =>
-            StartCoroutine( ShakeFadeInternal( maxDuration, maxIntensity, minIntensity, center ) );
+            _shakeCoroutine = StartCoroutine( ShakeInternal( maxDuration, maxIntensity, minIntensity, center, intensityFade ) );
+        }
 
         void Awake()
         {
@@ -27,27 +28,12 @@ namespace CXUtils.Components
 
         [SerializeField] Transform _target;
 
-        IEnumerator ShakeInternal( float duration, float intensity, Vector2? center )
-        {
-            Vector3 resultCenter = center ?? Vector2.zero;
+        Coroutine _shakeCoroutine;
 
-            while ( duration > 0f )
-            {
-                duration -= Time.deltaTime;
-
-                Vector3 offset = Random.insideUnitCircle * intensity;
-
-                _target.localPosition = resultCenter + offset;
-                yield return null;
-            }
-            // when shake finish, set back to center
-
-            _target.localPosition = resultCenter;
-        }
-
-        IEnumerator ShakeFadeInternal( float maxDuration, float maxIntensity, float minIntensity = 0f, Vector2? center = null )
+        IEnumerator ShakeInternal( float maxDuration, float maxIntensity, float minIntensity, Vector2? center, bool intensityFade )
         {
             float duration = maxDuration;
+            float intensity = maxIntensity;
 
             Vector3 resultCenter = center ?? Vector2.zero;
 
@@ -57,7 +43,8 @@ namespace CXUtils.Components
 
                 float progress = duration / maxDuration;
 
-                float intensity = Tween.Lerp( minIntensity, maxIntensity, progress );
+                if ( intensityFade )
+                    intensity = Mathf.Lerp( minIntensity, maxIntensity, progress );
 
                 Vector3 offset = Random.insideUnitCircle * intensity;
 
