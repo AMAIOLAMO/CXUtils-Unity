@@ -7,35 +7,35 @@ using UnityEditor;
 
 namespace CXUtils.Unity
 {
-    /// <summary>
-    ///     An utility to draw stuff in <see cref="SceneView" />
-    /// </summary>
-    public static class HandleUtils
-    {
-        public static void DrawText( string text, Float3 worldPosition, Color color, GUIStyle style )
-        {
+	/// <summary>
+	///     An utility to draw stuff in <see cref="SceneView" />
+	/// </summary>
+	public static class HandleUtils
+	{
+		public static void DrawText(string text, Float3 worldPosition, Color color, GUIStyle style)
+		{
 #if UNITY_EDITOR
-            if ( SceneView.currentDrawingSceneView == null ) return;
+			if (SceneView.currentDrawingSceneView == null) return;
 
-            Handles.BeginGUI();
+			Handles.BeginGUI();
 
-            DrawTextRaw( text, worldPosition, color, SceneView.currentDrawingSceneView, style );
+			DrawTextRaw(text, worldPosition, color, SceneView.currentDrawingSceneView, style);
 
-            Handles.EndGUI();
+			Handles.EndGUI();
 #endif
-        }
+		}
 
-        public static void DrawText( string text, Float3 worldPosition ) => DrawText( text, worldPosition, Color.white, GUI.skin.box );
+		public static void DrawText(string text, Float3 worldPosition) => DrawText(text, worldPosition, Color.white, GUI.skin.box);
 
 #if UNITY_EDITOR
-        static void DrawTextRaw( string text, Float3 worldPosition, Color color, SceneView sceneView, GUIStyle style )
-        {
-            var screenPos = sceneView.camera.WorldToScreenPoint( worldPosition.ToUnity() );
-            var size = style.CalcSize( new GUIContent( text ) );
-            GUI.color = color;
-            var position = new Rect( screenPos.x - size.x * .5f, -screenPos.y + sceneView.position.height - size.y * 2f, size.x, size.y );
-            GUI.Label( position, text, style );
-        }
+		static void DrawTextRaw(string text, Float3 worldPosition, Color color, SceneView sceneView, GUIStyle style)
+		{
+			Vector3 screenPos = sceneView.camera.WorldToScreenPoint(worldPosition.ToUnity());
+			Vector2 size = style.CalcSize(new GUIContent(text));
+			GUI.color = color;
+			Rect position = new Rect(screenPos.x - size.x * .5f, -screenPos.y + sceneView.position.height - size.y * 2f, size.x, size.y);
+			GUI.Label(position, text, style);
+		}
 #endif
-    }
+	}
 }
