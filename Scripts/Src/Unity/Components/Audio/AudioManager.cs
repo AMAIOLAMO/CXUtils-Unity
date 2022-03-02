@@ -2,24 +2,25 @@ using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 namespace CXUtils.Components
 {
     public class AudioManager : MonoBehaviour
     {
-        [SerializeField] int _audioSourceAmount = 10;
-        [Range(0f, 1f)]
-        [SerializeField] float _mainVolume = 1f;
+		[SerializeField] int amount = 10;
+		[Range(0f, 1f)]
+        [SerializeField] float mainVolume = 1f;
 
-        readonly Queue<AudioSource> _freeAudioSources = new Queue<AudioSource>();
-        readonly List<AudioSource> _occupiedAudioSources = new List<AudioSource>();
+        readonly Queue<AudioSource> freeAudioSources = new Queue<AudioSource>();
+        readonly List<AudioSource> occupiedAudioSources = new List<AudioSource>();
 
         public float MainVolume
         {
-            get => _mainVolume;
+            get => mainVolume;
             set
             {
-                _mainVolume = value;
+                mainVolume = value;
                 AudioListener.volume = value;
 
                 OnMainVolumeChanged?.Invoke(value);
@@ -32,15 +33,15 @@ namespace CXUtils.Components
 
         void Awake()
         {
-            AudioListener.volume = _mainVolume;
+            AudioListener.volume = mainVolume;
 
             //initialize audio sources
-            InitializeAudioSources(_audioSourceAmount);
+            InitializeAudioSources(amount);
         }
 
         void OnValidate()
         {
-            _audioSourceAmount = Math.Max(_audioSourceAmount, 1);
+            amount = Math.Max(amount, 1);
         }
 
         void InitializeAudioSources(int amount)
@@ -50,7 +51,7 @@ namespace CXUtils.Components
                 var source = gameObject.AddComponent<AudioSource>();
                 source.playOnAwake = false;
 
-                _freeAudioSources.Enqueue(source);
+                freeAudioSources.Enqueue(source);
             }
         }
 
@@ -61,7 +62,7 @@ namespace CXUtils.Components
         /// </summary>
         public void Expand(int addCount)
         {
-            _audioSourceAmount += addCount;
+            amount += addCount;
 
             //then generate more
             InitializeAudioSources(addCount);
@@ -88,11 +89,11 @@ namespace CXUtils.Components
         public AudioSource RequestSource()
         {
             //if no free audio sources
-            if ( _freeAudioSources.Count == 0 ) return null;
+            if ( freeAudioSources.Count == 0 ) return null;
 
             AudioSource audioSource;
 
-            MakeOccupied(audioSource = _freeAudioSources.Dequeue());
+            MakeOccupied(audioSource = freeAudioSources.Dequeue());
 
             return audioSource;
         }
@@ -101,24 +102,24 @@ namespace CXUtils.Components
 
         void MakeOccupied(AudioSource source)
         {
-            _occupiedAudioSources.Add(source);
+            occupiedAudioSources.Add(source);
 
             //if this is the first occupied audio source
-            if ( _occupiedAudioSources.Count == 1 ) StartCoroutine(AudioCheck());
+            if ( occupiedAudioSources.Count == 1 ) StartCoroutine(AudioCheck());
         }
 
         IEnumerator AudioCheck()
         {
-            while ( _occupiedAudioSources.Count > 0 )
+            while ( occupiedAudioSources.Count > 0 )
             {
                 //check
-                for ( int i = 0; i < _occupiedAudioSources.Count; i++ )
+                for ( int i = 0; i < occupiedAudioSources.Count; i++ )
                 {
-                    if ( _occupiedAudioSources[i].isPlaying ) continue;
+                    if ( occupiedAudioSources[i].isPlaying ) continue;
 
                     //else finished playing
-                    _freeAudioSources.Enqueue(_occupiedAudioSources[i]);
-                    _occupiedAudioSources.RemoveAt(i);
+                    freeAudioSources.Enqueue(occupiedAudioSources[i]);
+                    occupiedAudioSources.RemoveAt(i);
                 }
 
                 yield return UseAudioCheckDelay ? new WaitForSecondsRealtime(AudioCheckDelay) : null;

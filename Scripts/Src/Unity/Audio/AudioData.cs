@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+
 using Random = UnityEngine.Random;
 
 namespace CXUtils.Components
@@ -11,20 +12,20 @@ namespace CXUtils.Components
 		/// <summary>
 		///     Gets a audio clip from the audio clips
 		/// </summary>
-		public AudioClip GetClip(int index = 0) => _audioClips[index];
+		public AudioClip GetClip(int index = 0) => audioClips[index];
 
 		/// <summary>
 		///     Gets a random audio clip from the audio clips
 		/// </summary>
-		public AudioClip GetRandomClip() => !HasAudioClip ? null : GetClip(Random.Range(0, _audioClips.Length));
+		public AudioClip GetRandomClip() => IsEmpty ? null : GetClip(Random.Range(0, audioClips.Length));
 
-		public AudioClip[] AudioClips => _audioClips;
+		public AudioClip[] AudioClips => audioClips;
 
 		/// <summary>
 		///     Does this audio data have no audio clips
 		/// </summary>
-		public bool HasAudioClip => _audioClips.Length > 0;
-		
-		[SerializeField] AudioClip[] _audioClips;
+		public bool IsEmpty => audioClips.Length == 0;
+
+		[SerializeField] AudioClip[] audioClips;
 	}
 }

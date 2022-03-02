@@ -37,7 +37,7 @@ namespace CXUtils.Common
         ///     This will create a connected quad mesh but independent with each other quad meshes
         ///     (which u use the mesh to display grid like tiles and other awesome stuff)
         /// </summary>
-        public static void CreateEmptyQuadMeshArrays( Vector2Int size, out Vector3[] vertices, out int[] triangles, out Vector2[] uvs )
+        public static void CreateQuadMeshArrays( Vector2Int size, out Vector3[] vertices, out int[] triangles, out Vector2[] uvs )
         {
             int totVerticesCount = size.x * size.y * 4;
 

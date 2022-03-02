@@ -3,40 +3,34 @@ using CXUtils.Common;
 
 namespace CXUtils.Components
 {
-    /// <summary>
-    ///     A basic ticker system that REQUIRES MANUAL RESET WHEN RESET HAPPENS
-    /// </summary>
-    public class TickManager<T> : ITickManager<T>
-    {
-        readonly ITicker<T> _ticker;
+	/// <summary>
+	///     A basic ticker system
+	/// </summary>
+	public class TickManager<T> : ITickManager<T>
+	{
+		public TickManager(ITicker<T> ticker) => this.ticker = ticker;
 
-        public TickManager( ITicker<T> ticker )
-        {
-            _ticker = ticker;
-        }
+		public int Current { get; private set; }
 
-        public int Current { get; private set; }
+		public event Action<int> OnTicked;
 
-        public event Action<int> OnTicked;
+		public void Set(int tick) => Current = tick;
 
-        public void Set( int tick ) => Current = tick;
+		public int Reset()
+		{
+			int last = Current;
+			Current = 0;
+			return last;
+		}
 
-        public int Reset()
-        {
-            int last = Current;
-            Current = 0;
-            return last;
-        }
+		public bool TickMax(T delta, T max)
+		{
+			if (!ticker.TickMax(delta, max)) return false;
 
-        public bool Tick( T delta )
-        {
-            if ( !_ticker.Tick( delta ) )
-                return false;
-
-            Current++;
-            OnTicked?.Invoke( Current );
-            _ticker.Reset();
-            return true;
-        }
-    }
+			Current++;
+			OnTicked?.Invoke(Current);
+			return true;
+		}
+		readonly ITicker<T> ticker;
+	}
 }
