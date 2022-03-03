@@ -3,200 +3,225 @@ using UnityEngine;
 
 namespace CXUtils.Common
 {
-    ///<summary> CX's Helper Mesh Utils and extensions </summary>
-    public static class MeshUtils
-    {
-        #region Script Methods
+	///<summary> CX's Helper Mesh Utils and extensions </summary>
+	public static class MeshUtils
+	{
+		#region Script Methods
 
-        /// <summary> Recalculates all the bounds, normals and tangents of the mesh </summary>
-        public static void RecalculateAll( this Mesh mesh )
-        {
-            mesh.RecalculateBounds();
-            mesh.RecalculateNormals();
-            mesh.RecalculateTangents();
-        }
+		/// <summary> Recalculates all the bounds, normals and tangents of the mesh </summary>
+		public static void RecalculateAll(this Mesh mesh)
+		{
+			mesh.RecalculateBounds();
+			mesh.RecalculateNormals();
+			mesh.RecalculateTangents();
+		}
 
-        #endregion
-        
-        #region Mesh Construction
+		#endregion
 
-        /// <summary>
-        ///     This will create a connected quad mesh (which uses the mesh to just display one big texture only (not for single
-        ///     quad grid uv))
-        /// </summary>
-        public static void CreateEmptyConnectedQuadMeshArrays( Vector2Int size, out Vector3[] vertices, out int[] triangles, out Vector2[] uvs )
-        {
-            int totVerticesCount = ( size.x + 1 ) * ( size.y + 1 );
+		#region Mesh Construction
 
-            vertices = new Vector3[totVerticesCount];
-            triangles = new int[size.x * size.y * 2];
-            uvs = new Vector2[totVerticesCount];
-        }
+		/// <summary>
+		///     This will create a connected quad mesh (which uses the mesh to just display one big texture only (not for single
+		///     quad grid uv))
+		/// </summary>
+		public static void CreateEmptyConnectedQuadMeshArrays(Vector2Int size, out Vector3[] vertices, out int[] triangles, out Vector2[] uvs)
+		{
+			int totVerticesCount = (size.x + 1) * (size.y + 1);
 
-        /// <summary>
-        ///     This will create a connected quad mesh but independent with each other quad meshes
-        ///     (which u use the mesh to display grid like tiles and other awesome stuff)
-        /// </summary>
-        public static void CreateQuadMeshArrays( Vector2Int size, out Vector3[] vertices, out int[] triangles, out Vector2[] uvs )
-        {
-            int totVerticesCount = size.x * size.y * 4;
+			vertices = new Vector3[totVerticesCount];
+			triangles = new int[size.x * size.y * 2];
+			uvs = new Vector2[totVerticesCount];
+		}
 
-            vertices = new Vector3[totVerticesCount];
+		/// <summary>
+		///     This will create a connected quad mesh but independent with each other quad meshes
+		///     (which u use the mesh to display grid like tiles and other awesome stuff)
+		/// </summary>
+		public static void CreateQuadMeshArrays(Vector2Int size, out Vector3[] vertices, out int[] triangles, out Vector2[] uvs)
+		{
+			int totVerticesCount = size.x * size.y * 4;
 
-            triangles = new int[size.x * size.y * 2];
-            uvs = new Vector2[totVerticesCount];
-        }
+			vertices = new Vector3[totVerticesCount];
 
-        #endregion
+			triangles = new int[size.x * size.y * 2];
+			uvs = new Vector2[totVerticesCount];
+		}
 
-        #region All Mesh
+		#endregion
 
-        /// <summary>
-        ///     Adds a triangle mesh on a mesh
-        /// </summary>
-        public static void AddTriangleMesh( this Mesh mesh, Vector3 PT1, Vector3 PT2, Vector3 PT3, int TriangleSubMeshIndex )
-        {
-            var vertices = new List<Vector3>();
-            var triangles = new List<int>();
+		#region All Mesh
 
-            foreach ( var vert in mesh.vertices ) vertices.Add( vert );
-            foreach ( int tris in mesh.triangles ) triangles.Add( tris );
+		/// <summary>
+		///     Adds a triangle mesh on a mesh
+		/// </summary>
+		public static void AddTriangle(this Mesh mesh, Vector3 a, Vector3 b, Vector3 c, int subMesh)
+		{
+			var vertices = new List<Vector3>();
+			var triangles = new List<int>();
 
-            mesh.Clear();
+			mesh.GetVertices(vertices);
+			mesh.GetTriangles(triangles, subMesh);
 
-            vertices.Add( PT1 );
-            triangles.Add( vertices.Count - 1 );
+			mesh.Clear();
 
-            vertices.Add( PT2 );
-            triangles.Add( vertices.Count - 1 );
+			vertices.Add(a);
+			triangles.Add(vertices.Count - 1);
 
-            vertices.Add( PT3 );
-            triangles.Add( vertices.Count - 1 );
+			vertices.Add(b);
+			triangles.Add(vertices.Count - 1);
 
-            mesh.SetVertices( vertices );
-            mesh.SetTriangles( triangles, TriangleSubMeshIndex );
-        }
+			vertices.Add(c);
+			triangles.Add(vertices.Count - 1);
 
-        /// <summary> Adds a rectangular mesh on (facing on left down , left up , right up || right down, left down, right up)</summary>
-        public static void AddRectangleMesh( this Mesh mesh, Vector3 leftDown, Vector3 leftUp, Vector3 rightUp,
-            Vector3 rightDown, int triangleSubMeshesIndex )
-        {
-            AddTriangleMesh( mesh, leftDown, leftUp, rightUp, triangleSubMeshesIndex );
-            AddTriangleMesh( mesh, rightDown, leftDown, rightUp, triangleSubMeshesIndex );
-        }
+			mesh.SetVertices(vertices);
+			mesh.SetTriangles(triangles, subMesh);
+		}
 
-        #endregion
+		/// <summary> Adds a rectangular mesh on (facing on left down , left up , right up || right down, left down, right up)</summary>
+		public static void AddRect(this Mesh mesh, Vector3 leftDown, Vector3 leftUp, Vector3 rightUp,
+			Vector3 rightDown, int subMesh)
+		{
+			var vertices = new List<Vector3>();
+			var triangles = new List<int>();
 
-        #region Add Grid Mesh
+			mesh.GetVertices(vertices);
+			mesh.GetTriangles(triangles, subMesh);
 
-        /// <summary> Adds a rectangular grid mesh (In order [vertices are in 1D array with orders]) </summary>
-        public static void AddGridMeshInOrder( this Mesh mesh, float eachGridSize, Vector2Int wholeGridSize,
-            int triangleSubMesh )
-        {
-            var vertices = new List<Vector3>();
-            var triangles = new List<int>();
+			mesh.Clear();
 
-            //vertices
-            for ( float z = 0; z <= wholeGridSize.y; z += eachGridSize )
-                for ( float x = 0; x <= wholeGridSize.x; x += eachGridSize )
-                    vertices.Add( new Vector3( x, 0, z ) );
+			vertices.Add(leftDown);
+			triangles.Add(vertices.Count - 1);
 
-            //triangles
-            int vert = 0;
-            for ( int z = 0; z < wholeGridSize.y; z++ )
-            {
-                for ( int x = 0; x < wholeGridSize.x; x++ )
-                {
-                    triangles.Add( vert + 1 );
-                    triangles.Add( vert );
-                    triangles.Add( vert + wholeGridSize.x + 1 );
+			vertices.Add(leftUp);
+			triangles.Add(vertices.Count - 1);
 
-                    triangles.Add( vert + 1 );
-                    triangles.Add( vert + wholeGridSize.x + 1 );
-                    triangles.Add( vert + wholeGridSize.x + 2 );
-                    vert++;
-                }
-                vert++;
-            }
+			vertices.Add(rightUp);
+			triangles.Add(vertices.Count - 1);
+			
+			vertices.Add(rightDown);
+			triangles.Add(vertices.Count - 1);
+			triangles.Add(vertices.Count - 4); // leftDown
+			triangles.Add(vertices.Count - 2); // leftDown
 
-            mesh.SetVertices( vertices );
-            mesh.SetTriangles( triangles.ToArray(), triangleSubMesh );
-            //and recalculate
-            mesh.RecalculateAll();
-        }
+			mesh.SetVertices(vertices);
+			mesh.SetTriangles(triangles, subMesh);
+			
+			// AddTriangle(mesh, leftDown, leftUp, rightUp, subMesh);
+			// AddTriangle(mesh, rightDown, leftDown, rightUp, subMesh);
+		}
 
-        /// <summary> Adds a rectangular grid mesh (In order [vertices are in 1D array with orders]) Out vertices </summary>
-        public static void AddGridMeshInOrder( this Mesh mesh, float eachGridSize, Vector2Int wholeGridSize,
-            int triangleSubMesh, out List<Vector3> vertices )
-        {
-            vertices = new List<Vector3>();
-            var triangles = new List<int>();
+		#endregion
 
-            //vetrticies
-            for ( float z = 0; z <= wholeGridSize.y; z += eachGridSize )
-                for ( float x = 0; x <= wholeGridSize.x; x += eachGridSize )
-                    vertices.Add( new Vector3( x, 0, z ) );
+		#region Add Grid Mesh
 
-            //triangles
-            int vert = 0;
-            for ( int z = 0; z < wholeGridSize.y; z++ )
-            {
-                for ( int x = 0; x < wholeGridSize.x; x++ )
-                {
-                    triangles.Add( vert + 1 );
-                    triangles.Add( vert );
-                    triangles.Add( vert + wholeGridSize.x + 1 );
-                    triangles.Add( vert + 1 );
-                    triangles.Add( vert + wholeGridSize.x + 1 );
-                    triangles.Add( vert + wholeGridSize.x + 2 );
-                    vert++;
-                }
-                vert++;
-            }
+		/// <summary> Adds a rectangular grid mesh (In order [vertices are in 1D array with orders]) </summary>
+		public static void AddGridMeshInOrder(this Mesh mesh, float eachGridSize, Vector2Int wholeGridSize,
+			int triangleSubMesh)
+		{
+			var vertices = new List<Vector3>();
+			var triangles = new List<int>();
 
-            mesh.SetVertices( vertices );
-            mesh.SetTriangles( triangles.ToArray(), triangleSubMesh );
+			//vertices
+			for (float z = 0; z <= wholeGridSize.y; z += eachGridSize)
+				for (float x = 0; x <= wholeGridSize.x; x += eachGridSize)
+					vertices.Add(new Vector3(x, 0, z));
 
-            //and recalculate
-            RecalculateAll( mesh );
-        }
+			//triangles
+			int vert = 0;
+			for (int z = 0; z < wholeGridSize.y; z++)
+			{
+				for (int x = 0; x < wholeGridSize.x; x++)
+				{
+					triangles.Add(vert + 1);
+					triangles.Add(vert);
+					triangles.Add(vert + wholeGridSize.x + 1);
 
-        /// <summary> Adds a rectangular grid mesh (In order [vertices are in 1D array with orders]) Out vertices and triangles </summary>
-        public static void AddGridMeshInOrder( this Mesh mesh, float eachGridSize, Vector2Int wholeGridSize,
-            int triangleSubMesh, out List<Vector3> vertices, out List<int> triangles )
-        {
-            vertices = new List<Vector3>();
-            triangles = new List<int>();
+					triangles.Add(vert + 1);
+					triangles.Add(vert + wholeGridSize.x + 1);
+					triangles.Add(vert + wholeGridSize.x + 2);
+					vert++;
+				}
+				vert++;
+			}
 
-            //vertices
-            for ( float z = 0; z <= wholeGridSize.y; z += eachGridSize )
-                for ( float x = 0; x <= wholeGridSize.x; x += eachGridSize )
-                    vertices.Add( new Vector3( x, 0, z ) );
+			mesh.SetVertices(vertices);
+			mesh.SetTriangles(triangles.ToArray(), triangleSubMesh);
+			//and recalculate
+			mesh.RecalculateAll();
+		}
 
-            //triangles
-            int vert = 0;
-            for ( int z = 0; z < wholeGridSize.y; z++ )
-            {
-                for ( int x = 0; x < wholeGridSize.x; x++ )
-                {
-                    triangles.Add( vert + 1 );
-                    triangles.Add( vert );
-                    triangles.Add( vert + wholeGridSize.x + 1 );
-                    triangles.Add( vert + 1 );
-                    triangles.Add( vert + wholeGridSize.x + 1 );
-                    triangles.Add( vert + wholeGridSize.x + 2 );
-                    vert++;
-                }
-                vert += 2;
-            }
+		/// <summary> Adds a rectangular grid mesh (In order [vertices are in 1D array with orders]) Out vertices </summary>
+		public static void AddGridMeshInOrder(this Mesh mesh, float eachGridSize, Vector2Int wholeGridSize,
+			int triangleSubMesh, out List<Vector3> vertices)
+		{
+			vertices = new List<Vector3>();
+			var triangles = new List<int>();
 
-            mesh.SetVertices( vertices );
-            mesh.SetTriangles( triangles.ToArray(), triangleSubMesh );
+			//vetrticies
+			for (float z = 0; z <= wholeGridSize.y; z += eachGridSize)
+				for (float x = 0; x <= wholeGridSize.x; x += eachGridSize)
+					vertices.Add(new Vector3(x, 0, z));
 
-            //and recalculate
-            mesh.RecalculateAll();
-        }
+			//triangles
+			int vert = 0;
+			for (int z = 0; z < wholeGridSize.y; z++)
+			{
+				for (int x = 0; x < wholeGridSize.x; x++)
+				{
+					triangles.Add(vert + 1);
+					triangles.Add(vert);
+					triangles.Add(vert + wholeGridSize.x + 1);
+					triangles.Add(vert + 1);
+					triangles.Add(vert + wholeGridSize.x + 1);
+					triangles.Add(vert + wholeGridSize.x + 2);
+					vert++;
+				}
+				vert++;
+			}
 
-        #endregion
-    }
+			mesh.SetVertices(vertices);
+			mesh.SetTriangles(triangles.ToArray(), triangleSubMesh);
+
+			//and recalculate
+			RecalculateAll(mesh);
+		}
+
+		/// <summary> Adds a rectangular grid mesh (In order [vertices are in 1D array with orders]) Out vertices and triangles </summary>
+		public static void AddGridMeshInOrder(this Mesh mesh, float eachGridSize, Vector2Int wholeGridSize,
+			int triangleSubMesh, out List<Vector3> vertices, out List<int> triangles)
+		{
+			vertices = new List<Vector3>();
+			triangles = new List<int>();
+
+			//vertices
+			for (float z = 0; z <= wholeGridSize.y; z += eachGridSize)
+				for (float x = 0; x <= wholeGridSize.x; x += eachGridSize)
+					vertices.Add(new Vector3(x, 0, z));
+
+			//triangles
+			int vert = 0;
+			for (int z = 0; z < wholeGridSize.y; z++)
+			{
+				for (int x = 0; x < wholeGridSize.x; x++)
+				{
+					triangles.Add(vert + 1);
+					triangles.Add(vert);
+					triangles.Add(vert + wholeGridSize.x + 1);
+					triangles.Add(vert + 1);
+					triangles.Add(vert + wholeGridSize.x + 1);
+					triangles.Add(vert + wholeGridSize.x + 2);
+					vert++;
+				}
+				vert += 2;
+			}
+
+			mesh.SetVertices(vertices);
+			mesh.SetTriangles(triangles.ToArray(), triangleSubMesh);
+
+			//and recalculate
+			mesh.RecalculateAll();
+		}
+
+		#endregion
+	}
 }

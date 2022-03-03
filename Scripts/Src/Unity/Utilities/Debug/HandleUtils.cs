@@ -12,25 +12,25 @@ namespace CXUtils.Unity
 	/// </summary>
 	public static class HandleUtils
 	{
-		public static void DrawText(string text, Float3 worldPosition, Color color, GUIStyle style)
+		public static void DrawText(string text, Float3 global, Color color, GUIStyle style)
 		{
 #if UNITY_EDITOR
 			if (SceneView.currentDrawingSceneView == null) return;
 
 			Handles.BeginGUI();
 
-			DrawTextRaw(text, worldPosition, color, SceneView.currentDrawingSceneView, style);
+			DrawTextRaw(text, global, color, SceneView.currentDrawingSceneView, style);
 
 			Handles.EndGUI();
 #endif
 		}
 
-		public static void DrawText(string text, Float3 worldPosition) => DrawText(text, worldPosition, Color.white, GUI.skin.box);
+		public static void DrawText(string text, Float3 global) => DrawText(text, global, Color.white, GUI.skin.box);
 
 #if UNITY_EDITOR
-		static void DrawTextRaw(string text, Float3 worldPosition, Color color, SceneView sceneView, GUIStyle style)
+		static void DrawTextRaw(string text, Float3 global, Color color, SceneView sceneView, GUIStyle style)
 		{
-			Vector3 screenPos = sceneView.camera.WorldToScreenPoint(worldPosition.ToUnity());
+			Vector3 screenPos = sceneView.camera.WorldToScreenPoint(global.ToUnity());
 			Vector2 size = style.CalcSize(new GUIContent(text));
 			GUI.color = color;
 			Rect position = new Rect(screenPos.x - size.x * .5f, -screenPos.y + sceneView.position.height - size.y * 2f, size.x, size.y);
