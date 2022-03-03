@@ -11,9 +11,9 @@ namespace CXUtils.Common
     public static class CameraUtils
     {
         /// <summary>
-        ///     Options for camera ports
+        ///     Options for camera anchors
         /// </summary>
-        public enum PortAnchorType
+        public enum AnchorType
         {
             TopLeft, BottomLeft, TopRight,
             BottomRight, LeftCenter, RightCenter,
@@ -23,74 +23,74 @@ namespace CXUtils.Common
         #region MousePosition
 
         ///<summary> This method will get the mouse position on the scene position on the camera </summary>
-        public static Vector3 GetMouseOnWorldPos( this Camera camera ) => camera.ScreenToWorldPoint( Input.mousePosition );
+        public static Vector3 GetMouseGlobal( this Camera camera ) => camera.ScreenToWorldPoint( Input.mousePosition );
 
-        /// <inheritdoc cref="GetMouseOnViewPortPos(Camera)" />
-        public static Vector3 GetMouseOnWorldPos() => GetMouseOnWorldPos( Camera.main );
+        /// <inheritdoc cref="GetMouseViewport" />
+        public static Vector3 GetMouseGlobal() => GetMouseGlobal( Camera.main );
 
         ///<summary> This method will get the mouse position on the viewport pos on the camera </summary>
-        public static Vector3 GetMouseOnViewPortPos( this Camera camera ) => camera.ScreenToViewportPoint( Input.mousePosition );
+        public static Vector3 GetMouseViewport( this Camera camera ) => camera.ScreenToViewportPoint( Input.mousePosition );
 
         /// <summary> Get's the Ray that shoots out with the current mouse position </summary>
-        public static Ray GetRayFromMousePos( this Camera camera ) => camera.ScreenPointToRay( Input.mousePosition );
+        public static Ray GetRayByMouse( this Camera camera ) => camera.ScreenPointToRay( Input.mousePosition );
 
         /// <summary> Receives the raycastHit info with the mouse position using the given camera </summary>
-        public static bool GetRaycastHitWithMousePos( this Camera camera, out RaycastHit raycastHit, float maxDistance = float.PositiveInfinity,
+        public static bool GetRaycastHitByMouse( this Camera camera, out RaycastHit raycastHit, float maxDistance = float.PositiveInfinity,
             int layerMask = default, QueryTriggerInteraction queryTriggerInteraction = default ) =>
-            Physics.Raycast( camera.GetRayFromMousePos(), out raycastHit, maxDistance, layerMask, queryTriggerInteraction );
+            Physics.Raycast( camera.GetRayByMouse(), out raycastHit, maxDistance, layerMask, queryTriggerInteraction );
 
         #endregion
 
         #region CameraOtherHelperMethods
 
         //corners
-        static readonly Float2 _bottomLeft  = Float2.Zero;
-        static readonly Float2 _topLeft     = new Float2( 0, 1 );
-        static readonly Float2 _rightTop    = new Float2( 1, 1 );
-        static readonly Float2 _rightBottom = new Float2( 1 );
+        static readonly Float2 bottomLeft  = Float2.Zero;
+        static readonly Float2 topLeft     = new Float2( 0, 1 );
+        static readonly Float2 rightTop    = new Float2( 1, 1 );
+        static readonly Float2 rightBottom = new Float2( 1 );
 
         //centers
-        static readonly Float2 _centerTop   = new Float2( .5f, 1f );
-        static readonly Float2 _centerDown  = new Float2( .5f );
-        static readonly Float2 _centerLeft  = new Float2( 0, .5f );
-        static readonly Float2 _centerRight = new Float2( 1f, .5f );
+        static readonly Float2 centerTop   = new Float2( .5f, 1f );
+        static readonly Float2 centerDown  = new Float2( .5f );
+        static readonly Float2 centerLeft  = new Float2( 0, .5f );
+        static readonly Float2 centerRight = new Float2( 1f, .5f );
 
-        static readonly Float2 _center = new Float2( .5f, .5f );
+        static readonly Float2 center = new Float2( .5f, .5f );
 
         ///<summary> This method will get the edges of the camera and return the edge camera pos (only for ortho) </summary>
-        public static Vector3 GetCameraPortPosOnWorldPosOrtho( this Camera camera, PortAnchorType portAnchor )
+        public static Vector3 GlobalOrthoByPort( this Camera camera, AnchorType anchor )
         {
-            switch ( portAnchor )
+            switch ( anchor )
             {
-                case PortAnchorType.TopLeft:    return camera.ViewportToWorldPoint( _topLeft.ToUnity() );
-                case PortAnchorType.BottomLeft: return camera.ViewportToWorldPoint( _bottomLeft.ToUnity() );
+                case AnchorType.TopLeft:    return camera.ViewportToWorldPoint( topLeft.ToUnity() );
+                case AnchorType.BottomLeft: return camera.ViewportToWorldPoint( bottomLeft.ToUnity() );
 
-                case PortAnchorType.TopRight:    return camera.ViewportToWorldPoint( _rightTop.ToUnity() );
-                case PortAnchorType.BottomRight: return camera.ViewportToWorldPoint( _rightBottom.ToUnity() );
+                case AnchorType.TopRight:    return camera.ViewportToWorldPoint( rightTop.ToUnity() );
+                case AnchorType.BottomRight: return camera.ViewportToWorldPoint( rightBottom.ToUnity() );
 
 
-                case PortAnchorType.TopCenter:    return camera.ViewportToWorldPoint( _centerTop.ToUnity() );
-                case PortAnchorType.BottomCenter: return camera.ViewportToWorldPoint( _centerDown.ToUnity() );
+                case AnchorType.TopCenter:    return camera.ViewportToWorldPoint( centerTop.ToUnity() );
+                case AnchorType.BottomCenter: return camera.ViewportToWorldPoint( centerDown.ToUnity() );
 
-                case PortAnchorType.LeftCenter:  return camera.ViewportToWorldPoint( _centerLeft.ToUnity() );
-                case PortAnchorType.RightCenter: return camera.ViewportToWorldPoint( _centerRight.ToUnity() );
+                case AnchorType.LeftCenter:  return camera.ViewportToWorldPoint( centerLeft.ToUnity() );
+                case AnchorType.RightCenter: return camera.ViewportToWorldPoint( centerRight.ToUnity() );
 
-                case PortAnchorType.Center: return camera.ViewportToWorldPoint( _center.ToUnity() );
+                case AnchorType.Center: return camera.ViewportToWorldPoint( center.ToUnity() );
             }
 
             throw ExceptionUtils.NotAccessible;
         }
 
         ///<summary> Get's the Vector2 border in world space </summary>
-        public static Bounds GetCameraBoundsOrtho( this Camera camera )
+        public static Bounds GetBoundsOrtho( this Camera camera )
         {
             if ( !camera.orthographic )
-                throw new ArgumentException( $"{camera.name} is not orthographic! please turn on orthographic in order to use this method!", nameof( camera.orthographic ) );
+                throw new ArgumentException( $"{camera.name} is not orthographic", nameof( camera.orthographic ) );
 
             //getting the border of the real world space
             var borderPositive = new Vector2(
-                GetCameraPortPosOnWorldPosOrtho( camera, PortAnchorType.RightCenter ).x,
-                GetCameraPortPosOnWorldPosOrtho( camera, PortAnchorType.TopCenter ).y
+                GlobalOrthoByPort( camera, AnchorType.RightCenter ).x,
+                GlobalOrthoByPort( camera, AnchorType.TopCenter ).y
             );
 
             return new Bounds( camera.transform.position, borderPositive );
